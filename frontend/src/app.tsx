@@ -2,15 +2,25 @@ import { Router, Route } from 'preact-router';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { RoleSelection } from './pages/RoleSelection';
 
+/**
+ * Main App Component
+ * 
+ * Sets up the routing and layout for the SEAPEDIA application.
+ * 
+ * @returns {preact.VNode} The rendered App layout.
+ */
 export function App() {
   return (
     <div class="min-h-screen bg-gray-50 flex flex-col font-sans">
-      <nav class="bg-primary text-white p-4 shadow-md flex justify-between items-center">
-        <div class="font-bold text-xl tracking-tight">SEAPEDIA</div>
-        <div class="flex gap-4">
-          <a href="/login" class="hover:text-gray-200 transition-colors">Masuk</a>
-          <a href="/register" class="bg-white text-primary px-4 py-1.5 rounded-lg font-bold hover:bg-gray-100 transition-colors">Daftar</a>
+      <nav class="bg-white p-4 shadow-sm flex justify-between items-center border-b border-gray-100">
+        <a href="/">
+          <img src="/logo-name.png" alt="SEAPEDIA" class="h-8 w-auto" />
+        </a>
+        <div class="flex gap-4 items-center">
+          <a href="/login" class="text-gray-600 font-semibold hover:text-primary transition-colors">Masuk</a>
+          <a href="/register" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-green-600 transition-colors">Daftar</a>
         </div>
       </nav>
       
@@ -19,6 +29,7 @@ export function App() {
           <Route path="/" component={Home} />
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/role-selection" component={RoleSelection} />
         </Router>
       </main>
       

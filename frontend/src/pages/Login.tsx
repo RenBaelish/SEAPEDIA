@@ -1,6 +1,14 @@
 import { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 
+/**
+ * Login Component
+ * 
+ * Renders the login form and handles authentication with the backend.
+ * Redirects to the role selection page if the user has multiple roles.
+ * 
+ * @returns {preact.VNode} The rendered Login component.
+ */
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +33,13 @@ export function Login() {
       localStorage.setItem('token', data.data.token);
       localStorage.setItem('user', JSON.stringify(data.data.user));
       
-      route('/');
+      const userRoles = data.data.user.roles || [];
+      if (userRoles.length > 1) {
+        route('/role-selection');
+      } else {
+        localStorage.setItem('activeRole', userRoles[0] || 'GUEST');
+        route('/');
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
