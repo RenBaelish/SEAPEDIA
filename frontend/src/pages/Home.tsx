@@ -1,3 +1,5 @@
+import { ReviewsSection } from '../components/ReviewsSection';
+
 export function Home() {
   return (
     <div class="p-8 max-w-7xl mx-auto">
@@ -19,6 +21,8 @@ export function Home() {
             <p class="text-sm text-gray-500">Sistem terintegrasi dengan pengemudi untuk memastikan barang sampai ke tangan Anda tepat waktu.</p>
           </div>
         </div>
+        
+        <ReviewsSection />
       </div>
     </div>
   )

@@ -21,3 +21,13 @@ export const userRoles = sqliteTable('user_roles', {
   userId: text('user_id').notNull().references(() => users.id),
   roleId: text('role_id').notNull().references(() => roles.id),
 });
+
+export const reviews = sqliteTable('reviews', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id),
+  rating: integer('rating').notNull(), // 1 to 5
+  comment: text('comment').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
