@@ -1,14 +1,6 @@
 import { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 
-/**
- * Login Component
- * 
- * Renders the login form and handles authentication with the backend.
- * Redirects to the role selection page if the user has multiple roles.
- * 
- * @returns {preact.VNode} The rendered Login component.
- */
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

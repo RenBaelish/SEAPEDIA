@@ -1,15 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { route } from 'preact-router';
 
-/**
- * RoleSelection Component
- * 
- * Renders a UI for users to select their active role after a successful login.
- * This handles the requirement where one non-admin username may own more than 
- * one role at the same time.
- * 
- * @returns {preact.VNode} The rendered RoleSelection component.
- */
 export function RoleSelection() {
   const [roles, setRoles] = useState<string[]>([]);
 
@@ -27,11 +18,6 @@ export function RoleSelection() {
     setRoles(user.roles);
   }, []);
 
-  /**
-   * Handles the selection of a role.
-   * 
-   * @param {string} role - The role selected by the user (e.g., "BUYER", "SELLER", "DRIVER").
-   */
   const handleSelectRole = (role: string) => {
     localStorage.setItem('activeRole', role);
     route('/'); // Redirect to the corresponding dashboard based on active role in the future

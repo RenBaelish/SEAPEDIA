@@ -1,9 +1,3 @@
-/**
- * Renders the Home page of the SEAPEDIA application.
- * This is a static UI showcasing the platform's features.
- * 
- * @returns {preact.VNode} The rendered Home component.
- */
 export function Home() {
   return (
     <div class="p-8 max-w-7xl mx-auto">

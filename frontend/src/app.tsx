@@ -4,13 +4,6 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { RoleSelection } from './pages/RoleSelection';
 
-/**
- * Main App Component
- * 
- * Sets up the routing and layout for the SEAPEDIA application.
- * 
- * @returns {preact.VNode} The rendered App layout.
- */
 export function App() {
   return (
     <div class="min-h-screen bg-gray-50 flex flex-col font-sans">

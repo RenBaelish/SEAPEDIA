@@ -1,14 +1,6 @@
 import { useState } from 'preact/hooks';
 import { route } from 'preact-router';
 
-/**
- * Register Component
- * 
- * Renders the registration form and handles user registration with the backend.
- * Allows users to select multiple roles.
- * 
- * @returns {preact.VNode} The rendered Register component.
- */
 export function Register() {
   const [fullName, setFullName] = useState('');
   const [username, setUsername] = useState('');
@@ -24,22 +16,12 @@ export function Register() {
     { id: 'DRIVER', label: 'Pengemudi' }
   ];
 
-  /**
-   * Toggles the selection of a role.
-   * 
-   * @param {string} role - The role to toggle (e.g., "BUYER").
-   */
   const handleRoleToggle = (role: string) => {
     setSelectedRoles(prev => 
       prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
     );
   };
 
-  /**
-   * Handles the submission of the registration form.
-   * 
-   * @param {Event} e - The form submission event.
-   */
   const handleSubmit = async (e: Event) => {
     e.preventDefault();
     if (selectedRoles.length === 0) {
