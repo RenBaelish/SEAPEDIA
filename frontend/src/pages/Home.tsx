@@ -1,3 +1,9 @@
+/**
+ * Renders the Home page of the SEAPEDIA application.
+ * This is a static UI showcasing the platform's features.
+ * 
+ * @returns {preact.VNode} The rendered Home component.
+ */
 export function Home() {
   return (
     <div class="p-8 max-w-7xl mx-auto">
@@ -7,15 +13,15 @@ export function Home() {
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mt-12">
           <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">🛍️ Belanja Mudah</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Belanja Mudah</h3>
             <p class="text-sm text-gray-500">Temukan ribuan produk dari berbagai toko terpercaya dengan sistem checkout single-store yang aman.</p>
           </div>
           <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">🏪 Buka Toko</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Buka Toko</h3>
             <p class="text-sm text-gray-500">Mulai berjualan dan kelola produk Anda dengan mudah. Raih lebih banyak pelanggan di SEAPEDIA.</p>
           </div>
           <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">🚚 Pengiriman Cepat</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Pengiriman Cepat</h3>
             <p class="text-sm text-gray-500">Sistem terintegrasi dengan pengemudi untuk memastikan barang sampai ke tangan Anda tepat waktu.</p>
           </div>
         </div>
