@@ -3,6 +3,8 @@ import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { RoleSelection } from './pages/RoleSelection';
+import { SellerDashboard } from './pages/dashboard/SellerDashboard';
+import { ProductDetail } from './pages/ProductDetail';
 
 export function App() {
   return (
@@ -12,6 +14,7 @@ export function App() {
           <img src="/logo-name.png" alt="SEAPEDIA" class="h-8 w-auto" />
         </a>
         <div class="flex gap-4 items-center">
+          <a href="/seller-dashboard" class="text-sm font-semibold text-gray-700 hover:text-primary transition-colors">Toko Saya</a>
           <a href="/login" class="text-gray-600 font-semibold hover:text-primary transition-colors">Masuk</a>
           <a href="/register" class="bg-primary text-white px-5 py-2 rounded-lg font-bold hover:bg-green-600 transition-colors">Daftar</a>
         </div>
@@ -23,6 +26,8 @@ export function App() {
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <Route path="/role-selection" component={RoleSelection} />
+          <Route path="/seller-dashboard" component={SellerDashboard} />
+          <Route path="/product/:id" component={ProductDetail} />
         </Router>
       </main>
       

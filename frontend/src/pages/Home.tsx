@@ -1,4 +1,5 @@
 import { ReviewsSection } from '../components/ReviewsSection';
+import { ProductCatalog } from '../components/ProductCatalog';
 
 export function Home() {
   return (
@@ -22,6 +23,7 @@ export function Home() {
           </div>
         </div>
         
+        <ProductCatalog />
         <ReviewsSection />
       </div>
     </div>
