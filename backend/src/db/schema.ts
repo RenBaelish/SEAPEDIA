@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const users = sqliteTable('users', {
@@ -36,19 +36,37 @@ export const stores = sqliteTable('stores', {
   id: text('id').primaryKey(),
   ownerId: text('owner_id').notNull().unique().references(() => users.id),
   name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
   description: text('description'),
+  status: text('status').notNull().default('ACTIVE'), // ACTIVE, SUSPENDED, CLOSED
+  rating: real('rating').notNull().default(0),
+  totalSales: integer('total_sales').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
 });
 
+export const categories = sqliteTable('categories', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
+});
+
 export const products = sqliteTable('products', {
   id: text('id').primaryKey(),
   storeId: text('store_id').notNull().references(() => stores.id),
+  categoryId: text('category_id').references(() => categories.id),
   name: text('name').notNull(),
+  slug: text('slug').notNull().unique(),
   description: text('description').notNull(),
   price: integer('price').notNull(),
+  comparePrice: integer('compare_price'),
+  rating: real('rating').notNull().default(0),
+  sold: integer('sold').notNull().default(0),
   stock: integer('stock').notNull(),
+  weight: integer('weight').notNull().default(1000), // in grams
+  status: text('status').notNull().default('ACTIVE'), // DRAFT, ACTIVE, INACTIVE, DELETED
+  images: text('images', { mode: 'json' }).notNull().default('[]'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),

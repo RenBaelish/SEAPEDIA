@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
-import { products, stores } from '../db/schema';
+import { products, stores, categories } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
@@ -140,16 +140,32 @@ productRouter.get('/', async (c) => {
     .select({
       id: products.id,
       name: products.name,
+      slug: products.slug,
       description: products.description,
       price: products.price,
+      comparePrice: products.comparePrice,
+      rating: products.rating,
+      sold: products.sold,
       stock: products.stock,
+      weight: products.weight,
+      status: products.status,
+      images: products.images,
+      categoryId: products.categoryId,
+      categoryName: categories.name,
       storeId: products.storeId,
-      storeName: stores.name
+      storeName: stores.name,
+      storeSlug: stores.slug
     })
     .from(products)
-    .innerJoin(stores, eq(products.storeId, stores.id));
+    .innerJoin(stores, eq(products.storeId, stores.id))
+    .leftJoin(categories, eq(products.categoryId, categories.id));
 
-  return c.json({ data: allProducts });
+  const mappedProducts = allProducts.map(p => ({
+    ...p,
+    images: JSON.parse(p.images as string || '[]')
+  }));
+
+  return c.json({ data: mappedProducts });
 });
 
 // Get Product by ID
@@ -161,22 +177,64 @@ productRouter.get('/:id', async (c) => {
     .select({
       id: products.id,
       name: products.name,
+      slug: products.slug,
       description: products.description,
       price: products.price,
+      comparePrice: products.comparePrice,
+      rating: products.rating,
+      sold: products.sold,
       stock: products.stock,
+      weight: products.weight,
+      status: products.status,
+      images: products.images,
+      categoryId: products.categoryId,
+      categoryName: categories.name,
       storeId: products.storeId,
-      storeName: stores.name
+      storeName: stores.name,
+      storeSlug: stores.slug
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
-    .where(eq(products.id, productId))
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.slug, productId)) // Allow fetching by slug
     .get();
 
   if (!product) {
-    return c.json({ message: 'Product not found' }, 404);
+    // try by id if slug fails
+    const productById = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        description: products.description,
+        price: products.price,
+        comparePrice: products.comparePrice,
+        rating: products.rating,
+        sold: products.sold,
+        stock: products.stock,
+        weight: products.weight,
+        status: products.status,
+        images: products.images,
+        categoryId: products.categoryId,
+        categoryName: categories.name,
+        storeId: products.storeId,
+        storeName: stores.name,
+        storeSlug: stores.slug
+      })
+      .from(products)
+      .innerJoin(stores, eq(products.storeId, stores.id))
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+      .where(eq(products.id, productId))
+      .get();
+      
+    if (!productById) {
+      return c.json({ message: 'Product not found' }, 404);
+    }
+    
+    return c.json({ data: { ...productById, images: JSON.parse(productById.images as string || '[]') } });
   }
 
-  return c.json({ data: product });
+  return c.json({ data: { ...product, images: JSON.parse(product.images as string || '[]') } });
 });
 
 // Get Products by Store ID
@@ -184,7 +242,36 @@ productRouter.get('/store/:storeId', async (c) => {
   const db = drizzle(c.env.DB);
   const storeId = c.req.param('storeId');
   
-  const storeProducts = await db.select().from(products).where(eq(products.storeId, storeId)).all();
+  const storeProducts = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      slug: products.slug,
+      description: products.description,
+      price: products.price,
+      comparePrice: products.comparePrice,
+      rating: products.rating,
+      sold: products.sold,
+      stock: products.stock,
+      weight: products.weight,
+      status: products.status,
+      images: products.images,
+      categoryId: products.categoryId,
+      categoryName: categories.name,
+      storeId: products.storeId,
+      storeName: stores.name,
+      storeSlug: stores.slug
+    })
+    .from(products)
+    .innerJoin(stores, eq(products.storeId, stores.id))
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.storeId, storeId))
+    .all();
 
-  return c.json({ data: storeProducts });
+  const mappedProducts = storeProducts.map(p => ({
+    ...p,
+    images: JSON.parse(p.images as string || '[]')
+  }));
+
+  return c.json({ data: mappedProducts });
 });

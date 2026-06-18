@@ -96,16 +96,15 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
   }, secret, "HS256");
 
   return c.json({
-    message: 'Login successful',
     data: {
+      tokens: { accessToken: token },
       user: {
         id: user.id,
         fullName: user.fullName,
         username: user.username,
         email: user.email,
         roles: roleNames
-      },
-      token
+      }
     }
   });
 });

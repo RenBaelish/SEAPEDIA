@@ -10,10 +10,18 @@ import { orderRouter } from './routes/orders'
 import { promoRouter } from './routes/promos'
 import { deliveryRouter } from './routes/deliveries'
 import { adminRouter } from './routes/admin'
+import seedHandler from './seed'
 
 const app = new Hono()
 
-app.use('*', cors())
+app.use('*', cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
+  exposeHeaders: ['Content-Length'],
+  maxAge: 600,
+  credentials: true,
+}))
 
 app.get('/', (c) => {
   return c.text('Welcome to SEAPEDIA API')
@@ -29,5 +37,7 @@ app.route('/orders', orderRouter)
 app.route('/promos', promoRouter)
 app.route('/deliveries', deliveryRouter)
 app.route('/admin', adminRouter)
+
+app.get('/seed', (c) => seedHandler.fetch(c.req.raw, c.env))
 
 export default app
