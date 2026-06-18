@@ -1,18 +1,70 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        primary: "#00AA5B", // SEAPEDIA Green
-        secondary: "#31353B",
-        tertiary: "#9FA6B0",
-        error: "#E32636",
-      }
+        brand: "#2F2EAA",
+        primary: {
+          DEFAULT: "#00AA5B",
+          hover: "#009950",
+          light: "#E6F7F0",
+        },
+        secondary: "#101010",
+        tertiary: "#B3BBC9",
+        surface: "#FFFFFF",
+        "on-surface": "#080808",
+        muted: "#E5E7EB",
+        border: "#B3BBC9",
+        error: "#E5484D",
+        success: "#00AA5B",
+      },
+      fontFamily: {
+        sans: ['"Open Sauce One"', "Inter", "system-ui", "sans-serif"],
+      },
+      fontSize: {
+        "headline-display": ["32px", { lineHeight: "38px", fontWeight: "700" }],
+        "headline-lg": ["28px", { lineHeight: "33px", fontWeight: "700" }],
+        "headline-md": ["20px", { lineHeight: "24px", fontWeight: "600" }],
+        "headline-sm": ["18px", { lineHeight: "22px", fontWeight: "600" }],
+        "body-lg": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+        "body-md": ["14px", { lineHeight: "21px", fontWeight: "600" }],
+        "body-sm": ["12px", { lineHeight: "18px", fontWeight: "400" }],
+        "label-lg": ["14px", { lineHeight: "21px", fontWeight: "700" }],
+        "label-md": ["12px", { lineHeight: "16px", fontWeight: "800" }],
+        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "600" }],
+        caption: ["11px", { lineHeight: "14px", fontWeight: "600" }],
+      },
+      spacing: {
+        xs: "6px",
+        sm: "16px",
+        md: "32px",
+        lg: "50px",
+        xl: "110px",
+        gutter: "16px",
+        section: "32px",
+      },
+      borderRadius: {
+        none: "0px",
+        sm: "4px",
+        DEFAULT: "8px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        full: "9999px",
+      },
+      boxShadow: {
+        card: "0 1px 4px rgba(0,0,0,0.08)",
+        "card-hover": "0 4px 16px rgba(0,0,0,0.12)",
+        panel: "0 2px 8px rgba(0,0,0,0.10)",
+      },
+      zIndex: {
+        navbar: "100",
+        drawer: "200",
+        modal: "300",
+        toast: "400",
+      },
     },
   },
   plugins: [],
-}
+};
