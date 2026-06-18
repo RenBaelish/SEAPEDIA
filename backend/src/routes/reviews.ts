@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/d1';
 import { reviews, users } from '../db/schema';
 import { eq, desc } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const reviewRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const reviewRouter = new Hono<Env>();
 
 const reviewSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -46,7 +47,7 @@ reviewRouter.post('/', zValidator('json', reviewSchema), async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }

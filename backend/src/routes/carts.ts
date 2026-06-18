@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/d1';
 import { carts, cartItems, products, stores } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const cartRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const cartRouter = new Hono<Env>();
 
 const authMiddleware = async (c: any, next: any) => {
   const authHeader = c.req.header('Authorization');
@@ -15,7 +16,7 @@ const authMiddleware = async (c: any, next: any) => {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret');
+    const payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret', "HS256") as any;
     c.set('user', payload);
     await next();
   } catch (err) {
@@ -27,7 +28,7 @@ cartRouter.use('*', authMiddleware);
 
 cartRouter.get('/me', async (c) => {
   const db = drizzle(c.env.DB);
-  const user = c.get('user');
+  const user = c.get('user') as any;
 
   let cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
   
@@ -67,7 +68,7 @@ const addItemSchema = z.object({
 
 cartRouter.post('/items', zValidator('json', addItemSchema), async (c) => {
   const db = drizzle(c.env.DB);
-  const user = c.get('user');
+  const user = c.get('user') as any;
   const data = c.req.valid('json');
 
   const product = await db.select().from(products).where(eq(products.id, data.productId)).get();
@@ -81,9 +82,7 @@ cartRouter.post('/items', zValidator('json', addItemSchema), async (c) => {
     cart = { id: cartId, userId: user.id as string, storeId: product.storeId };
   }
 
-  // Enforce single store rule
   if (cart.storeId && cart.storeId !== product.storeId) {
-    // Check if cart is actually empty. If it is, we can change the storeId.
     const existingItems = await db.select().from(cartItems).where(eq(cartItems.cartId, cart.id)).all();
     if (existingItems.length > 0) {
       return c.json({ message: 'Anda hanya dapat memesan produk dari 1 toko dalam satu checkout. Harap kosongkan keranjang Anda jika ingin memesan dari toko ini.' }, 400);
@@ -95,13 +94,11 @@ cartRouter.post('/items', zValidator('json', addItemSchema), async (c) => {
     await db.update(carts).set({ storeId: product.storeId }).where(eq(carts.id, cart.id));
   }
 
-  // Check if item already in cart
   const existingItem = await db.select().from(cartItems).where(and(eq(cartItems.cartId, cart.id), eq(cartItems.productId, product.id))).get();
 
   if (existingItem) {
     const newQuantity = existingItem.quantity + data.quantity;
     if (newQuantity > product.stock) return c.json({ message: 'Stock not enough' }, 400);
-    
     await db.update(cartItems).set({ quantity: newQuantity }).where(eq(cartItems.id, existingItem.id));
   } else {
     await db.insert(cartItems).values({
@@ -117,7 +114,7 @@ cartRouter.post('/items', zValidator('json', addItemSchema), async (c) => {
 
 cartRouter.delete('/items/:id', async (c) => {
   const db = drizzle(c.env.DB);
-  const user = c.get('user');
+  const user = c.get('user') as any;
   const itemId = c.req.param('id');
 
   const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
@@ -125,7 +122,6 @@ cartRouter.delete('/items/:id', async (c) => {
 
   await db.delete(cartItems).where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, cart.id)));
 
-  // if cart is empty after this, remove storeId
   const items = await db.select().from(cartItems).where(eq(cartItems.cartId, cart.id)).all();
   if (items.length === 0) {
     await db.update(carts).set({ storeId: null }).where(eq(carts.id, cart.id));
@@ -136,7 +132,7 @@ cartRouter.delete('/items/:id', async (c) => {
 
 cartRouter.delete('/me', async (c) => {
   const db = drizzle(c.env.DB);
-  const user = c.get('user');
+  const user = c.get('user') as any;
 
   const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
   if (!cart) return c.json({ message: 'Cart not found' }, 404);

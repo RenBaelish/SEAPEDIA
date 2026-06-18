@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/d1';
 import { promos, stores } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const promoRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const promoRouter = new Hono<Env>();
 
 const promoSchema = z.object({
   code: z.string().min(3).toUpperCase(),
@@ -26,7 +27,7 @@ promoRouter.post('/', zValidator('json', promoSchema), async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }

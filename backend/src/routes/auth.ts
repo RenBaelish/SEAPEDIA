@@ -6,8 +6,9 @@ import { users, userRoles, roles } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import * as bcrypt from 'bcryptjs';
 import { sign, verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const authRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const authRouter = new Hono<Env>();
 
 const registerSchema = z.object({
   fullName: z.string().min(3),
@@ -88,12 +89,11 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
   // Generate JWT
   const secret = c.env.JWT_SECRET || 'fallback_secret';
   const token = await sign({
-    id: user.id,
-    email: user.email,
+    id: user.id, email: user.email,
     username: user.username,
     roles: roleNames,
     exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 1 day
-  }, secret);
+  }, secret, "HS256");
 
   return c.json({
     message: 'Login successful',
@@ -120,7 +120,7 @@ authRouter.get('/me', async (c) => {
   const secret = c.env.JWT_SECRET || 'fallback_secret';
 
   try {
-    const payload = await verify(token, secret);
+    const payload = await verify(token, secret, "HS256");
     return c.json({ user: payload });
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);

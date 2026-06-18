@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/d1';
 import { wallets } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const walletRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const walletRouter = new Hono<Env>();
 
 walletRouter.get('/me', async (c) => {
   const authHeader = c.req.header('Authorization');
@@ -19,7 +20,7 @@ walletRouter.get('/me', async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
@@ -28,7 +29,6 @@ walletRouter.get('/me', async (c) => {
   let wallet = await db.select().from(wallets).where(eq(wallets.userId, payload.id as string)).get();
 
   if (!wallet) {
-    // Create wallet lazily
     const walletId = crypto.randomUUID();
     await db.insert(wallets).values({
       id: walletId,
@@ -56,7 +56,7 @@ walletRouter.post('/topup', zValidator('json', topupSchema), async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }

@@ -5,8 +5,9 @@ import { drizzle } from 'drizzle-orm/d1';
 import { products, stores } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
+import type { Env } from '../types';
 
-export const productRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
+export const productRouter = new Hono<Env>();
 
 const productSchema = z.object({
   name: z.string().min(3),
@@ -27,7 +28,7 @@ productRouter.post('/', zValidator('json', productSchema), async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
@@ -67,7 +68,7 @@ productRouter.put('/:id', zValidator('json', productSchema), async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
@@ -109,7 +110,7 @@ productRouter.delete('/:id', async (c) => {
 
   let payload;
   try {
-    payload = await verify(token, secret);
+    payload = await verify(token, secret, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
