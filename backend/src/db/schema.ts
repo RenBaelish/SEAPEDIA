@@ -25,8 +25,30 @@ export const userRoles = sqliteTable('user_roles', {
 export const reviews = sqliteTable('reviews', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id),
-  rating: integer('rating').notNull(), // 1 to 5
+  rating: integer('rating').notNull(),
   comment: text('comment').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
+
+export const stores = sqliteTable('stores', {
+  id: text('id').primaryKey(),
+  ownerId: text('owner_id').notNull().unique().references(() => users.id),
+  name: text('name').notNull(),
+  description: text('description'),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
+
+export const products = sqliteTable('products', {
+  id: text('id').primaryKey(),
+  storeId: text('store_id').notNull().references(() => stores.id),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  price: integer('price').notNull(),
+  stock: integer('stock').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
