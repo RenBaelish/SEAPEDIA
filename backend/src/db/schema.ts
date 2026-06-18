@@ -99,3 +99,15 @@ export const orderItems = sqliteTable('order_items', {
   quantity: integer('quantity').notNull(),
   priceAtPurchase: integer('price_at_purchase').notNull(),
 });
+
+export const promos = sqliteTable('promos', {
+  id: text('id').primaryKey(),
+  storeId: text('store_id').notNull().references(() => stores.id),
+  code: text('code').notNull().unique(),
+  discountAmount: integer('discount_amount').notNull(),
+  type: text('type').notNull(), // 'SHIPPING' or 'DISCOUNT'
+  quota: integer('quota').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});

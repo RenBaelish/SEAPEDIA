@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { drizzle } from 'drizzle-orm/d1';
-import { orders, orderItems, carts, cartItems, products, wallets } from '../db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { orders, orderItems, carts, cartItems, products, wallets, promos, stores } from '../db/schema';
+import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 
 export const orderRouter = new Hono<{ Bindings: { DB: D1Database, JWT_SECRET: string } }>();
@@ -28,6 +28,8 @@ orderRouter.use('*', authMiddleware);
 orderRouter.post('/checkout', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user');
+  const body = await c.req.json().catch(() => ({}));
+  const promoCode = body.promoCode;
 
   // 1. Get cart
   const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
@@ -56,8 +58,24 @@ orderRouter.post('/checkout', async (c) => {
     });
   }
 
-  const deliveryFee = 15000; // Fixed dummy delivery fee
-  const totalAmount = subtotal + deliveryFee;
+  let deliveryFee = 15000; // Fixed dummy delivery fee
+  let discount = 0;
+  let appliedPromo = null;
+
+  if (promoCode) {
+    appliedPromo = await db.select().from(promos).where(and(eq(promos.code, promoCode), eq(promos.storeId, cart.storeId))).get();
+    if (appliedPromo && appliedPromo.quota > 0) {
+      if (appliedPromo.type === 'SHIPPING') {
+        discount = Math.min(deliveryFee, appliedPromo.discountAmount);
+      } else {
+        discount = Math.min(subtotal, appliedPromo.discountAmount);
+      }
+    } else {
+      appliedPromo = null; // invalid or depleted
+    }
+  }
+
+  const totalAmount = subtotal + deliveryFee - discount;
 
   // 3. Check wallet balance
   const wallet = await db.select().from(wallets).where(eq(wallets.userId, user.id as string)).get();
@@ -74,6 +92,10 @@ orderRouter.post('/checkout', async (c) => {
   // Deduct stock
   for (const update of productUpdates) {
     await db.update(products).set({ stock: update.newStock }).where(eq(products.id, update.id));
+  }
+
+  if (appliedPromo) {
+    await db.update(promos).set({ quota: appliedPromo.quota - 1 }).where(eq(promos.id, appliedPromo.id));
   }
 
   // Create order
@@ -135,4 +157,61 @@ orderRouter.get('/:id', async (c) => {
   .all();
 
   return c.json({ data: { ...order, items } });
+});
+
+// Seller: Get Incoming Orders
+orderRouter.get('/store/incoming', async (c) => {
+  const db = drizzle(c.env.DB);
+  const user = c.get('user');
+
+  const store = await db.select().from(stores).where(eq(stores.ownerId, user.id as string)).get();
+  if (!store) return c.json({ message: 'Forbidden' }, 403);
+
+  const incomingOrders = await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt)).all();
+
+  return c.json({ data: incomingOrders });
+});
+
+// Update Status
+orderRouter.put('/:id/status', async (c) => {
+  const db = drizzle(c.env.DB);
+  const user = c.get('user');
+  const orderId = c.req.param('id');
+  const body = await c.req.json();
+  const newStatus = body.status;
+
+  const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
+  if (!order) return c.json({ message: 'Order not found' }, 404);
+
+  // Validation: Only seller can update to MENUNGGU_PENGIRIM, SEDANG_DIKIRIM
+  // Only buyer can update to PESANAN_SELESAI, DIKEMBALIKAN
+  
+  await db.update(orders).set({ status: newStatus }).where(eq(orders.id, orderId));
+
+  // If PESANAN_SELESAI, transfer funds to seller wallet (Simplification)
+  if (newStatus === 'PESANAN_SELESAI') {
+    const store = await db.select().from(stores).where(eq(stores.id, order.storeId)).get();
+    if (store) {
+      const sellerWallet = await db.select().from(wallets).where(eq(wallets.userId, store.ownerId)).get();
+      if (sellerWallet) {
+        await db.update(wallets).set({ balance: sellerWallet.balance + order.totalAmount }).where(eq(wallets.id, sellerWallet.id));
+      } else {
+        await db.insert(wallets).values({
+          id: crypto.randomUUID(),
+          userId: store.ownerId,
+          balance: order.totalAmount
+        });
+      }
+    }
+  }
+
+  // If DIKEMBALIKAN, refund to buyer wallet
+  if (newStatus === 'DIKEMBALIKAN') {
+    const buyerWallet = await db.select().from(wallets).where(eq(wallets.userId, order.buyerId)).get();
+    if (buyerWallet) {
+      await db.update(wallets).set({ balance: buyerWallet.balance + order.totalAmount }).where(eq(wallets.id, buyerWallet.id));
+    }
+  }
+
+  return c.json({ message: 'Order status updated' });
 });
