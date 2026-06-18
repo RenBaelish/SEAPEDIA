@@ -135,6 +135,11 @@ export function Navbar() {
                         <User size={15} className="text-gray-400" /> Toko Saya
                       </a>
                     )}
+                    {user.roles && user.roles.includes('ADMIN') && (
+                      <a href="/admin-dashboard" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                        <Settings size={15} className="text-gray-400" /> Admin Dashboard
+                      </a>
+                    )}
 
                     <div className="border-t border-gray-100 mt-1 pt-1">
                       <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-[12px] text-red-500 hover:bg-red-50 transition-colors">

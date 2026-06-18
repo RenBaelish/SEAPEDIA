@@ -5,6 +5,7 @@ import { Register } from './pages/Register';
 import { RoleSelection } from './pages/RoleSelection';
 import { SellerDashboard } from './pages/dashboard/SellerDashboard';
 import { DriverDashboard } from './pages/dashboard/DriverDashboard';
+import { AdminDashboard } from './pages/dashboard/AdminDashboard';
 import { ProductDetail } from './pages/ProductDetail';
 import { Wallet } from './pages/Wallet';
 import { Cart } from './pages/Cart';
@@ -26,6 +27,7 @@ export function App() {
           <Route path="/role-selection" component={RoleSelection} />
           <Route path="/seller-dashboard" component={SellerDashboard} />
           <Route path="/driver-dashboard" component={DriverDashboard} />
+          <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/product/:id" component={ProductDetail} />
           <Route path="/wallet" component={Wallet} />
           <Route path="/cart" component={Cart} />
