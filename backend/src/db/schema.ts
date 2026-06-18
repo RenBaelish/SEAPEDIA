@@ -53,3 +53,49 @@ export const products = sqliteTable('products', {
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
 });
+
+export const wallets = sqliteTable('wallets', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().unique().references(() => users.id),
+  balance: integer('balance').notNull().default(0),
+});
+
+export const addresses = sqliteTable('addresses', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => users.id),
+  label: text('label').notNull(), // e.g. Rumah, Kantor
+  fullAddress: text('full_address').notNull(),
+});
+
+export const carts = sqliteTable('carts', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().unique().references(() => users.id),
+  storeId: text('store_id').references(() => stores.id), // Enforce single store checkout
+});
+
+export const cartItems = sqliteTable('cart_items', {
+  id: text('id').primaryKey(),
+  cartId: text('cart_id').notNull().references(() => carts.id),
+  productId: text('product_id').notNull().references(() => products.id),
+  quantity: integer('quantity').notNull(),
+});
+
+export const orders = sqliteTable('orders', {
+  id: text('id').primaryKey(),
+  buyerId: text('buyer_id').notNull().references(() => users.id),
+  storeId: text('store_id').notNull().references(() => stores.id),
+  status: text('status').notNull(), // SEDANG_DIKEMAS, MENUNGGU_PENGIRIM, SEDANG_DIKIRIM, PESANAN_SELESAI, DIKEMBALIKAN
+  totalAmount: integer('total_amount').notNull(),
+  deliveryFee: integer('delivery_fee').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
+
+export const orderItems = sqliteTable('order_items', {
+  id: text('id').primaryKey(),
+  orderId: text('order_id').notNull().references(() => orders.id),
+  productId: text('product_id').notNull().references(() => products.id),
+  quantity: integer('quantity').notNull(),
+  priceAtPurchase: integer('price_at_purchase').notNull(),
+});
