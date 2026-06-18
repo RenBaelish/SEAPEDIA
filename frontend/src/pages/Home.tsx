@@ -1,31 +1,45 @@
-import { ReviewsSection } from '../components/ReviewsSection';
+import { useState, useEffect } from 'preact/hooks';
 import { ProductCatalog } from '../components/ProductCatalog';
+import { ReviewsSection } from '../components/ReviewsSection';
 
 export function Home() {
   return (
-    <div class="p-8 max-w-7xl mx-auto">
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Selamat Datang di SEAPEDIA</h1>
-        <p class="text-gray-500 text-lg mb-8 max-w-2xl mx-auto">Platform e-commerce terlengkap yang menghubungkan penjual, pembeli, dan pengemudi dalam satu ekosistem yang terintegrasi.</p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mt-12">
-          <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Belanja Mudah</h3>
-            <p class="text-sm text-gray-500">Temukan ribuan produk dari berbagai toko terpercaya dengan sistem checkout single-store yang aman.</p>
-          </div>
-          <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Buka Toko</h3>
-            <p class="text-sm text-gray-500">Mulai berjualan dan kelola produk Anda dengan mudah. Raih lebih banyak pelanggan di SEAPEDIA.</p>
-          </div>
-          <div class="p-6 border border-gray-100 rounded-xl bg-gray-50">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Pengiriman Cepat</h3>
-            <p class="text-sm text-gray-500">Sistem terintegrasi dengan pengemudi untuk memastikan barang sampai ke tangan Anda tepat waktu.</p>
+    <div class="bg-gray-50 pb-16">
+      
+      {/* ─── Promo Banner Strip ─────────────────────────────── */}
+      <div class="bg-white border-b border-gray-100 mb-6 pb-6 pt-4">
+        <div class="page-container">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { gradient: "from-green-500 to-emerald-600", title: "Gratis Ongkir", subtitle: "Setiap Hari!", icon: "🚚" },
+              { gradient: "from-purple-500 to-pink-600", title: "Flash Sale", subtitle: "Diskon s.d 90%", icon: "⚡" },
+              { gradient: "from-orange-500 to-red-500", title: "Promo Hari Ini", subtitle: "Penawaran Terbatas!", icon: "🔥" },
+            ].map((b, i) => (
+              <div key={i} class={`bg-gradient-to-r ${b.gradient} rounded-xl p-6 flex items-center gap-4 text-white cursor-pointer hover:opacity-90 transition-opacity shadow-sm`}>
+                <span class="text-4xl">{b.icon}</span>
+                <div>
+                  <p class="font-bold text-[18px]">{b.title}</p>
+                  <p class="text-[14px] opacity-90">{b.subtitle}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <ProductCatalog />
-        <ReviewsSection />
+      </div>
+
+      <div class="page-container space-y-6">
+        {/* ─── Produk Incaranmu ─────────────────────────────────── */}
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h2 class="text-[20px] font-bold text-gray-900 mb-5 border-b border-gray-100 pb-4">Katalog Produk</h2>
+          <ProductCatalog />
+        </div>
+
+        {/* ─── App Reviews ────────────────────────────────────────── */}
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h2 class="text-[20px] font-bold text-gray-900 mb-5 border-b border-gray-100 pb-4">Ulasan Pengguna SEAPEDIA</h2>
+          <ReviewsSection />
+        </div>
       </div>
     </div>
-  )
+  );
 }

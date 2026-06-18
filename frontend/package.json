@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-preact": "^1.20.0",
+    "lucide-preact": "^1.21.0",
     "preact": "^10.29.1",
     "preact-router": "^4.1.2"
   },

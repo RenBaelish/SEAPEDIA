@@ -69,8 +69,7 @@ export function ReviewsSection() {
   };
 
   return (
-    <div class="mt-20 border-t border-gray-100 pt-16">
-      <h2 class="text-3xl font-bold text-center mb-10 text-gray-900">Ulasan Pengguna SEAPEDIA</h2>
+    <div>
       
       {isLoggedIn && (
         <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm max-w-2xl mx-auto mb-12">

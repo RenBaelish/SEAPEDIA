@@ -31,25 +31,25 @@ export function ProductCatalog() {
       <h2 class="text-3xl font-bold text-gray-900 mb-8">Katalog Produk</h2>
       
       {products.length === 0 ? (
-        <div class="bg-white p-8 text-center rounded-xl border border-gray-100 text-gray-500 shadow-sm">
-          Belum ada produk yang dijual saat ini.
-        </div>
+        <p class="text-gray-500 text-center py-8">Belum ada produk yang dijual saat ini.</p>
       ) : (
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {products.map(product => (
-            <div 
-              key={product.id} 
-              onClick={() => route(`/product/${product.id}`)}
-              class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full"
-            >
-              <div class="bg-gray-100 h-40 rounded-lg mb-4 flex items-center justify-center text-gray-400">
-                Gambar Produk
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          {products.map((p: any) => (
+            <div key={p.id} class="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer" onClick={() => route(`/product/${p.id}`)}>
+              <div class="h-40 bg-gray-100 flex items-center justify-center border-b border-gray-100">
+                <span class="text-gray-400 font-medium text-xs">Gambar Produk</span>
               </div>
-              <h3 class="font-bold text-gray-900 line-clamp-2 mb-1">{product.name}</h3>
-              <p class="text-primary font-bold text-lg mb-2">Rp {product.price.toLocaleString('id-ID')}</p>
-              <div class="mt-auto pt-3 border-t border-gray-50 flex justify-between items-center text-xs text-gray-500">
-                <span>{product.storeName}</span>
-                <span>Stok: {product.stock}</span>
+              <div class="p-3 flex flex-col justify-between h-32">
+                <div>
+                  <h3 class="font-semibold text-[14px] text-gray-800 line-clamp-2 leading-tight">{p.name}</h3>
+                  <p class="font-bold text-primary mt-1 text-[15px]">Rp {p.price.toLocaleString('id-ID')}</p>
+                </div>
+                <div class="flex justify-between items-center text-[11px] text-gray-500">
+                  <div class="flex items-center gap-1">
+                    4.8
+                  </div>
+                  <span>Terjual 100+</span>
+                </div>
               </div>
             </div>
           ))}
