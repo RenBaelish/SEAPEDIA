@@ -4,6 +4,7 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { RoleSelection } from './pages/RoleSelection';
 import { SellerDashboard } from './pages/dashboard/SellerDashboard';
+import { DriverDashboard } from './pages/dashboard/DriverDashboard';
 import { ProductDetail } from './pages/ProductDetail';
 import { Wallet } from './pages/Wallet';
 import { Cart } from './pages/Cart';
@@ -24,6 +25,7 @@ export function App() {
           <Route path="/register" component={Register} />
           <Route path="/role-selection" component={RoleSelection} />
           <Route path="/seller-dashboard" component={SellerDashboard} />
+          <Route path="/driver-dashboard" component={DriverDashboard} />
           <Route path="/product/:id" component={ProductDetail} />
           <Route path="/wallet" component={Wallet} />
           <Route path="/cart" component={Cart} />

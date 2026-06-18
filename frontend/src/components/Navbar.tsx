@@ -1,4 +1,4 @@
-import { Link, route } from "preact-router";
+import { route } from "preact-router";
 import { useState, useEffect } from "preact/hooks";
 import { Search, ShoppingCart, User, ChevronDown, Package, LogOut, Settings, Wallet } from "lucide-preact";
 
@@ -54,9 +54,9 @@ export function Navbar() {
               <span className="flex items-center gap-1 font-semibold text-primary">🎉 Gratis Ongkir + Banyak Promo • Belanja di Aplikasi</span>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/about" className="hover:text-primary transition-colors">Tentang SEAPEDIA</Link>
-              <Link href="/seller-dashboard" className="hover:text-primary transition-colors">Pusat Edukasi Seller</Link>
-              <Link href="/" className="hover:text-primary transition-colors">Promo</Link>
+              <a href="/about" className="hover:text-primary transition-colors">Tentang SEAPEDIA</a>
+              <a href="/seller-dashboard" className="hover:text-primary transition-colors">Pusat Edukasi Seller</a>
+              <a href="/" className="hover:text-primary transition-colors">Promo</a>
             </div>
           </div>
         </div>
@@ -64,9 +64,9 @@ export function Navbar() {
 
       <div className="page-container">
         <div className="flex items-center gap-4 h-[60px]">
-          <Link href="/" className="flex items-center shrink-0 mr-1">
+          <a href="/" className="flex items-center shrink-0 mr-1">
             <img src="/logo-name.png" alt="SEAPEDIA Logo" className="h-9 w-auto object-contain" />
-          </Link>
+          </a>
 
           <form onSubmit={handleSearch} className="flex-1">
             <div className="relative">
@@ -83,15 +83,15 @@ export function Navbar() {
 
           <div className="flex items-center gap-1 shrink-0">
             {user && (
-              <Link href="/cart" className="relative flex flex-col items-center justify-center w-10 h-10 rounded-md hover:bg-gray-50 transition-colors">
+              <a href="/cart" className="relative flex flex-col items-center justify-center w-10 h-10 rounded-md hover:bg-gray-50 transition-colors">
                 <ShoppingCart size={20} className="text-gray-700" />
-              </Link>
+              </a>
             )}
 
             {user && (
-              <Link href="/wallet" className="flex flex-col items-center justify-center w-10 h-10 rounded-md hover:bg-gray-50 transition-colors">
+              <a href="/wallet" className="flex flex-col items-center justify-center w-10 h-10 rounded-md hover:bg-gray-50 transition-colors">
                 <Wallet size={20} className="text-gray-700" />
-              </Link>
+              </a>
             )}
 
             {user ? (
@@ -116,18 +116,25 @@ export function Navbar() {
                       <p className="text-[11px] text-gray-400 truncate">{user.email}</p>
                     </div>
 
-                    <Link href="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                    <a href="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
                       <Settings size={15} className="text-gray-400" /> Pengaturan Akun
-                    </Link>
-                    <Link href="/wallet" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                    </a>
+                    <a href="/wallet" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
                       <Wallet size={15} className="text-gray-400" /> Dompet Saya
-                    </Link>
-                    <Link href="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                    </a>
+                    <a href="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
                       <Package size={15} className="text-gray-400" /> Pesanan Saya
-                    </Link>
-                    <Link href="/seller-dashboard" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
-                      <User size={15} className="text-gray-400" /> Toko Saya
-                    </Link>
+                    </a>
+                    {user.roles && user.roles.includes('DRIVER') && (
+                      <a href="/driver-dashboard" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                        <Package size={15} className="text-gray-400" /> Driver Dashboard
+                      </a>
+                    )}
+                    {user.roles && user.roles.includes('SELLER') && (
+                      <a href="/seller-dashboard" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors">
+                        <User size={15} className="text-gray-400" /> Toko Saya
+                      </a>
+                    )}
 
                     <div className="border-t border-gray-100 mt-1 pt-1">
                       <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-2.5 text-[12px] text-red-500 hover:bg-red-50 transition-colors">
@@ -139,12 +146,12 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Link href="/login" className="text-[13px] font-semibold text-primary px-4 h-9 border-2 border-primary rounded-full flex items-center hover:bg-primary-light transition-colors">
+                <a href="/login" className="text-[13px] font-semibold text-primary px-4 h-9 border-2 border-primary rounded-full flex items-center hover:bg-primary-light transition-colors">
                   Masuk
-                </Link>
-                <Link href="/register" className="text-[13px] font-semibold text-white px-4 h-9 bg-primary hover:bg-primary-hover rounded-full flex items-center transition-colors">
+                </a>
+                <a href="/register" className="text-[13px] font-semibold text-white px-4 h-9 bg-primary hover:bg-primary-hover rounded-full flex items-center transition-colors">
                   Daftar
-                </Link>
+                </a>
               </div>
             )}
           </div>

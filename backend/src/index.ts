@@ -8,6 +8,7 @@ import { walletRouter } from './routes/wallets'
 import { cartRouter } from './routes/carts'
 import { orderRouter } from './routes/orders'
 import { promoRouter } from './routes/promos'
+import { deliveryRouter } from './routes/deliveries'
 
 const app = new Hono()
 
@@ -25,5 +26,6 @@ app.route('/wallets', walletRouter)
 app.route('/carts', cartRouter)
 app.route('/orders', orderRouter)
 app.route('/promos', promoRouter)
+app.route('/deliveries', deliveryRouter)
 
 export default app

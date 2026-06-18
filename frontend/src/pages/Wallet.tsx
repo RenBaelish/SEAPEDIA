@@ -8,6 +8,21 @@ export function Wallet() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [mutations, setMutations] = useState<any[]>([]);
+
+  const fetchMutations = async (token: string) => {
+    try {
+      const res = await fetch('http://localhost:8787/wallets/mutations', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMutations(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchWallet = async () => {
     try {
@@ -24,6 +39,7 @@ export function Wallet() {
       if (res.ok) {
         const data = await res.json();
         setBalance(data.data.balance);
+        fetchMutations(token);
       }
     } catch (err) {
       console.error(err);
@@ -120,6 +136,27 @@ export function Wallet() {
             {submitting ? 'Memproses...' : 'Top-up Sekarang'}
           </button>
         </form>
+      </div>
+
+      <div class="mt-8 bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+        <h3 class="text-xl font-bold text-gray-900 mb-6 border-b pb-4">Riwayat Transaksi</h3>
+        {mutations.length === 0 ? (
+          <p class="text-gray-500 text-center py-4">Belum ada transaksi</p>
+        ) : (
+          <div class="space-y-4">
+            {mutations.map(m => (
+              <div key={m.id} class="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 transition-colors">
+                <div>
+                  <p class="font-bold text-gray-800 text-[14px]">{m.description}</p>
+                  <p class="text-[12px] text-gray-500 mt-1">{new Date(m.createdAt).toLocaleString('id-ID')}</p>
+                </div>
+                <div class={`font-bold ${m.amount > 0 ? 'text-primary' : 'text-error'}`}>
+                  {m.amount > 0 ? '+' : ''}Rp {m.amount.toLocaleString('id-ID')}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

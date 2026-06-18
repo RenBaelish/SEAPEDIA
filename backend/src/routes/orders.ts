@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { orders, orderItems, carts, cartItems, products, wallets, promos, stores } from '../db/schema';
+import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
@@ -83,6 +83,14 @@ orderRouter.post('/checkout', async (c) => {
   const orderId = crypto.randomUUID();
 
   await db.update(wallets).set({ balance: wallet.balance - totalAmount }).where(eq(wallets.id, wallet.id));
+
+  await db.insert(walletMutations).values({
+    id: crypto.randomUUID(),
+    walletId: wallet.id,
+    amount: -totalAmount,
+    type: 'PAYMENT',
+    description: `Pembayaran pesanan ${orderId}`
+  });
 
   for (const update of productUpdates) {
     await db.update(products).set({ stock: update.newStock }).where(eq(products.id, update.id));
@@ -168,12 +176,22 @@ orderRouter.put('/:id/status', async (c) => {
   if (newStatus === 'PESANAN_SELESAI') {
     const store = await db.select().from(stores).where(eq(stores.id, order.storeId)).get();
     if (store) {
-      const sellerWallet = await db.select().from(wallets).where(eq(wallets.userId, store.ownerId)).get();
+      let sellerWallet = await db.select().from(wallets).where(eq(wallets.userId, store.ownerId)).get();
+      let sellerWalletId = sellerWallet?.id;
       if (sellerWallet) {
         await db.update(wallets).set({ balance: sellerWallet.balance + order.totalAmount }).where(eq(wallets.id, sellerWallet.id));
       } else {
-        await db.insert(wallets).values({ id: crypto.randomUUID(), userId: store.ownerId, balance: order.totalAmount });
+        sellerWalletId = crypto.randomUUID();
+        await db.insert(wallets).values({ id: sellerWalletId, userId: store.ownerId, balance: order.totalAmount });
       }
+
+      await db.insert(walletMutations).values({
+        id: crypto.randomUUID(),
+        walletId: sellerWalletId as string,
+        amount: order.totalAmount,
+        type: 'INCOME',
+        description: `Penjualan pesanan ${orderId}`
+      });
     }
   }
 
@@ -181,6 +199,14 @@ orderRouter.put('/:id/status', async (c) => {
     const buyerWallet = await db.select().from(wallets).where(eq(wallets.userId, order.buyerId)).get();
     if (buyerWallet) {
       await db.update(wallets).set({ balance: buyerWallet.balance + order.totalAmount }).where(eq(wallets.id, buyerWallet.id));
+      
+      await db.insert(walletMutations).values({
+        id: crypto.randomUUID(),
+        walletId: buyerWallet.id,
+        amount: order.totalAmount,
+        type: 'REFUND',
+        description: `Pengembalian dana pesanan ${orderId}`
+      });
     }
   }
 

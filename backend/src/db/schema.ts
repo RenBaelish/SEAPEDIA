@@ -111,3 +111,25 @@ export const promos = sqliteTable('promos', {
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
 });
+
+export const walletMutations = sqliteTable('wallet_mutations', {
+  id: text('id').primaryKey(),
+  walletId: text('wallet_id').notNull().references(() => wallets.id),
+  amount: integer('amount').notNull(), // positive for income/topup, negative for payment
+  type: text('type').notNull(), // 'TOP_UP', 'PAYMENT', 'REFUND', 'INCOME'
+  description: text('description').notNull(),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+});
+
+export const deliveryJobs = sqliteTable('delivery_jobs', {
+  id: text('id').primaryKey(),
+  orderId: text('order_id').notNull().unique().references(() => orders.id),
+  driverId: text('driver_id').references(() => users.id), // Null if not taken
+  status: text('status').notNull(), // 'MENUNGGU_DRIVER', 'DIKIRIM', 'SELESAI'
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .notNull()
+    .default(sql`(strftime('%s', 'now'))`),
+  completedAt: integer('completed_at', { mode: 'timestamp' }),
+});
