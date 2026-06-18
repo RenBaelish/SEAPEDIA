@@ -5,6 +5,9 @@ export function Cart() {
   const [cartData, setCartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [checkingOut, setCheckingOut] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<any>(null);
+  const [promoError, setPromoError] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -48,6 +51,31 @@ export function Cart() {
     }
   };
 
+  const applyPromo = async () => {
+    if (!promoCode || !cartData?.store?.id) return;
+    setPromoError('');
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:8787/promos/apply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ code: promoCode, storeId: cartData.store.id })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPromoError(data.message);
+        setAppliedPromo(null);
+      } else {
+        setAppliedPromo(data.data);
+      }
+    } catch (err: any) {
+      setPromoError('Gagal menerapkan promo');
+    }
+  };
+
   const handleCheckout = async () => {
     setCheckingOut(true);
     setError('');
@@ -56,7 +84,11 @@ export function Cart() {
       const token = localStorage.getItem('token');
       const res = await fetch('http://localhost:8787/orders/checkout', {
         method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ promoCode: appliedPromo?.code })
       });
 
       const data = await res.json();
@@ -80,7 +112,17 @@ export function Cart() {
   
   const subtotal = items.reduce((acc: number, item: any) => acc + (item.product.price * item.quantity), 0);
   const deliveryFee = 15000;
-  const total = subtotal + deliveryFee;
+  let discount = 0;
+  
+  if (appliedPromo) {
+    if (appliedPromo.type === 'SHIPPING') {
+      discount = Math.min(deliveryFee, appliedPromo.discountAmount);
+    } else {
+      discount = Math.min(subtotal, appliedPromo.discountAmount);
+    }
+  }
+
+  const total = subtotal + deliveryFee - discount;
 
   return (
     <div class="max-w-5xl mx-auto p-8 py-12">
@@ -135,7 +177,31 @@ export function Cart() {
 
           <div class="lg:w-1/3">
             <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm sticky top-8">
-              <h3 class="font-bold text-lg text-gray-900 mb-4">Ringkasan Belanja</h3>
+              <h3 class="font-bold text-lg text-gray-900 mb-4">Makin hemat pakai promo</h3>
+              
+              <div class="flex gap-2 mb-2">
+                <input 
+                  type="text" 
+                  value={promoCode} 
+                  onInput={e => setPromoCode(e.currentTarget.value.toUpperCase())} 
+                  placeholder="Masukkan kode promo" 
+                  class="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase"
+                  disabled={!!appliedPromo}
+                />
+                {!appliedPromo ? (
+                  <button onClick={applyPromo} class="bg-gray-900 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-800">
+                    Terapkan
+                  </button>
+                ) : (
+                  <button onClick={() => setAppliedPromo(null)} class="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold text-sm hover:bg-red-100 border border-red-200">
+                    Batal
+                  </button>
+                )}
+              </div>
+              {promoError && <p class="text-red-500 text-xs mb-4">{promoError}</p>}
+              {appliedPromo && <p class="text-green-600 text-xs mb-4 font-bold">✓ Promo {appliedPromo.code} diterapkan!</p>}
+
+              <h3 class="font-bold text-lg text-gray-900 mb-4 mt-6">Ringkasan Belanja</h3>
               
               <div class="space-y-3 mb-6 pb-6 border-b border-gray-100 text-gray-600">
                 <div class="flex justify-between">
@@ -146,6 +212,12 @@ export function Cart() {
                   <span>Ongkos Kirim</span>
                   <span>Rp {deliveryFee.toLocaleString('id-ID')}</span>
                 </div>
+                {appliedPromo && (
+                  <div class="flex justify-between text-green-600 font-medium">
+                    <span>Diskon ({appliedPromo.code})</span>
+                    <span>- Rp {discount.toLocaleString('id-ID')}</span>
+                  </div>
+                )}
               </div>
               
               <div class="flex justify-between items-center mb-8">

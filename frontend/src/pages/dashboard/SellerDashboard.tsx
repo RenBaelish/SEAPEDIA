@@ -2,6 +2,8 @@ import { useState, useEffect } from 'preact/hooks';
 import { route } from 'preact-router';
 import { StoreForm } from '../../components/StoreForm';
 import { ProductManager } from '../../components/ProductManager';
+import { OrderManager } from '../../components/OrderManager';
+import { PromoManager } from '../../components/PromoManager';
 
 export function SellerDashboard() {
   const [store, setStore] = useState<any>(null);
@@ -54,6 +56,8 @@ export function SellerDashboard() {
           </div>
           
           <ProductManager storeId={store.id} />
+          <OrderManager storeId={store.id} />
+          <PromoManager storeId={store.id} />
         </div>
       )}
     </div>

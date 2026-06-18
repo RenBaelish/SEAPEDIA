@@ -32,6 +32,28 @@ export function Orders() {
     fetchOrders();
   }, []);
 
+  const updateStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await fetch(`http://localhost:8787/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      // reload
+      const res = await fetch('http://localhost:8787/orders/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setOrders(data.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'SEDANG_DIKEMAS': return <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2.5 py-0.5 rounded border border-yellow-200">Sedang Dikemas</span>;
@@ -74,9 +96,24 @@ export function Orders() {
                     <p class="font-bold text-primary">Rp {order.totalAmount.toLocaleString('id-ID')}</p>
                   </div>
                 </div>
-                <div class="w-full md:w-auto text-right">
+                <div class="w-full md:w-auto text-right space-y-2 flex flex-col md:items-end">
+                  {order.status === 'SEDANG_DIKIRIM' && (
+                    <div class="flex gap-2">
+                      <button 
+                        onClick={() => updateStatus(order.id, 'DIKEMBALIKAN')}
+                        class="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-lg font-bold hover:bg-red-100 transition-colors text-sm"
+                      >
+                        Kembalikan
+                      </button>
+                      <button 
+                        onClick={() => updateStatus(order.id, 'PESANAN_SELESAI')}
+                        class="bg-green-600 border border-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 transition-colors text-sm"
+                      >
+                        Terima Pesanan
+                      </button>
+                    </div>
+                  )}
                   <button 
-                    // onClick={() => route(`/order/${order.id}`)}
                     class="w-full md:w-auto bg-white border border-primary text-primary px-6 py-2 rounded-lg font-bold hover:bg-green-50 transition-colors"
                   >
                     Detail Transaksi
