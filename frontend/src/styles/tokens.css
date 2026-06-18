@@ -1,0 +1,79 @@
+/* ─── SEAPEDIA Design Tokens ──────────────────────────────────────────────── */
+/* Strictly derived from tokopedia.com-design.md with SEAPEDIA brand override  */
+
+@theme {
+  /* Colors */
+  --color-brand: #2f2eaa;          /* SEAPEDIA logo/wordmark ONLY */
+  --color-primary: #00aa5b;
+  --color-primary-hover: #009950;
+  --color-primary-light: #e6f7f0;
+  --color-secondary: #101010;
+  --color-tertiary: #b3bbc9;
+  --color-surface: #ffffff;
+  --color-on-surface: #080808;
+  --color-muted: #e5e7eb;
+  --color-border: #b3bbc9;
+  --color-error: #e5484d;
+  --color-success: #00aa5b;
+  --color-bg: #f5f5f5;
+
+  /* Typography */
+  --font-family: "Open Sauce One", "Inter", system-ui, sans-serif;
+
+  /* Font sizes */
+  --fs-headline-display: 32px;
+  --lh-headline-display: 38px;
+  --fs-headline-lg: 28px;
+  --lh-headline-lg: 33px;
+  --fs-headline-md: 20px;
+  --lh-headline-md: 24px;
+  --fs-headline-sm: 18px;
+  --lh-headline-sm: 22px;
+  --fs-body-lg: 16px;
+  --lh-body-lg: 24px;
+  --fs-body-md: 14px;
+  --lh-body-md: 21px;
+  --fs-body-sm: 12px;
+  --lh-body-sm: 18px;
+  --fs-label-lg: 14px;
+  --lh-label-lg: 21px;
+  --fs-label-md: 12px;
+  --lh-label-md: 16px;
+  --fs-caption: 11px;
+  --lh-caption: 14px;
+
+  /* Border radius */
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-xs: 6px;
+  --spacing-sm: 16px;
+  --spacing-md: 32px;
+  --spacing-lg: 50px;
+  --spacing-xl: 110px;
+  --spacing-gutter: 16px;
+  --spacing-section: 32px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.10);
+
+  /* Z-index layers */
+  --z-navbar: 100;
+  --z-drawer: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+
+  /* Component tokens */
+  --btn-height: 40px;
+  --btn-padding: 0px 16px;
+  --input-height: 40px;
+  --input-padding: 0px 16px;
+  --card-padding: 16px;
+}
