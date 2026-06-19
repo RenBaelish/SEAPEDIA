@@ -17,9 +17,9 @@ export function GlobalErrorPage() {
           Sistem kami sedang mengalami kendala teknis. Tim developer kami telah diberitahu dan sedang menangani masalah ini.
         </p>
         
-        {error?.message && (
-          <div className="bg-gray-50 rounded text-left p-3 mb-6 overflow-auto max-h-32 text-xs font-mono text-gray-600 border border-gray-200">
-            {error.message}
+        {(error?.message || error?.statusText || error?.data || error?.toString()) && (
+          <div className="bg-gray-50 rounded text-left p-3 mb-6 overflow-auto max-h-48 text-xs font-mono text-gray-600 border border-gray-200 whitespace-pre-wrap">
+            {error?.stack || error?.message || error?.data || JSON.stringify(error)}
           </div>
         )}
 

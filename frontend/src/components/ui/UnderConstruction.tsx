@@ -21,7 +21,7 @@ export function UnderConstruction({
         <Hammer size={32} />
       </div>
       <h2 className="text-xl font-bold text-gray-900 mb-2">{title}</h2>
-      <p className="text-gray-500 max-w-md text-sm leading-relaxed mb-6">
+      <p className="text-gray-500 w-full max-w-md text-sm leading-relaxed mb-6">
         {description}
       </p>
       {backUrl ? (

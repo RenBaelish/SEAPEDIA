@@ -51,13 +51,13 @@
   --radius-full: 9999px;
 
   /* Spacing */
-  --spacing-xs: 6px;
-  --spacing-sm: 16px;
-  --spacing-md: 32px;
-  --spacing-lg: 50px;
-  --spacing-xl: 110px;
-  --spacing-gutter: 16px;
-  --spacing-section: 32px;
+  --sp-xs: 6px;
+  --sp-sm: 16px;
+  --sp-md: 32px;
+  --sp-lg: 50px;
+  --sp-xl: 110px;
+  --sp-gutter: 16px;
+  --sp-section: 32px;
 
   /* Shadows */
   --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.08);

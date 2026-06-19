@@ -3,7 +3,7 @@ SEAPEDIA is a growing e-commerce platform that connects sellers, buyers, and del
 
 This repository is built progressively as part of the Software Engineering Academy COMPFEST 18 submission.
 It consists of:
-- **Frontend**: Preact (Vite) + TailwindCSS
+- **Frontend**: React (Vite) + TailwindCSS
 - **Backend**: Hono.js + Cloudflare Workers
 - **Database**: Cloudflare D1 (SQLite) + Drizzle ORM
 
