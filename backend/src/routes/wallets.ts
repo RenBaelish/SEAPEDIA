@@ -9,7 +9,7 @@ import type { Env } from '../types';
 
 export const walletRouter = new Hono<Env>();
 
-walletRouter.get('/me', async (c) => {
+walletRouter.get('/', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return c.json({ message: 'Unauthorized' }, 401);
@@ -93,7 +93,7 @@ walletRouter.post('/topup', zValidator('json', topupSchema), async (c) => {
   return c.json({ message: 'Top up successful' });
 });
 
-walletRouter.get('/mutations', async (c) => {
+walletRouter.get('/transactions', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return c.json({ message: 'Unauthorized' }, 401);

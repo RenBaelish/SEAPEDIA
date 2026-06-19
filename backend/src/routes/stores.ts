@@ -84,6 +84,50 @@ storeRouter.get('/me', async (c) => {
   return c.json({ data: store });
 });
 
+const updateStoreSchema = z.object({
+  name: z.string().min(3).optional(),
+  description: z.string().optional(),
+  logoUrl: z.string().optional(),
+  bannerUrl: z.string().optional(),
+});
+
+// Update My Store
+storeRouter.patch('/me', zValidator('json', updateStoreSchema), async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.split(' ')[1];
+  const secret = c.env.JWT_SECRET || 'fallback_secret';
+
+  let payload;
+  try {
+    payload = await verify(token, secret, "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const db = drizzle(c.env.DB);
+  const data = c.req.valid('json');
+
+  const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
+  if (!store) {
+    return c.json({ message: 'Store not found' }, 404);
+  }
+
+  const updates: any = {};
+  if (data.name !== undefined) updates.name = data.name;
+  if (data.description !== undefined) updates.description = data.description;
+  if (data.logoUrl !== undefined) updates.logoUrl = data.logoUrl;
+  if (data.bannerUrl !== undefined) updates.bannerUrl = data.bannerUrl;
+
+  await db.update(stores).set(updates).where(eq(stores.id, store.id));
+
+  const updatedStore = await db.select().from(stores).where(eq(stores.id, store.id)).get();
+  return c.json({ data: updatedStore });
+});
+
 // Get All Stores (Public)
 storeRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);

@@ -13,7 +13,12 @@ const productSchema = z.object({
   name: z.string().min(3),
   description: z.string(),
   price: z.number().min(0),
-  stock: z.number().min(0)
+  comparePrice: z.number().min(0).optional(),
+  stock: z.number().min(0),
+  weight: z.number().min(0).optional(),
+  categoryId: z.string().optional(),
+  status: z.enum(['DRAFT', 'ACTIVE', 'INACTIVE', 'DELETED']).optional(),
+  images: z.array(z.string().url()).max(8).optional()
 });
 
 // Create Product
@@ -43,14 +48,21 @@ productRouter.post('/', zValidator('json', productSchema), async (c) => {
 
   const data = c.req.valid('json');
   const productId = crypto.randomUUID();
+  const slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + crypto.randomUUID().substring(0, 8);
 
   await db.insert(products).values({
     id: productId,
     storeId: store.id,
+    categoryId: data.categoryId,
     name: data.name,
+    slug: slug,
     description: data.description,
     price: data.price,
-    stock: data.stock
+    comparePrice: data.comparePrice,
+    stock: data.stock,
+    weight: data.weight,
+    status: data.status,
+    images: JSON.stringify(data.images || [])
   });
 
   return c.json({ message: 'Product created successfully', productId }, 201);
@@ -89,13 +101,57 @@ productRouter.put('/:id', zValidator('json', productSchema), async (c) => {
   const data = c.req.valid('json');
 
   await db.update(products).set({
+    categoryId: data.categoryId,
     name: data.name,
     description: data.description,
     price: data.price,
-    stock: data.stock
+    comparePrice: data.comparePrice,
+    stock: data.stock,
+    weight: data.weight,
+    status: data.status,
+    images: JSON.stringify(data.images || [])
   }).where(eq(products.id, productId));
 
   return c.json({ message: 'Product updated successfully' });
+});
+
+// Partial Update Product (e.g. status)
+productRouter.patch('/:id', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.split(' ')[1];
+  const secret = c.env.JWT_SECRET || 'fallback_secret';
+
+  let payload;
+  try {
+    payload = await verify(token, secret, "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const db = drizzle(c.env.DB);
+  const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
+  if (!store) {
+    return c.json({ message: 'Forbidden' }, 403);
+  }
+
+  const productId = c.req.param('id');
+  const product = await db.select().from(products).where(and(eq(products.id, productId), eq(products.storeId, store.id))).get();
+
+  if (!product) {
+    return c.json({ message: 'Product not found or not yours' }, 404);
+  }
+
+  const data = await c.req.json();
+  const updates: any = {};
+  if (data.status) updates.status = data.status;
+
+  await db.update(products).set(updates).where(eq(products.id, productId));
+
+  return c.json({ message: 'Product status updated' });
 });
 
 // Delete Product
@@ -133,6 +189,63 @@ productRouter.delete('/:id', async (c) => {
   return c.json({ message: 'Product deleted successfully' });
 });
 
+// Get My Products (Seller)
+productRouter.get('/seller/mine', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.split(' ')[1];
+  const secret = c.env.JWT_SECRET || 'fallback_secret';
+
+  let payload;
+  try {
+    payload = await verify(token, secret, "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const db = drizzle(c.env.DB);
+  const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
+  if (!store) {
+    return c.json({ message: 'Store not found' }, 404);
+  }
+
+  const myProducts = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      slug: products.slug,
+      description: products.description,
+      price: products.price,
+      comparePrice: products.comparePrice,
+      rating: products.rating,
+      sold: products.sold,
+      stock: products.stock,
+      weight: products.weight,
+      status: products.status,
+      images: products.images,
+      categoryId: products.categoryId,
+      categoryName: categories.name,
+      storeId: products.storeId,
+      storeName: stores.name,
+      storeSlug: stores.slug,
+      storeLogoUrl: stores.logoUrl
+    })
+    .from(products)
+    .innerJoin(stores, eq(products.storeId, stores.id))
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .where(eq(products.storeId, store.id));
+
+  const mappedProducts = myProducts.map(p => ({
+    ...p,
+    images: JSON.parse(p.images as string || '[]')
+  }));
+
+  return c.json({ data: mappedProducts });
+});
+
 // Get All Products (Public Catalog)
 productRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);
@@ -154,7 +267,8 @@ productRouter.get('/', async (c) => {
       categoryName: categories.name,
       storeId: products.storeId,
       storeName: stores.name,
-      storeSlug: stores.slug
+      storeSlug: stores.slug,
+      storeLogoUrl: stores.logoUrl
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
@@ -191,7 +305,8 @@ productRouter.get('/:id', async (c) => {
       categoryName: categories.name,
       storeId: products.storeId,
       storeName: stores.name,
-      storeSlug: stores.slug
+      storeSlug: stores.slug,
+      storeLogoUrl: stores.logoUrl
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
@@ -219,7 +334,8 @@ productRouter.get('/:id', async (c) => {
         categoryName: categories.name,
         storeId: products.storeId,
         storeName: stores.name,
-        storeSlug: stores.slug
+        storeSlug: stores.slug,
+        storeLogoUrl: stores.logoUrl
       })
       .from(products)
       .innerJoin(stores, eq(products.storeId, stores.id))
@@ -260,7 +376,8 @@ productRouter.get('/store/:storeId', async (c) => {
       categoryName: categories.name,
       storeId: products.storeId,
       storeName: stores.name,
-      storeSlug: stores.slug
+      storeSlug: stores.slug,
+      storeLogoUrl: stores.logoUrl
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))

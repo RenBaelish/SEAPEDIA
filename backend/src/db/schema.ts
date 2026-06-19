@@ -7,6 +7,7 @@ export const users = sqliteTable('users', {
   username: text('username').notNull().unique(),
   email: text('email').notNull().unique(),
   password: text('password').notNull(), // hashed
+  profilePictureUrl: text('profile_picture_url').notNull().default('https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
@@ -38,6 +39,8 @@ export const stores = sqliteTable('stores', {
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
+  logoUrl: text('logo_url'),
+  bannerUrl: text('banner_url'),
   status: text('status').notNull().default('ACTIVE'), // ACTIVE, SUSPENDED, CLOSED
   rating: real('rating').notNull().default(0),
   totalSales: integer('total_sales').notNull().default(0),
@@ -82,7 +85,13 @@ export const addresses = sqliteTable('addresses', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id),
   label: text('label').notNull(), // e.g. Rumah, Kantor
-  fullAddress: text('full_address').notNull(),
+  recipientName: text('recipient_name').notNull(),
+  phone: text('phone').notNull(),
+  street: text('street').notNull(),
+  city: text('city').notNull(),
+  province: text('province').notNull(),
+  postalCode: text('postal_code').notNull(),
+  isDefault: integer('is_default', { mode: 'boolean' }).notNull().default(false),
 });
 
 export const carts = sqliteTable('carts', {

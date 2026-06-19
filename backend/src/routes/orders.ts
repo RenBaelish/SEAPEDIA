@@ -185,12 +185,19 @@ orderRouter.put('/:id/status', async (c) => {
         await db.insert(wallets).values({ id: sellerWalletId, userId: store.ownerId, balance: order.totalAmount });
       }
 
+      const items = await db.select({ productName: products.name })
+        .from(orderItems)
+        .innerJoin(products, eq(orderItems.productId, products.id))
+        .where(eq(orderItems.orderId, orderId))
+        .all();
+      const productNames = items.map(i => i.productName).join(', ');
+
       await db.insert(walletMutations).values({
         id: crypto.randomUUID(),
         walletId: sellerWalletId as string,
         amount: order.totalAmount,
         type: 'INCOME',
-        description: `Penjualan pesanan ${orderId}`
+        description: `Penjualan: ${productNames}`
       });
     }
   }

@@ -5,11 +5,14 @@ import { reviewRouter } from './routes/reviews'
 import { storeRouter } from './routes/stores'
 import { productRouter } from './routes/products'
 import { walletRouter } from './routes/wallets'
+import { addressRouter } from './routes/addresses'
 import { cartRouter } from './routes/carts'
 import { orderRouter } from './routes/orders'
 import { promoRouter } from './routes/promos'
 import { deliveryRouter } from './routes/deliveries'
 import { adminRouter } from './routes/admin'
+import { swaggerUI } from '@hono/swagger-ui'
+import openapiSpec from '../openapi.json'
 import seedHandler from './seed'
 
 const app = new Hono()
@@ -23,6 +26,12 @@ app.use('*', cors({
   credentials: true,
 }))
 
+app.get('/openapi.json', (c) => c.json(openapiSpec))
+
+app.get('/docs', swaggerUI({
+  url: '/openapi.json'
+}))
+
 app.get('/', (c) => {
   return c.text('Welcome to SEAPEDIA API')
 })
@@ -31,8 +40,9 @@ app.route('/auth', authRouter)
 app.route('/reviews', reviewRouter)
 app.route('/stores', storeRouter)
 app.route('/products', productRouter)
-app.route('/wallets', walletRouter)
-app.route('/carts', cartRouter)
+app.route('/wallet', walletRouter)
+app.route('/addresses', addressRouter)
+app.route('/cart', cartRouter)
 app.route('/orders', orderRouter)
 app.route('/promos', promoRouter)
 app.route('/deliveries', deliveryRouter)

@@ -26,7 +26,7 @@ const authMiddleware = async (c: any, next: any) => {
 
 cartRouter.use('*', authMiddleware);
 
-cartRouter.get('/me', async (c) => {
+cartRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
 
@@ -130,7 +130,29 @@ cartRouter.delete('/items/:id', async (c) => {
   return c.json({ message: 'Item removed' });
 });
 
-cartRouter.delete('/me', async (c) => {
+cartRouter.patch('/items/:id', async (c) => {
+  const db = drizzle(c.env.DB);
+  const user = c.get('user') as any;
+  const itemId = c.req.param('id');
+  const { quantity } = await c.req.json();
+
+  const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
+  if (!cart) return c.json({ message: 'Cart not found' }, 404);
+
+  const existingItem = await db.select().from(cartItems).where(and(eq(cartItems.id, itemId), eq(cartItems.cartId, cart.id))).get();
+  if (!existingItem) return c.json({ message: 'Item not found' }, 404);
+
+  const product = await db.select().from(products).where(eq(products.id, existingItem.productId)).get();
+  if (!product) return c.json({ message: 'Product not found' }, 404);
+
+  if (quantity > product.stock) return c.json({ message: 'Stock not enough' }, 400);
+
+  await db.update(cartItems).set({ quantity }).where(eq(cartItems.id, itemId));
+
+  return c.json({ message: 'Quantity updated' });
+});
+
+cartRouter.delete('/', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
 
