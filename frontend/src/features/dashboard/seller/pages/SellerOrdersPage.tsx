@@ -45,9 +45,7 @@ export default function SellerOrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <Package size={24} className="text-brand-600" /> Kelola Pesanan
-        </h1>
+        <h1 className="text-headline-md text-secondary">Kelola Pesanan</h1>
       </div>
 
       {orders.length === 0 ? (
@@ -89,7 +87,7 @@ export default function SellerOrdersPage() {
 
               <div className="w-full md:w-auto md:min-w-[200px] border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6 flex flex-col items-start md:items-end justify-center">
                 <p className="text-xs text-gray-500 mb-1">Total Pendapatan</p>
-                <p className="font-bold text-lg text-brand-600 mb-4">
+                <p className="font-medium text-lg text-brand-600 mb-4">
                   {formatCurrency(Number(order.subtotal) - Number(order.discount || 0))}
                 </p>
                 

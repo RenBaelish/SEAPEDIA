@@ -101,7 +101,18 @@ export default function SellerProductFormPage() {
     e.preventDefault();
     setApiError(null);
 
-    const parsed = productSchema.safeParse(form);
+    let finalImages = form.images ?? [];
+    if (newImageUrl.trim()) {
+      try {
+        new URL(newImageUrl.trim());
+        finalImages = [...finalImages, newImageUrl.trim()];
+        setNewImageUrl("");
+      } catch {
+        showAlert({ title: "Peringatan", message: "URL gambar baru tidak valid dan akan diabaikan." });
+      }
+    }
+
+    const parsed = productSchema.safeParse({ ...form, images: finalImages });
     if (!parsed.success) {
       const fieldErrors: FieldErrors = {};
       parsed.error.issues.forEach((issue: z.ZodIssue) => {
@@ -120,7 +131,7 @@ export default function SellerProductFormPage() {
     setLoading(true);
     try {
       if (isEdit) {
-        await api.patch(`/products/${id}`, payload);
+        await api.put(`/products/${id}`, payload);
       } else {
         await api.post("/products", payload);
       }

@@ -27,7 +27,7 @@ export default function SellerDashboardPage() {
 
   useEffect(() => {
     Promise.all([
-      api.get("/stores/my-store"),
+      api.get("/stores/me"),
       api.get("/reports/seller/income").catch(() => ({ data: { data: { totalIncome: 0 } } }))
     ])
       .then(([storeRes, incomeRes]) => { 
@@ -52,7 +52,7 @@ export default function SellerDashboardPage() {
   // No store yet — prompt to create one
   if (!hasStore) {
     return (
-      <div className="max-w-lg mx-auto py-16 text-center">
+      <div className="w-full max-w-lg mx-auto py-16 text-center">
         <Store size={48} className="text-tertiary mx-auto mb-4" />
         <h2 className="text-headline-md text-secondary mb-2">Belum Punya Toko</h2>
         <p className="text-body-sm text-tertiary mb-8">
@@ -68,7 +68,7 @@ export default function SellerDashboardPage() {
   const stats = [
     { label: "Total Pendapatan", value: formatCurrency(income?.totalIncome || 0), icon: TrendingUp, color: "text-brand-500", bg: "bg-brand-50" },
     { label: "Total Penjualan", value: store?.totalSales ?? 0, icon: ShoppingBag, color: "text-primary", bg: "bg-primary-light" },
-    { label: "Total Produk", value: store?._count.products ?? 0, icon: Package, color: "text-blue-500", bg: "bg-blue-50" },
+    { label: "Total Produk", value: store?._count?.products ?? 0, icon: Package, color: "text-blue-500", bg: "bg-blue-50" },
     { label: "Rating Toko", value: (store?.rating ?? 0).toFixed(1), icon: Store, color: "text-purple-500", bg: "bg-purple-50" },
   ];
 
@@ -108,7 +108,7 @@ export default function SellerDashboardPage() {
                 </div>
                 <div>
                   <p className="text-[11px] text-tertiary font-semibold uppercase tracking-wide">{stat.label}</p>
-                  <p className="text-[22px] font-extrabold text-secondary leading-tight">{stat.value}</p>
+                  <p className="text-[22px] font-medium text-secondary leading-tight">{stat.value}</p>
                 </div>
               </div>
             </Card>

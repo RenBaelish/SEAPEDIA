@@ -36,7 +36,7 @@ export default function StoreSettingsPage() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    api.get("/stores/my-store")
+    api.get("/stores/me")
       .then((res) => {
         const s = res.data.data;
         setStore(s);
@@ -79,7 +79,7 @@ export default function StoreSettingsPage() {
     setSaving(true);
     try {
       if (store) {
-        const res = await api.patch("/stores/my-store", parsed.data);
+        const res = await api.patch("/stores/me", parsed.data);
         setStore(res.data.data);
         setSuccessMsg("Informasi toko berhasil diperbarui!");
       } else {

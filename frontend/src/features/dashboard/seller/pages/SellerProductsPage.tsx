@@ -82,7 +82,7 @@ export default function SellerProductsPage() {
 
   if (!hasStore) {
     return (
-      <div className="max-w-lg mx-auto py-16 text-center">
+      <div className="w-full max-w-lg mx-auto py-16 text-center">
         <Store size={48} className="text-tertiary mx-auto mb-4" />
         <h2 className="text-headline-md text-secondary mb-2">Buat Toko Dulu</h2>
         <p className="text-body-sm text-tertiary mb-6">Anda harus memiliki toko sebelum bisa menambah produk.</p>
