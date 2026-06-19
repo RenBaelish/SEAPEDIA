@@ -1,5 +1,6 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { api } from "../../lib/api";
 import { clsx } from "clsx";
 import {
   LayoutDashboard, Package, ShoppingBag, Store, Ticket, Wallet,
@@ -23,7 +24,7 @@ const navItems: Record<RoleType, NavItem[]> = {
     { label: "Pesanan", path: "/seller/orders", icon: <ShoppingBag size={16} /> },
     { label: "Toko Saya", path: "/seller/store/settings", icon: <Store size={16} /> },
     { label: "Voucher", path: "/seller/vouchers", icon: <Ticket size={16} /> },
-    { label: "Dompet", path: "/wallet", icon: <Wallet size={16} /> },
+    { label: "Dompet", path: "/seller/wallet", icon: <Wallet size={16} /> },
   ],
   DRIVER: [
     { label: "Dashboard", path: "/driver", icon: <LayoutDashboard size={16} /> },
@@ -59,6 +60,13 @@ export function DashboardShell({ role }: DashboardShellProps) {
   const { user, clearAuth } = useAuthStore();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [store, setStore] = useState<any>(null);
+
+  useEffect(() => {
+    if (role === "SELLER") {
+      api.get("/stores/me").then(res => setStore(res.data.data)).catch(() => {});
+    }
+  }, [role]);
 
   const items = navItems[role] ?? [];
 
@@ -80,9 +88,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
         {/* Sidebar header */}
         <div className="h-14 flex items-center justify-between px-3 border-b border-muted shrink-0">
           {sidebarOpen && (
-            <span className="text-[16px] font-extrabold text-brand leading-none">
-              SEA<span className="text-primary">PEDIA</span>
-            </span>
+            <img src="/logo-name.png" alt="SEAPEDIA" className="h-8 w-auto ml-1" />
           )}
           <button
             onClick={() => setSidebarOpen((o) => !o)}
@@ -92,15 +98,6 @@ export function DashboardShell({ role }: DashboardShellProps) {
             {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
           </button>
         </div>
-
-        {/* Role badge */}
-        {sidebarOpen && (
-          <div className="px-3 py-3 border-b border-muted">
-            <span className="text-[11px] font-bold text-tertiary uppercase tracking-wider">
-              {roleTitles[role]}
-            </span>
-          </div>
-        )}
 
         {/* Nav items */}
         <nav className="flex-1 py-3 overflow-y-auto">
@@ -134,29 +131,49 @@ export function DashboardShell({ role }: DashboardShellProps) {
         <div className="p-3 border-t border-muted shrink-0">
           {sidebarOpen ? (
             <div className="flex items-center gap-2">
-              <Avatar src={user?.avatarUrl} name={user?.fullName} size="sm" />
+              <Avatar src={store?.logoUrl || user?.profilePictureUrl} name={store?.name || user?.fullName} size="sm" />
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-secondary truncate">{user?.fullName}</p>
-                <p className="text-[11px] text-tertiary truncate">{user?.email}</p>
+                <p className="text-[12px] font-semibold text-secondary truncate">{store?.name || user?.fullName}</p>
+                <p className="text-[11px] text-tertiary truncate">{store?.slug ? `/${store.slug}` : user?.email}</p>
               </div>
+              <div className="flex flex-col gap-1 shrink-0 ml-auto">
+                <button
+                  onClick={() => navigate("/")}
+                  className="p-1.5 rounded-md text-tertiary hover:text-green-600 hover:bg-green-50 transition-colors"
+                  aria-label="Kembali ke Beranda"
+                  title="Kembali ke Beranda"
+                >
+                  <Store size={14} />
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="p-1.5 rounded-md text-tertiary hover:text-error hover:bg-red-50 transition-colors"
+                  aria-label="Keluar"
+                  title="Keluar"
+                >
+                  <LogOut size={14} />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 w-full">
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center justify-center w-full p-1.5 rounded-md text-tertiary hover:text-green-600 hover:bg-green-50 transition-colors"
+                aria-label="Kembali ke Beranda"
+                title="Kembali ke Beranda"
+              >
+                <Store size={16} />
+              </button>
               <button
                 onClick={handleLogout}
-                className="p-1.5 rounded-md text-tertiary hover:text-error hover:bg-red-50 transition-colors shrink-0"
+                className="flex items-center justify-center w-full p-1.5 rounded-md text-tertiary hover:text-error hover:bg-red-50 transition-colors"
                 aria-label="Keluar"
                 title="Keluar"
               >
-                <LogOut size={14} />
+                <LogOut size={16} />
               </button>
             </div>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="flex items-center justify-center w-full p-1.5 rounded-md text-tertiary hover:text-error hover:bg-red-50 transition-colors"
-              aria-label="Keluar"
-              title="Keluar"
-            >
-              <LogOut size={16} />
-            </button>
           )}
         </div>
       </aside>
