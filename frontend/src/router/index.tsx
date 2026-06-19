@@ -38,6 +38,7 @@ const SellerOrdersPage = lazy(() => import("../features/dashboard/seller/pages/S
 const SellerOrderDetailPage = lazy(() => import("../features/dashboard/seller/pages/SellerOrderDetailPage"));
 const StoreSettingsPage = lazy(() => import("../features/dashboard/seller/pages/StoreSettingsPage"));
 const VoucherManagePage = lazy(() => import("../features/dashboard/seller/pages/VoucherManagePage"));
+const SellerWalletPage = lazy(() => import("../features/dashboard/seller/pages/SellerWalletPage"));
 
 // Driver dashboard
 const DriverDashboardPage = lazy(() => import("../features/dashboard/driver/pages/DriverDashboardPage"));
@@ -133,6 +134,7 @@ export const router = createBrowserRouter([
       { path: "orders/:id", element: <S><SellerOrderDetailPage /></S> },
       { path: "store/settings", element: <S><StoreSettingsPage /></S> },
       { path: "vouchers", element: <S><VoucherManagePage /></S> },
+      { path: "wallet", element: <S><SellerWalletPage /></S> },
     ],
   },
 

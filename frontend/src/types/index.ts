@@ -125,6 +125,7 @@ export interface UserPublic {
   fullName: string;
   phoneNumber?: string;
   avatarUrl?: string;
+  profilePictureUrl?: string;
   isVerified: boolean;
   roles: RoleType[];
   activeRole: RoleType;
@@ -146,6 +147,7 @@ export interface ProductSummary {
   storeId: string;
   storeName: string;
   storeSlug: string;
+  storeLogoUrl?: string | null;
   status: ProductStatus;
 }
 
