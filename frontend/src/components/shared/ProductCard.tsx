@@ -50,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <div className="mt-auto space-y-1">
             {/* Price */}
-            <div className="font-bold text-[14px] text-gray-900 leading-tight">
+            <div className="font-semibold text-[14px] text-gray-900 leading-tight">
               {formatCurrency(product.price)}
             </div>
 

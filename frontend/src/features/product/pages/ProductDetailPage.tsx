@@ -233,7 +233,7 @@ export default function ProductDetailPage() {
               {/* Price */}
               <div className="bg-gray-50 rounded-xl p-4 mb-5">
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-[28px] font-extrabold text-gray-900 leading-none">
+                  <span className="text-[28px] font-semibold text-gray-900 leading-none">
                     {formatCurrency(product.price)}
                   </span>
                   {discountPercent > 0 && (
@@ -277,8 +277,12 @@ export default function ProductDetailPage() {
 
               {/* Store card */}
               <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 hover:border-green-200 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center text-xl flex-shrink-0">
-                  
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden border border-gray-200">
+                  {product.storeLogoUrl ? (
+                    <img src={product.storeLogoUrl} alt={product.storeName} className="w-full h-full object-cover" />
+                  ) : (
+                    <Store className="text-green-500" size={20} />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
@@ -370,7 +374,7 @@ export default function ProductDetailPage() {
                 {/* Subtotal */}
                 <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
                   <span className="text-[12px] text-gray-500">Subtotal</span>
-                  <span className="text-[16px] font-extrabold text-gray-900">{formatCurrency(product.price * qty)}</span>
+                  <span className="text-[16px] font-semibold text-gray-900">{formatCurrency(product.price * qty)}</span>
                 </div>
 
                 {/* CTA Buttons */}
