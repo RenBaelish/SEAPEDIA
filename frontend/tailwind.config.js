@@ -35,15 +35,7 @@ export default {
         "label-sm": ["12px", { lineHeight: "16px", fontWeight: "600" }],
         caption: ["11px", { lineHeight: "14px", fontWeight: "600" }],
       },
-      spacing: {
-        xs: "6px",
-        sm: "16px",
-        md: "32px",
-        lg: "50px",
-        xl: "110px",
-        gutter: "16px",
-        section: "32px",
-      },
+
       borderRadius: {
         none: "0px",
         sm: "4px",
@@ -64,6 +56,15 @@ export default {
         modal: "300",
         toast: "400",
       },
+      keyframes: {
+        slideDown: {
+          '0%': { opacity: 0, transform: 'translateY(-10px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        }
+      },
+      animation: {
+        'slideDown': 'slideDown 0.2s ease-out forwards',
+      }
     },
   },
   plugins: [],
