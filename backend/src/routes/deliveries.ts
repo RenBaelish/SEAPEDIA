@@ -42,18 +42,32 @@ deliveryRouter.get('/available', async (c) => {
   }
 
   // Fetch available jobs
-  const availableJobs = await db.select({
+  const jobs = await db.select({
     id: deliveryJobs.id,
     orderId: deliveryJobs.orderId,
     status: deliveryJobs.status,
     totalAmount: orders.totalAmount,
     deliveryFee: orders.deliveryFee,
-    createdAt: deliveryJobs.createdAt
+    createdAt: deliveryJobs.createdAt,
+    storeName: stores.name,
+    buyerId: orders.buyerId
   })
   .from(deliveryJobs)
   .innerJoin(orders, eq(deliveryJobs.orderId, orders.id))
+  .innerJoin(stores, eq(orders.storeId, stores.id))
   .where(eq(deliveryJobs.status, 'MENUNGGU_DRIVER'))
   .all();
+
+  // Attach addresses
+  const availableJobs = await Promise.all(jobs.map(async (job) => {
+    const address = await db.select().from(addresses).where(and(eq(addresses.userId, job.buyerId), eq(addresses.isDefault, true))).get();
+    return {
+      ...job,
+      pickupAddress: `Toko ${job.storeName}`,
+      dropAddress: address ? `${address.street}, ${address.city}` : 'Alamat Pembeli',
+      order: { store: { name: job.storeName } }
+    };
+  }));
 
   return c.json({ data: availableJobs });
 });
@@ -92,20 +106,68 @@ deliveryRouter.get('/my-jobs', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
 
-  const myJobs = await db.select({
+  const jobs = await db.select({
     id: deliveryJobs.id,
     orderId: deliveryJobs.orderId,
     status: deliveryJobs.status,
     totalAmount: orders.totalAmount,
     deliveryFee: orders.deliveryFee,
-    createdAt: deliveryJobs.createdAt
+    createdAt: deliveryJobs.createdAt,
+    storeName: stores.name,
+    buyerId: orders.buyerId
   })
   .from(deliveryJobs)
   .innerJoin(orders, eq(deliveryJobs.orderId, orders.id))
+  .innerJoin(stores, eq(orders.storeId, stores.id))
   .where(eq(deliveryJobs.driverId, user.id as string))
   .all();
 
+  const myJobs = await Promise.all(jobs.map(async (job) => {
+    const address = await db.select().from(addresses).where(and(eq(addresses.userId, job.buyerId), eq(addresses.isDefault, true))).get();
+    return {
+      ...job,
+      pickupAddress: `Toko ${job.storeName}`,
+      dropAddress: address ? `${address.street}, ${address.city}` : 'Alamat Pembeli',
+      order: { store: { name: job.storeName } }
+    };
+  }));
+
   return c.json({ data: myJobs });
+});
+
+// Driver: Get Earnings Report
+deliveryRouter.get('/earnings', async (c) => {
+  const db = drizzle(c.env.DB);
+  const user = c.get('user') as any;
+
+  // Assuming walletMutations records the driver earnings. Let's fetch them.
+  const { wallets, walletMutations } = await import('../db/schema');
+  
+  const myWallet = await db.select().from(wallets).where(eq(wallets.userId, user.id as string)).get();
+  
+  let history: any[] = [];
+  if (myWallet) {
+    history = await db.select().from(walletMutations).where(eq(walletMutations.walletId, myWallet.id)).orderBy(walletMutations.createdAt).all();
+    history = history.reverse(); // Latest first
+  }
+
+  // Calculate total earnings (only from INCOME type)
+  const totalEarnings = history.filter(h => h.type === 'INCOME').reduce((sum, h) => sum + h.amount, 0);
+
+  // We map history to calculate running balance or just return it since we don't have balanceAfter in schema
+  // Actually we'll just mock balanceAfter by accumulating from bottom
+  let runningBalance = 0;
+  const historyWithBalance = [...history].reverse().map(h => {
+    runningBalance += h.amount; // amount is positive or negative
+    return { ...h, balanceAfter: runningBalance };
+  }).reverse();
+
+  return c.json({ 
+    data: {
+      totalEarnings,
+      history: historyWithBalance
+    } 
+  });
 });
 
 // Driver: Complete Job
