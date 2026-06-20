@@ -6,6 +6,7 @@ import { RoleType } from '@/types';
 // ─── Layouts ──────────────────────────────────────────────────────────────
 import { RootLayout } from "../components/layout/RootLayout";
 import { DashboardShell } from "../components/layout/DashboardShell";
+import AccountShell from "../components/layout/AccountShell";
 import { GlobalErrorPage } from "../components/layout/GlobalErrorPage";
 import { NotFoundPage } from "../components/layout/NotFoundPage";
 
@@ -45,6 +46,8 @@ const DriverDashboardPage = lazy(() => import("../features/dashboard/driver/page
 const DriverJobBoardPage = lazy(() => import("../features/dashboard/driver/pages/DriverJobBoardPage"));
 const DriverJobDetailPage = lazy(() => import("../features/dashboard/driver/pages/DriverJobDetailPage"));
 const DriverEarningsPage = lazy(() => import("../features/dashboard/driver/pages/DriverEarningsPage"));
+const DriverMyDeliveriesPage = lazy(() => import("../features/dashboard/driver/pages/DriverMyDeliveriesPage"));
+const DriverWalletPage = lazy(() => import("../features/dashboard/driver/pages/DriverWalletPage"));
 
 // Admin dashboard
 const AdminDashboardPage = lazy(() => import("../features/dashboard/admin/pages/AdminDashboardPage"));
@@ -97,8 +100,6 @@ export const router = createBrowserRouter([
         children: [
           { path: "cart", element: <S><CartPage /></S> },
           { path: "checkout", element: <S><CheckoutPage /></S> },
-          { path: "orders", element: <S><OrderListPage /></S> },
-          { path: "orders/:id", element: <S><OrderDetailPage /></S> },
         ],
       },
 
@@ -106,8 +107,20 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: "wallet", element: <S><WalletPage /></S> },
-          { path: "account", element: <S><AccountPage /></S> },
+          {
+            element: <AccountShell />,
+            children: [
+              { path: "account", element: <S><AccountPage /></S> },
+              { path: "wallet", element: <S><WalletPage /></S> },
+              {
+                element: <ProtectedRoute roles={[RoleType.BUYER]} />,
+                children: [
+                  { path: "orders", element: <S><OrderListPage /></S> },
+                  { path: "orders/:id", element: <S><OrderDetailPage /></S> },
+                ],
+              },
+            ]
+          }
         ],
       },
       
@@ -151,7 +164,9 @@ export const router = createBrowserRouter([
       { index: true, element: <S><DriverDashboardPage /></S> },
       { path: "jobs", element: <S><DriverJobBoardPage /></S> },
       { path: "jobs/:id", element: <S><DriverJobDetailPage /></S> },
+      { path: "my-deliveries", element: <S><DriverMyDeliveriesPage /></S> },
       { path: "earnings", element: <S><DriverEarningsPage /></S> },
+      { path: "wallet", element: <S><DriverWalletPage /></S> },
     ],
   },
 

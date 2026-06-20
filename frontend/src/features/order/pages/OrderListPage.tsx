@@ -84,78 +84,7 @@ export default function OrderListPage() {
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
-      <div className="page-container max-w-[1100px] py-6">
-        <div className="flex flex-col md:flex-row gap-5 items-start">
-
-          {/* ─── Sidebar Kiri ─────────────────────────────────────── */}
-          <aside className="w-full md:w-[220px] shrink-0 space-y-3">
-            {/* User Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-xl flex-shrink-0 shadow">
-                  {user?.fullName?.charAt(0)?.toUpperCase() ?? "?"}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[14px] font-bold text-gray-800 truncate">{user?.fullName}</p>
-                  <Link to="/account" className="text-[11px] text-green-600 font-semibold hover:underline flex items-center gap-1">
-                    <Edit3 size={10} /> Edit Profil
-                  </Link>
-                </div>
-              </div>
-
-              {/* Member badge */}
-              <div className="mt-3 flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-2.5 py-1.5 rounded-lg">
-                <Star size={12} className="text-amber-400 fill-amber-400" />
-                <span className="text-[11px] font-bold text-amber-700">Member SEAPEDIA</span>
-              </div>
-
-              {/* Quick stats */}
-              <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
-                <div className="flex items-center justify-between text-[12px]">
-                  <div className="flex items-center gap-1.5 text-gray-500">
-                    <Wallet size={13} />
-                    <span>SEAPAY Saldo</span>
-                  </div>
-                  <span className="font-bold text-gray-700">Rp0</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Menu groups */}
-            {SIDEBAR_MENU.map(group => (
-              <div key={group.group} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{group.group}</p>
-                </div>
-                {group.items.map(item => {
-                  const isActive = location.pathname.startsWith(item.href || "xxx");
-                  return item.href ? (
-                    <Link
-                      key={item.id}
-                      to={item.href}
-                      className={`flex items-center gap-3 px-4 py-3 text-[13px] transition-colors border-b border-gray-50 last:border-0 ${isActive ? "text-green-700 bg-green-50 font-semibold border-l-2 border-l-green-500" : "text-gray-700 hover:bg-green-50 hover:text-green-700"}`}
-                    >
-                      <span className={isActive ? "text-green-500" : "text-gray-400"}>{item.icon}</span>
-                      <span className="flex-1">{item.label}</span>
-                      {isActive && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
-                    </Link>
-                  ) : (
-                    <button
-                      key={item.id}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-[13px] text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors border-b border-gray-50 last:border-0"
-                    >
-                      <span className="text-gray-400">{item.icon}</span>
-                      <span className="flex-1 text-left">{item.label}</span>
-                    </button>
-                  )
-                })}
-              </div>
-            ))}
-          </aside>
-
-          {/* ─── Konten Kanan ─────────────────────────────────────── */}
-          <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
+    <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
             <h1 className="text-[20px] font-bold text-gray-800 mb-6">Daftar Transaksi</h1>
 
             {/* Filter Bar */}
@@ -276,9 +205,6 @@ export default function OrderListPage() {
                 })}
               </div>
             )}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

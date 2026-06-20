@@ -59,65 +59,66 @@ export default function WalletPage() {
 
   if (!wallet) {
     return (
-      <div className="bg-gray-50 min-h-screen">
-        <div className="h-[280px] bg-blue-500 " />
+      <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen relative pb-16">
-      {/* ─── Blue Header Background ─── */}
-      <div className="absolute top-0 left-0 w-full h-[280px] bg-gradient-to-r from-blue-400 to-blue-600 overflow-hidden">
-        {/* Decorative waves overlay */}
-        <div className="absolute inset-0 opacity-20">
-          <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white fill-current" preserveAspectRatio="none">
-            <path d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          </svg>
-        </div>
-      </div>
-
-      <div className="page-container max-w-[1000px] pt-10 relative z-10 flex flex-col md:flex-row gap-6">
+    <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px] flex flex-col gap-6">
+      <h1 className="text-[20px] font-bold text-gray-800">Dompet SEAPAY</h1>
+      
+      <div className="flex flex-col md:flex-row gap-6">
         
         {/* ─── Kiri: Informasi Dompet & Saldo ──────────────────────────────── */}
         <div className="w-full md:w-[320px] shrink-0">
-          <div className="text-white mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-1">
-                <WalletIcon size={20} className="fill-white" />
-                <span className="font-bold tracking-widest text-[14px]">SEAPAY <span className="text-blue-200">PLUS</span></span>
-                <Info size={14} className="ml-1 opacity-70" />
-              </div>
-              <button className="text-white hover:text-blue-100 transition-colors">
-                <Settings size={20} />
-              </button>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-6 text-white shadow-md relative overflow-hidden mb-6">
+            {/* Dekorasi Wave */}
+            <div className="absolute inset-0 opacity-20">
+              <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full h-auto text-white fill-current" preserveAspectRatio="none">
+                <path d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+              </svg>
             </div>
             
-            <div className="flex items-end justify-between mb-6">
-              <h1 className="text-4xl font-extrabold tracking-tight">{formatCurrency(Number(wallet.balance))}</h1>
-              <button 
-                onClick={() => setIsTopupModalOpen(true)}
-                className="px-5 py-1.5 rounded-full border border-white text-white font-semibold text-[13px] hover:bg-white/10 transition-colors"
-              >
-                Top-up
-              </button>
-            </div>
-
-            {/* Quick Links (Paylater & Coins) */}
-            <div className="flex gap-2">
-              <div className="flex-1 bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <CreditCard size={14} className="text-blue-500 fill-blue-50" />
-                  <span className="text-[13px] font-bold text-gray-800">SEAPAY <span className="font-normal">later</span></span>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-1">
+                  <WalletIcon size={20} className="fill-white" />
+                  <span className="font-bold tracking-widest text-[14px]">SEAPAY <span className="text-blue-200">PLUS</span></span>
+                  <Info size={14} className="ml-1 opacity-70" />
                 </div>
-                <p className="text-[12px] font-semibold text-green-600">Daftar Sekarang</p>
+                <button className="text-white hover:text-blue-100 transition-colors">
+                  <Settings size={20} />
+                </button>
               </div>
-              <div className="flex-1 bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <Coins size={14} className="text-blue-500 fill-blue-50" />
-                  <span className="text-[13px] font-bold text-gray-800">SEAPAY <span className="font-normal">coins</span></span>
+              
+              <div className="flex items-end justify-between mb-6">
+                <h1 className="text-3xl font-extrabold tracking-tight">{formatCurrency(Number(wallet.balance))}</h1>
+                <button 
+                  onClick={() => setIsTopupModalOpen(true)}
+                  className="px-4 py-1.5 rounded-full border border-white text-white font-semibold text-[13px] hover:bg-white/10 transition-colors"
+                >
+                  Top-up
+                </button>
+              </div>
+
+              {/* Quick Links (Paylater & Coins) */}
+              <div className="flex gap-2">
+                <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm cursor-pointer">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <CreditCard size={14} className="text-blue-100" />
+                    <span className="text-[13px] font-bold text-white">SEAPAY <span className="font-normal opacity-80">later</span></span>
+                  </div>
+                  <p className="text-[12px] font-semibold text-green-300">Daftar Sekarang</p>
                 </div>
-                <p className="text-[13px] font-bold text-gray-800">0</p>
+                <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm cursor-pointer">
+                  <div className="flex items-center gap-1.5 mb-1.5">
+                    <Coins size={14} className="text-blue-100" />
+                    <span className="text-[13px] font-bold text-white">SEAPAY <span className="font-normal opacity-80">coins</span></span>
+                  </div>
+                  <p className="text-[13px] font-bold text-white">0</p>
+                </div>
               </div>
             </div>
           </div>
@@ -145,12 +146,13 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* ─── Kanan: Riwayat Transaksi ──────────────────────────────── */}
-        <div className="flex-1 bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-          <div className="p-6">
-            <h2 className="text-[18px] font-bold text-gray-800 mb-5">Riwayat Transaksi</h2>
-            
-            {/* Filter Bar */}
+        {/* ─── Kanan: Riwayat Transaksi ───────────────────────────────────── */}
+        <div className="flex-1 w-full mt-0">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-[16px] font-bold text-gray-800 flex items-center gap-2">
+              <WalletIcon size={18} className="text-gray-400" /> Riwayat Transaksi
+            </h2>
+          </div>  {/* Filter Bar */}
             <div className="flex flex-wrap gap-3 mb-6 border-b border-gray-100 pb-6">
               <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">
                 Semua Tanggal <Calendar size={14} className="ml-4" />
@@ -211,7 +213,6 @@ export default function WalletPage() {
                 </button>
               )}
             </div>
-          </div>
         </div>
       </div>
 

@@ -62,6 +62,18 @@ export default function AccountPage() {
   const [savingAddress, setSavingAddress] = useState(false);
   const [formData, setFormData] = useState({ ...EMPTY_FORM, recipientName: user?.fullName || "", phone: user?.phoneNumber || "" });
 
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    fullName: user?.fullName || "",
+    email: user?.email || "",
+    phoneNumber: user?.phoneNumber || "",
+    gender: user?.gender || "",
+    birthDate: user?.birthDate || "",
+    profilePictureUrl: user?.profilePictureUrl || "",
+    password: ""
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
+
   const fetchAddresses = async () => {
     setLoadingAddresses(true);
     try {
@@ -126,120 +138,43 @@ export default function AccountPage() {
     className: `w-full h-10 px-3 rounded-lg border text-[13px] outline-none transition-colors ${fieldErrors[name] ? "border-red-400 focus:border-red-500 bg-red-50" : "border-gray-200 focus:border-green-500 bg-white"}`,
   });
 
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingProfile(true);
+    setFormError("");
+    try {
+      const payload: any = { ...profileForm };
+      if (!payload.password) delete payload.password; // only send if changing
+
+      const res = await api.put("/auth/profile", payload);
+      const updatedUser = { 
+        ...user!, 
+        fullName: profileForm.fullName, 
+        email: profileForm.email, 
+        phoneNumber: profileForm.phoneNumber,
+        gender: profileForm.gender,
+        birthDate: profileForm.birthDate,
+        profilePictureUrl: profileForm.profilePictureUrl 
+      };
+
+      if (res.data.data?.accessToken) {
+        useAuthStore.getState().setUser(updatedUser, { accessToken: res.data.data.accessToken });
+      } else {
+        useAuthStore.getState().setUser(updatedUser, useAuthStore.getState().tokens!);
+      }
+      setShowProfileModal(false);
+    } catch (error: any) {
+      setFormError(error.response?.data?.message || "Gagal menyimpan profil.");
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
-      <div className="page-container max-w-[1100px] py-6">
-        <div className="flex flex-col md:flex-row gap-5 items-start">
-
-          {/* ─── Sidebar Kiri ─────────────────────────────────────── */}
-          <aside className="w-full md:w-[220px] shrink-0 space-y-3">
-            {/* User Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
-                  {user?.fullName?.charAt(0)?.toUpperCase() ?? "?"}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[14px] font-bold text-gray-800 truncate">{user?.fullName}</p>
-                  <button className="text-[11px] text-green-600 font-semibold hover:underline flex items-center gap-1">
-                    <Edit3 size={10} /> Edit Profil
-                  </button>
-                </div>
-              </div>
-
-              {/* Member badge */}
-              <div className="mt-3 flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-2.5 py-1.5 rounded-lg">
-                <Star size={12} className="text-amber-400 fill-amber-400" />
-                <span className="text-[11px] font-bold text-amber-700">Member SEAPEDIA</span>
-              </div>
-
-              {/* Quick stats */}
-              <div className="mt-3 pt-3 border-t border-gray-100 space-y-2">
-                {[
-                  { icon: Wallet, label: "SEAPAY Saldo", value: "Rp0" },
-                ].map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.label} className="flex items-center justify-between text-[12px]">
-                      <div className="flex items-center gap-1.5 text-gray-500">
-                        <Icon size={13} />
-                        <span>{item.label}</span>
-                      </div>
-                      <span className="font-bold text-gray-700">{item.value}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Menu groups */}
-            {SIDEBAR_MENU.map(group => (
-              <div key={group.group} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{group.group}</p>
-                </div>
-                {group.items.map(item => (
-                  (item as any).href ? (
-                    <Link
-                      key={item.id}
-                      to={(item as any).href}
-                      className="flex items-center gap-3 px-4 py-3 text-[13px] text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors border-b border-gray-50 last:border-0"
-                    >
-                      <span>{item.icon}</span>
-                      <span className="flex-1">{item.label}</span>
-                      <ChevronRight size={14} className="text-gray-300" />
-                    </Link>
-                  ) : (
-                    <button
-                      key={item.id}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-[13px] text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors border-b border-gray-50 last:border-0"
-                    >
-                      <span>{item.icon}</span>
-                      <span className="flex-1 text-left">{item.label}</span>
-                      <ChevronRight size={14} className="text-gray-300" />
-                    </button>
-                  )
-                ))}
-              </div>
-            ))}
-
-            {/* Pengaturan Akun */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pengaturan Akun</p>
-              </div>
-              {[
-                { id: "profile", label: "Biodata Diri", icon: User },
-                { id: "address", label: "Daftar Alamat", icon: MapPin },
-                { id: "security", label: "Keamanan", icon: Lock },
-              ].map(item => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 text-[13px] transition-colors border-b border-gray-50 last:border-0 ${activeTab === item.id ? "text-green-700 bg-green-50 font-semibold border-l-2 border-l-green-500" : "text-gray-700 hover:bg-green-50 hover:text-green-700"}`}
-                  >
-                    <Icon size={15} className={activeTab === item.id ? "text-green-500" : "text-gray-400"} />
-                    <span className="flex-1 text-left">{item.label}</span>
-                    {activeTab === item.id && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
-                  </button>
-                );
-              })}
-            </div>
-          </aside>
-
-          {/* ─── Konten Kanan ─────────────────────────────────────── */}
-          <div className="flex-1 w-full">
-            {/* Breadcrumb + Heading */}
-            <div className="flex items-center gap-2 text-[12px] text-gray-400 mb-4">
-              <User size={13} />
-              <span className="font-semibold text-gray-700">{user?.fullName}</span>
-            </div>
-
-            {/* Tabs */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4">
-              <div className="flex overflow-x-auto hide-scrollbar border-b border-gray-100 px-2">
+    <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
+      <h1 className="text-[20px] font-bold text-gray-800 mb-6">Pengaturan Akun</h1>
+            <div className="mb-6">
+              <div className="flex overflow-x-auto hide-scrollbar border-b border-gray-200">
                 {TABS.map(tab => (
                   <button
                     key={tab.id}
@@ -255,65 +190,79 @@ export default function AccountPage() {
 
             {/* ── Tab: Biodata Diri ── */}
             {activeTab === "profile" && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <div className="flex flex-col md:flex-row gap-8">
-                  {/* Avatar area */}
-                  <div className="flex flex-col items-center gap-3 shrink-0">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-4xl shadow">
-                      {user?.fullName?.charAt(0)?.toUpperCase() ?? "?"}
+              <div className="p-2">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-[16px] font-bold text-gray-800">Biodata Diri</h2>
+                  <button onClick={() => setShowProfileModal(true)} className="px-4 h-9 rounded-lg bg-green-50 text-green-600 font-semibold text-[13px] hover:bg-green-100 transition-colors">
+                    Edit Profil
+                  </button>
+                </div>
+                
+                <div className="flex flex-col md:flex-row gap-10">
+                  <div className="flex flex-col items-center gap-4 shrink-0 md:w-1/3">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-4xl shadow">
+                      {user?.profilePictureUrl && user.profilePictureUrl !== "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg" ? (
+                        <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        user?.fullName?.charAt(0)?.toUpperCase() ?? "?"
+                      )}
                     </div>
-                    <button className="w-28 h-9 rounded-lg border-2 border-gray-200 text-[12px] font-semibold text-gray-600 hover:border-green-400 hover:text-green-600 transition-colors">
-                      Pilih Foto
-                    </button>
-                    <p className="text-[10px] text-gray-400 text-center leading-relaxed">
-                      Besar file: maks. 10 MB<br />Ekstensi: JPG, JPEG, PNG
+                    <p className="text-[11px] text-gray-500 text-center leading-relaxed px-4">
+                      Foto profil Anda membantu pengguna lain mengenali Anda. Klik <b>Edit Profil</b> untuk mengubah foto.
                     </p>
                   </div>
 
                   {/* Form area */}
-                  <div className="flex-1 space-y-5">
+                  <div className="flex-1 space-y-6">
                     <div>
                       <h3 className="text-[14px] font-bold text-gray-700 mb-3">Ubah Biodata Diri</h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-4 py-2 border-b border-gray-100">
-                          <span className="text-[13px] text-gray-400 w-28 shrink-0">Nama</span>
-                          <span className="text-[13px] text-gray-800 flex-1">{user?.fullName}</span>
-                          <button className="text-[12px] text-green-600 font-semibold hover:underline">Ubah</button>
+                      <div className="space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
+                          <span className="text-[13px] text-gray-500 w-32 shrink-0">Nama</span>
+                          <span className="text-[14px] text-gray-800 font-medium flex-1">{user?.fullName}</span>
                         </div>
-                        <div className="flex items-center gap-4 py-2 border-b border-gray-100">
-                          <span className="text-[13px] text-gray-400 w-28 shrink-0">Tanggal Lahir</span>
-                          <button className="text-[13px] text-green-600 font-semibold hover:underline">Tambah Tanggal Lahir</button>
+                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
+                          <span className="text-[13px] text-gray-500 w-32 shrink-0">Tanggal Lahir</span>
+                          {user?.birthDate ? (
+                            <span className="text-[14px] text-gray-800 font-medium flex-1">{user.birthDate}</span>
+                          ) : (
+                            <span className="text-[14px] text-gray-400 font-medium flex-1 italic">Belum diatur</span>
+                          )}
                         </div>
-                        <div className="flex items-center gap-4 py-2 border-b border-gray-100">
-                          <span className="text-[13px] text-gray-400 w-28 shrink-0">Jenis Kelamin</span>
-                          <button className="text-[13px] text-green-600 font-semibold hover:underline">Tambah Jenis Kelamin</button>
+                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
+                          <span className="text-[13px] text-gray-500 w-32 shrink-0">Jenis Kelamin</span>
+                          {user?.gender ? (
+                            <span className="text-[14px] text-gray-800 font-medium flex-1">{user.gender}</span>
+                          ) : (
+                            <span className="text-[14px] text-gray-400 font-medium flex-1 italic">Belum diatur</span>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="text-[14px] font-bold text-gray-700 mb-3">Ubah Kontak</h3>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-4 py-2 border-b border-gray-100">
-                          <div className="flex items-center gap-2 w-28 shrink-0">
-                            <Mail size={13} className="text-gray-400" />
-                            <span className="text-[13px] text-gray-400">Email</span>
+                      <h3 className="text-[14px] font-bold text-gray-800 mb-1">Kontak</h3>
+                      <div className="space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
+                          <div className="flex items-center gap-2 w-32 shrink-0">
+                            <Mail size={14} className="text-gray-500" />
+                            <span className="text-[13px] text-gray-500">Email</span>
                           </div>
-                          <span className="text-[13px] text-gray-800 flex-1 truncate">{user?.email}</span>
+                          <span className="text-[14px] text-gray-800 font-medium flex-1 truncate">{user?.email}</span>
                           <span className="flex items-center gap-1 text-[11px] bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-full font-semibold">
                             <CheckCircle size={10} /> Terverifikasi
                           </span>
-                          <button className="text-[12px] text-green-600 font-semibold hover:underline">Ubah</button>
                         </div>
-                        <div className="flex items-center gap-4 py-2 border-b border-gray-100">
-                          <div className="flex items-center gap-2 w-28 shrink-0">
-                            <Phone size={13} className="text-gray-400" />
-                            <span className="text-[13px] text-gray-400">Nomor HP</span>
+                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
+                          <div className="flex items-center gap-2 w-32 shrink-0">
+                            <Phone size={14} className="text-gray-500" />
+                            <span className="text-[13px] text-gray-500">Nomor HP</span>
                           </div>
-                          <span className="text-[13px] text-gray-800 flex-1">{user?.phoneNumber || "–"}</span>
-                          <button className="text-[12px] text-green-600 font-semibold hover:underline">
-                            {user?.phoneNumber ? "Ubah" : "Tambah Nomor HP"}
-                          </button>
+                          {user?.phoneNumber ? (
+                            <span className="text-[14px] text-gray-800 font-medium flex-1">{user.phoneNumber}</span>
+                          ) : (
+                            <span className="text-[14px] text-gray-400 font-medium flex-1 italic">Belum diatur</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -324,7 +273,7 @@ export default function AccountPage() {
 
             {/* ── Tab: Daftar Alamat ── */}
             {activeTab === "address" && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+              <div className="p-2">
                 <div className="p-5 border-b border-gray-100 flex items-center gap-3">
                   <div className="relative flex-1 max-w-sm">
                     <MapPin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
@@ -518,9 +467,102 @@ export default function AccountPage() {
                 })}
               </div>
             )}
+      {/* Profile Edit Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 bg-black/40 z-[200] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-[400px] shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <h3 className="text-[16px] font-bold text-gray-800">Edit Profil</h3>
+              <button onClick={() => setShowProfileModal(false)} className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400">
+                <X size={18} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleUpdateProfile} className="p-6 space-y-4">
+              {formError && (
+                <div className="p-3 bg-red-50 text-red-600 rounded-xl text-[13px] flex items-start gap-2">
+                  <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
+              <Input
+                label="Nama Lengkap"
+                value={profileForm.fullName}
+                onChange={e => setProfileForm({...profileForm, fullName: e.target.value})}
+                required
+              />
+              <Input
+                label="Email"
+                type="email"
+                value={profileForm.email}
+                onChange={e => setProfileForm({...profileForm, email: e.target.value})}
+                required
+              />
+              <Input
+                label="Nomor HP"
+                placeholder="08123456789"
+                value={profileForm.phoneNumber}
+                onChange={e => setProfileForm({...profileForm, phoneNumber: e.target.value})}
+              />
+              
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <Input
+                    label="Tanggal Lahir"
+                    type="date"
+                    value={profileForm.birthDate}
+                    onChange={e => setProfileForm({...profileForm, birthDate: e.target.value})}
+                  />
+                </div>
+                <div className="flex-1 flex flex-col gap-1.5">
+                  <label className="text-[13px] font-semibold text-gray-700">Jenis Kelamin</label>
+                  <select 
+                    value={profileForm.gender} 
+                    onChange={e => setProfileForm({...profileForm, gender: e.target.value})}
+                    className="w-full h-[40px] px-3 rounded-lg border border-gray-200 text-[13px] outline-none focus:border-green-500 bg-white"
+                  >
+                    <option value="">Pilih</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
+                </div>
+              </div>
+
+              <Input
+                label="URL Gambar Profil"
+                placeholder="https://..."
+                value={profileForm.profilePictureUrl}
+                onChange={e => setProfileForm({...profileForm, profilePictureUrl: e.target.value})}
+              />
+              <Input
+                label="Ubah Password (Opsional)"
+                type="password"
+                placeholder="Biarkan kosong jika tidak ingin mengubah"
+                value={profileForm.password}
+                onChange={e => setProfileForm({...profileForm, password: e.target.value})}
+              />
+
+              <div className="flex justify-end gap-2 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowProfileModal(false)}
+                  className="px-4 h-9 rounded-lg font-semibold text-[13px] text-gray-600 hover:bg-gray-50"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingProfile}
+                  className="px-5 h-9 rounded-lg font-semibold text-[13px] text-white bg-green-500 hover:bg-green-600 disabled:opacity-50"
+                >
+                  {savingProfile ? "Menyimpan..." : "Simpan"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
+      )}
+
     </div>
   );
 }
