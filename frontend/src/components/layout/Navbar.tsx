@@ -351,7 +351,7 @@ export function Navbar() {
                   {/* Left: Toko (if seller) */}
                   {user.roles.includes(RoleType.SELLER) && (
                     <Link to="/seller" className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-md transition-colors">
-                      <div className="w-7 h-7 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
                         {storeInfo?.logoUrl ? (
                           <img src={storeInfo.logoUrl} alt="Store" className="w-full h-full object-cover" />
                         ) : (
@@ -387,9 +387,26 @@ export function Navbar() {
                         <Link to="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
                           Pengaturan Akun
                         </Link>
-                        <Link to="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
-                          Pesanan Saya
-                        </Link>
+                        {user.roles.includes(RoleType.BUYER) && (
+                          <Link to="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                            Pesanan Saya
+                          </Link>
+                        )}
+                        {user.roles.includes(RoleType.ADMIN) && (
+                          <Link to="/admin" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                            Dashboard Admin
+                          </Link>
+                        )}
+                        {user.roles.includes(RoleType.DRIVER) && (
+                          <Link to="/driver" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                            Dashboard Driver
+                          </Link>
+                        )}
+                        {user.roles.includes(RoleType.SELLER) && (
+                          <Link to="/seller" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                            Dashboard Penjual
+                          </Link>
+                        )}
                       </div>
 
                       <div className="border-t border-gray-100 pt-1">
