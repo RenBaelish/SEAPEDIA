@@ -1,150 +1,131 @@
 import { useState, useEffect } from 'react';
-import { useAlert } from "../../../../contexts/AlertContext";
-import { formatCurrency } from "../../../../lib/format";
+import { Truck, Map, DollarSign, Wallet } from "lucide-react";
 import { api } from "../../../../lib/api";
 import { useAuthStore } from "../../../../store/auth.store";
-import { Button } from "../../../../components/ui/Button";
-import { DeliveryStatusBadge } from "../../../../components/ui/Badge";
-import { Navigation, CheckCircle, Package } from "lucide-react";
+import { Card } from "../../../../components/ui/Card";
+import { formatCurrency } from "../../../../lib/format";
+import { Link } from "react-router-dom";
 
 export default function DriverDashboardPage() {
   const { user } = useAuthStore();
-  const { showAlert } = useAlert();
-  const [deliveries, setDeliveries] = useState<any[]>([]);
+  const [stats, setStats] = useState({
+    activeDeliveries: 0,
+    availableJobs: 0,
+    totalEarnings: 0,
+    walletBalance: 0
+  });
   const [loading, setLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState<string | null>(null);
-
-  const fetchDeliveries = async () => {
-    try {
-      const res = await api.get("/delivery/my-deliveries");
-      setDeliveries(res.data.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    fetchDeliveries();
+    Promise.all([
+      api.get("/deliveries/my-jobs").catch(() => ({ data: { data: [] } })),
+      api.get("/deliveries/available").catch(() => ({ data: { data: [] } })),
+      api.get("/deliveries/earnings").catch(() => ({ data: { data: { totalEarnings: 0 } } })),
+      api.get("/wallet").catch(() => ({ data: { data: { balance: 0 } } }))
+    ]).then(([myJobsRes, availableJobsRes, earningsRes, walletRes]) => {
+      const active = myJobsRes.data.data.filter((j: any) => j.status === 'DIKIRIM').length;
+      const available = availableJobsRes.data.data.length;
+      
+      setStats({
+        activeDeliveries: active,
+        availableJobs: available,
+        totalEarnings: earningsRes.data.data.totalEarnings || 0,
+        walletBalance: walletRes.data.data.balance || 0
+      });
+    }).finally(() => {
+      setLoading(false);
+    });
   }, []);
 
-  const handleUpdateStatus = async (jobId: string, status: string) => {
-    setUpdatingId(jobId);
-    try {
-      await api.patch(`/delivery/jobs/${jobId}/status`, { status });
-      await showAlert({ title: "Berhasil", message: `Status pengiriman berhasil diperbarui menjadi ${status}` });
-      fetchDeliveries();
-    } catch (err: any) {
-      showAlert({ title: "Gagal", message: err.response?.data?.message || "Gagal memperbarui status." });
-    } finally {
-      setUpdatingId(null);
-    }
-  };
-
-  if (loading) return <div className="p-8 text-center text-gray-500">Memuat data...</div>;
-
-  const activeDeliveries = deliveries.filter(d => !['DELIVERED', 'FAILED'].includes(d.status));
-  const completedDeliveries = deliveries.filter(d => ['DELIVERED', 'FAILED'].includes(d.status));
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-40">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800">
-          Halo, <span className="text-brand-600">{user?.fullName}</span>
-        </h1>
-        <p className="text-sm text-gray-500">Pantau dan kelola pengiriman aktif Anda di sini.</p>
-      </div>
-
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-          <Navigation size={20} className="text-brand-600" /> Pengiriman Aktif
-        </h2>
-
-        {activeDeliveries.length === 0 ? (
-          <div className="bg-white rounded-xl p-8 text-center border border-gray-100 shadow-sm">
-            <p className="text-gray-500">Tidak ada pengiriman aktif saat ini.</p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {activeDeliveries.map((job) => (
-              <div key={job.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <DeliveryStatusBadge status={job.status} />
-                    <span className="text-sm font-bold text-gray-800">{formatCurrency(Number(job.fee) * 0.8)}</span>
-                  </div>
-                  <span className="text-xs text-gray-400">Order #{job.orderId.slice(-6).toUpperCase()}</span>
-                </div>
-
-                <div className="space-y-3 relative border-l-2 border-gray-100 ml-2 pl-4 py-2 mb-6">
-                  <div className="absolute -left-1.5 top-2 w-3 h-3 bg-brand-500 rounded-full"></div>
-                  <div>
-                    <p className="text-xs font-bold text-brand-600 mb-1">Lokasi Pengambilan</p>
-                    <p className="text-sm text-gray-800 font-medium">{job.order?.store?.name}</p>
-                    <p className="text-xs text-gray-500">{job.pickupAddress}</p>
-                  </div>
-
-                  <div className="absolute -left-1.5 bottom-6 w-3 h-3 bg-orange-500 rounded-full"></div>
-                  <div className="pt-2">
-                    <p className="text-xs font-bold text-orange-600 mb-1">Tujuan Pengiriman</p>
-                    <p className="text-xs text-gray-500">{job.dropAddress}</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  {job.status === 'DRIVER_ASSIGNED' && (
-                    <Button 
-                      className="flex-1" 
-                      onClick={() => handleUpdateStatus(job.id, 'PICKED_UP')}
-                      disabled={updatingId === job.id}
-                    >
-                      Konfirmasi Pick Up
-                    </Button>
-                  )}
-                  {job.status === 'PICKED_UP' && (
-                    <Button 
-                      className="flex-1" 
-                      onClick={() => handleUpdateStatus(job.id, 'IN_TRANSIT')}
-                      disabled={updatingId === job.id}
-                    >
-                      Mulai Perjalanan
-                    </Button>
-                  )}
-                  {job.status === 'IN_TRANSIT' && (
-                    <Button 
-                      className="flex-1 bg-green-600 hover:bg-green-700 focus:ring-green-500" 
-                      onClick={() => handleUpdateStatus(job.id, 'DELIVERED')}
-                      disabled={updatingId === job.id}
-                    >
-                      <CheckCircle size={18} className="mr-2 inline" /> Selesaikan Pengiriman
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {completedDeliveries.length > 0 && (
-        <div className="space-y-4 pt-4 border-t border-gray-100">
-          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-            <Package size={20} className="text-gray-500" /> Riwayat Terakhir
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {completedDeliveries.slice(0, 4).map((job) => (
-              <div key={job.id} className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex justify-between items-center opacity-80">
-                <div>
-                  <p className="text-xs font-bold text-gray-500 mb-1">Tujuan: {job.dropAddress.split(',')[0]}</p>
-                  <DeliveryStatusBadge status={job.status} />
-                </div>
-                <p className="font-bold text-brand-600 text-sm">+{formatCurrency(Number(job.fee) * 0.8)}</p>
-              </div>
-            ))}
-          </div>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">
+            Halo, <span className="text-brand-600">{user?.fullName}</span>
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">Ringkasan aktivitas dan pendapatan pengiriman Anda hari ini.</p>
         </div>
-      )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+              <Truck size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Pengiriman Aktif</p>
+              <h3 className="text-2xl font-bold text-gray-800">{stats.activeDeliveries}</h3>
+            </div>
+          </div>
+          <Link to="/driver/my-deliveries" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+            Lihat Pengiriman &rarr;
+          </Link>
+        </Card>
+
+        <Card className="flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
+              <Map size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Pekerjaan Tersedia</p>
+              <h3 className="text-2xl font-bold text-gray-800">{stats.availableJobs}</h3>
+            </div>
+          </div>
+          <Link to="/driver/jobs" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+            Cari Pekerjaan &rarr;
+          </Link>
+        </Card>
+
+        <Card className="flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+              <DollarSign size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Total Penghasilan</p>
+              <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(stats.totalEarnings)}</h3>
+            </div>
+          </div>
+          <Link to="/driver/earnings" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+            Lihat Laporan &rarr;
+          </Link>
+        </Card>
+
+        <Card className="flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
+              <Wallet size={20} />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Saldo Dompet</p>
+              <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(stats.walletBalance)}</h3>
+            </div>
+          </div>
+          <Link to="/driver/wallet" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+            Tarik Saldo &rarr;
+          </Link>
+        </Card>
+      </div>
+      
+      <div className="bg-brand-50 border border-brand-100 rounded-xl p-6 mt-8">
+        <h3 className="text-lg font-bold text-brand-800 mb-2">Tips Pengiriman Cepat</h3>
+        <ul className="list-disc list-inside text-brand-700 space-y-1 text-sm">
+          <li>Pastikan aplikasi tetap terbuka saat melakukan pengiriman.</li>
+          <li>Ambil pekerjaan yang lokasinya berdekatan untuk efisiensi rute.</li>
+          <li>Hubungi pembeli atau toko jika ada kendala alamat.</li>
+        </ul>
+      </div>
     </div>
   );
 }

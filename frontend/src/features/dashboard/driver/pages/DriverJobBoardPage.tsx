@@ -13,7 +13,7 @@ export default function DriverJobBoardPage() {
 
   const fetchJobs = async () => {
     try {
-      const res = await api.get("/delivery/jobs");
+      const res = await api.get("/deliveries/available");
       setJobs(res.data.data);
     } catch (err) {
       console.error(err);
@@ -29,7 +29,7 @@ export default function DriverJobBoardPage() {
   const handleAcceptJob = async (jobId: string) => {
     setProcessingId(jobId);
     try {
-      await api.post(`/delivery/jobs/${jobId}/accept`);
+      await api.post(`/deliveries/${jobId}/take`);
       await showAlert({ title: "Berhasil", message: "Pekerjaan berhasil diambil!" });
       fetchJobs();
     } catch (err: any) {
@@ -45,9 +45,10 @@ export default function DriverJobBoardPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-          <Navigation size={24} className="text-brand-600" /> Bursa Pekerjaan
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Job Board Pengiriman</h1>
+          <p className="text-sm text-gray-500 mt-1">Pilih dan ambil order pengiriman yang tersedia di sekitar Anda.</p>
+        </div>
       </div>
 
       {jobs.length === 0 ? (
@@ -63,11 +64,11 @@ export default function DriverJobBoardPage() {
               <div className="p-5 flex-1 space-y-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-bold text-gray-800 text-lg">{formatCurrency(Number(job.fee) * 0.8)}</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">{formatCurrency(Number(job.deliveryFee))}</h3>
                     <p className="text-xs text-gray-500">Estimasi Pendapatan</p>
                   </div>
                   <div className="bg-brand-50 text-brand-600 text-xs font-bold px-2 py-1 rounded">
-                    {job.order?.items?.reduce((sum: number, item: any) => sum + item.quantity, 0)} Barang
+                    Pesanan #{job.orderId.substring(0, 8).toUpperCase()}
                   </div>
                 </div>
 
@@ -75,7 +76,7 @@ export default function DriverJobBoardPage() {
                   <div className="absolute -left-1.5 top-2 w-3 h-3 bg-brand-500 rounded-full"></div>
                   <div>
                     <p className="text-xs font-bold text-brand-600 mb-1">Lokasi Pengambilan</p>
-                    <p className="text-sm text-gray-800 font-medium">{job.order?.store?.name}</p>
+                    <p className="text-sm text-gray-800 font-medium">{job.storeName}</p>
                     <p className="text-xs text-gray-500 line-clamp-2">{job.pickupAddress}</p>
                   </div>
 

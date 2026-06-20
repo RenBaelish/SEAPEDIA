@@ -10,7 +10,7 @@ export default function DriverEarningsPage() {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const res = await api.get("/delivery/earnings");
+        const res = await api.get("/deliveries/earnings");
         setReport(res.data.data);
       } catch (err) {
         console.error(err);
@@ -24,21 +24,23 @@ export default function DriverEarningsPage() {
   if (loading) return <div className="p-8 text-center text-gray-500">Memuat laporan...</div>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Wallet size={24} className="text-brand-600" />
-        <h1 className="text-2xl font-bold text-gray-800">Pendapatan Driver</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Penghasilan Driver</h1>
+          <p className="text-sm text-gray-500 mt-1">Laporan total penghasilan bersih dari jasa pengiriman pesanan.</p>
+        </div>
       </div>
 
-      <div className="bg-gradient-to-br from-brand-600 to-brand-800 rounded-xl p-8 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
+      <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl p-8 text-white shadow-lg flex items-center justify-between relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <Wallet size={120} />
         </div>
         <div className="relative z-10">
-          <p className="text-brand-100 font-medium mb-2">Total Pendapatan Bersih</p>
+          <p className="text-blue-100 font-medium mb-2">Total Pendapatan Bersih</p>
           <p className="text-4xl font-extrabold">{formatCurrency(report?.totalEarnings || 0)}</p>
-          <p className="text-xs text-brand-200 mt-2 flex items-center gap-1">
-            <TrendingUp size={14} /> Berasal dari 80% biaya ongkos kirim pesanan
+          <p className="text-xs text-blue-200 mt-2 flex items-center gap-1">
+            <TrendingUp size={14} /> Berasal dari biaya ongkos kirim pesanan
           </p>
         </div>
       </div>

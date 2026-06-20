@@ -31,7 +31,7 @@ const navItems: Record<RoleType, NavItem[]> = {
     { label: "Job Board", path: "/driver/jobs", icon: <Map size={16} /> },
     { label: "Pengiriman Saya", path: "/driver/my-deliveries", icon: <Truck size={16} /> },
     { label: "Penghasilan", path: "/driver/earnings", icon: <DollarSign size={16} /> },
-    { label: "Dompet", path: "/wallet", icon: <Wallet size={16} /> },
+    { label: "Dompet", path: "/driver/wallet", icon: <Wallet size={16} /> },
   ],
   ADMIN: [
     { label: "Dashboard", path: "/admin", icon: <LayoutDashboard size={16} /> },
