@@ -126,6 +126,8 @@ export interface UserPublic {
   phoneNumber?: string;
   avatarUrl?: string;
   profilePictureUrl?: string;
+  gender?: string;
+  birthDate?: string;
   isVerified: boolean;
   roles: RoleType[];
   activeRole: RoleType;

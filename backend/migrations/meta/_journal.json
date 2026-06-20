@@ -71,6 +71,13 @@
       "when": 1781869283735,
       "tag": "0009_smooth_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1781967018976,
+      "tag": "0010_regular_mauler",
+      "breakpoints": true
     }
   ]
 }

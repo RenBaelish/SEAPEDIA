@@ -157,10 +157,80 @@ authRouter.get('/me', async (c) => {
 
   try {
     const payload = await verify(token, secret, "HS256");
+    
+    // fetch latest user data
+    const db = drizzle(c.env.DB);
+    const dbUser = await db.select().from(users).where(eq(users.id, payload.id as string)).get();
+    
+    if (dbUser) {
+      return c.json({ user: { 
+        ...payload, 
+        fullName: dbUser.fullName, 
+        profilePictureUrl: dbUser.profilePictureUrl, 
+        email: dbUser.email, 
+        username: dbUser.username,
+        phoneNumber: dbUser.phoneNumber,
+        gender: dbUser.gender,
+        birthDate: dbUser.birthDate
+      } });
+    }
     return c.json({ user: payload });
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
+});
+
+authRouter.put('/profile', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.split(' ')[1];
+  const secret = c.env.JWT_SECRET || 'fallback_secret';
+
+  let payload;
+  try {
+    payload = await verify(token, secret, "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const body = await c.req.json();
+  const db = drizzle(c.env.DB);
+  
+  const updateData: any = {};
+  if (body.fullName) updateData.fullName = body.fullName;
+  if (body.email) updateData.email = body.email;
+  if (body.username) updateData.username = body.username;
+  if (body.profilePictureUrl) updateData.profilePictureUrl = body.profilePictureUrl;
+  if (body.phoneNumber !== undefined) updateData.phoneNumber = body.phoneNumber;
+  if (body.gender !== undefined) updateData.gender = body.gender;
+  if (body.birthDate !== undefined) updateData.birthDate = body.birthDate;
+  
+  if (body.password && body.password.length >= 8) {
+    updateData.password = await bcrypt.hash(body.password, 10);
+  }
+
+  if (Object.keys(updateData).length > 0) {
+    await db.update(users).set(updateData).where(eq(users.id, payload.id as string));
+  }
+
+  // If email or username changed, we should issue a new token
+  let newToken = token;
+  if (body.email || body.username) {
+    newToken = await sign({
+      ...payload,
+      email: updateData.email || payload.email,
+      username: updateData.username || payload.username,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24
+    }, secret, "HS256");
+  }
+
+  return c.json({ 
+    message: 'Profile updated',
+    data: { accessToken: newToken }
+  });
 });
 
 authRouter.patch('/switch-role', async (c) => {

@@ -8,6 +8,9 @@ export const users = sqliteTable('users', {
   email: text('email').notNull().unique(),
   password: text('password').notNull(), // hashed
   profilePictureUrl: text('profile_picture_url').notNull().default('https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg'),
+  phoneNumber: text('phone_number'),
+  gender: text('gender'),
+  birthDate: text('birth_date'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
