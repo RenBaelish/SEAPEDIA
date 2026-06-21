@@ -31,12 +31,12 @@ export function ProductCard({ product }: ProductCardProps) {
             loading="lazy"
           />
           {discountPercent > 0 && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">
+            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
               {discountPercent}%
             </div>
           )}
           {product.stock <= 3 && product.stock > 0 && (
-            <div className="absolute bottom-2 left-2 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+            <div className="absolute bottom-2 left-2 bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
               Sisa {product.stock}
             </div>
           )}
@@ -44,47 +44,47 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Content */}
         <div className="p-2.5 flex flex-col flex-1">
-          <h3 className="text-[12px] text-gray-700 line-clamp-2 mb-1.5 leading-snug group-hover:text-green-600 transition-colors">
+          <h3 className="text-xs text-gray-700 line-clamp-2 mb-1.5 leading-snug group-hover:text-green-600 transition-colors">
             {product.name}
           </h3>
 
           <div className="mt-auto space-y-1">
             {/* Price */}
-            <div className="font-semibold text-[14px] text-gray-900 leading-tight">
+            <div className="font-semibold text-sm text-gray-900 leading-tight">
               {formatCurrency(product.price)}
             </div>
 
             {discountPercent > 0 && (
               <div className="flex items-center gap-1 flex-wrap">
-                <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
-                <span className="text-[10px] text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
+                <span className="text-xs font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
+                <span className="text-xs text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
               </div>
             )}
 
             {/* Promo badge */}
             {discountPercent > 0 && (
-              <p className="text-[10px] text-orange-500 font-medium">Hemat s.d {discountPercent}% Pakai Bonus</p>
+              <p className="text-xs text-orange-500 font-medium">Hemat s.d {discountPercent}% Pakai Bonus</p>
             )}
 
             {/* Rating & sold */}
             <div className="flex items-center gap-1.5 pt-1">
               <Star size={11} className="text-amber-400 fill-amber-400" />
-              <span className="text-[11px] text-gray-500">{(product.rating ?? 0).toFixed(1)}</span>
-              <span className="text-gray-300 text-[11px]">•</span>
-              <span className="text-[11px] text-gray-500">{formatSold(product.sold)} terjual</span>
+              <span className="text-xs text-gray-500">{(product.rating ?? 0).toFixed(1)}</span>
+              <span className="text-gray-300 text-xs">•</span>
+              <span className="text-xs text-gray-500">{formatSold(product.sold)} terjual</span>
             </div>
 
             {/* Store & location */}
             <div className="flex items-center gap-1 pt-0.5">
               <div className="w-3 h-3 rounded-sm bg-green-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-[7px] font-bold">✓</span>
+                <span className="text-white text-xs font-bold">✓</span>
               </div>
-              <span className="text-[10px] text-gray-500 truncate">{product.storeName}</span>
+              <span className="text-xs text-gray-500 truncate">{product.storeName}</span>
             </div>
 
             <div className="flex items-center gap-1">
               <MapPin size={10} className="text-gray-300 flex-shrink-0" />
-              <span className="text-[10px] text-gray-400 truncate">Jakarta, Indonesia</span>
+              <span className="text-xs text-gray-400 truncate">Jakarta, Indonesia</span>
             </div>
           </div>
         </div>

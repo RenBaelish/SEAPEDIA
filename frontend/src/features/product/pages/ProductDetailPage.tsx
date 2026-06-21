@@ -133,7 +133,7 @@ export default function ProductDetailPage() {
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-100">
         <div className="page-container py-2">
-          <div className="flex items-center gap-2 text-[12px] text-gray-500">
+          <div className="flex items-center gap-2 text-xs text-gray-500">
             <Link to="/" className="hover:text-green-600 transition-colors">Beranda</Link>
             <ChevronRight size={12} />
             <Link to={`/search?q=${product.categoryName}`} className="hover:text-green-600 transition-colors">{product.categoryName}</Link>
@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
                   className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 {discountPercent > 0 && (
-                  <div className="absolute top-3 left-3 bg-red-500 text-white text-[11px] font-bold px-2 py-1 rounded">
+                  <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                     {discountPercent}%
                   </div>
                 )}
@@ -196,12 +196,12 @@ export default function ProductDetailPage() {
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => setWishlist(w => !w)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold border-2 transition-colors flex-1 justify-center ${wishlist ? "border-red-300 text-red-500 bg-red-50" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border-2 transition-colors flex-1 justify-center ${wishlist ? "border-red-300 text-red-500 bg-red-50" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
                 >
                   <Heart size={14} className={wishlist ? "fill-red-500" : ""} />
                   Wishlist
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-full text-[12px] font-semibold border-2 border-gray-200 text-gray-500 hover:border-gray-300 flex-1 justify-center">
+                <button className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border-2 border-gray-200 text-gray-500 hover:border-gray-300 flex-1 justify-center">
                   <Share2 size={14} /> Bagikan
                 </button>
               </div>
@@ -209,7 +209,7 @@ export default function ProductDetailPage() {
 
             {/* 2. Product Info */}
             <div className="p-6 border-r border-gray-100">
-              <h1 className="text-[17px] font-semibold text-gray-800 leading-snug mb-3">
+              <h1 className="text-lg font-semibold text-gray-800 leading-snug mb-3">
                 {product.name}
               </h1>
 
@@ -221,30 +221,30 @@ export default function ProductDetailPage() {
                       <Star key={i} size={14} className={i <= Math.round(product.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"} />
                     ))}
                   </div>
-                  <span className="text-[13px] font-bold text-gray-800">{(product.rating ?? 0).toFixed(1)}</span>
-                  <span className="text-[12px] text-gray-400">Penilaian</span>
+                  <span className="text-sm font-bold text-gray-800">{(product.rating ?? 0).toFixed(1)}</span>
+                  <span className="text-xs text-gray-400">Penilaian</span>
                 </div>
                 <div className="w-px h-4 bg-gray-200" />
-                <span className="text-[13px] text-gray-600"><b>{formatSold(product.sold)}</b> terjual</span>
+                <span className="text-sm text-gray-600"><b>{formatSold(product.sold)}</b> terjual</span>
                 <div className="w-px h-4 bg-gray-200" />
-                <span className="text-[12px] text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded">{product.categoryName}</span>
+                <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded">{product.categoryName}</span>
               </div>
 
               {/* Price */}
               <div className="bg-gray-50 rounded-xl p-4 mb-5">
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-[28px] font-semibold text-gray-900 leading-none">
+                  <span className="text-3xl font-semibold text-gray-900 leading-none">
                     {formatCurrency(product.price)}
                   </span>
                   {discountPercent > 0 && (
                     <>
-                      <span className="text-[14px] text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
-                      <span className="text-[13px] font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">{discountPercent}% OFF</span>
+                      <span className="text-sm text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
+                      <span className="text-sm font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">{discountPercent}% OFF</span>
                     </>
                   )}
                 </div>
                 {discountPercent > 0 && (
-                  <p className="text-[11px] text-gray-400 mt-1">Hemat {formatCurrency(product.comparePrice! - product.price)}</p>
+                  <p className="text-xs text-gray-400 mt-1">Hemat {formatCurrency(product.comparePrice! - product.price)}</p>
                 )}
               </div>
 
@@ -253,22 +253,22 @@ export default function ProductDetailPage() {
                 <div className="flex items-start gap-3">
                   <Truck size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-[13px] font-semibold text-gray-700">Pengiriman</p>
-                    <p className="text-[12px] text-gray-500">Instant · Same Day · Next Day · Regular</p>
+                    <p className="text-sm font-semibold text-gray-700">Pengiriman</p>
+                    <p className="text-xs text-gray-500">Instant · Same Day · Next Day · Regular</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <RotateCcw size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-[13px] font-semibold text-gray-700">Pengembalian Barang</p>
-                    <p className="text-[12px] text-gray-500">Proses pengembalian mudah dalam 7 hari</p>
+                    <p className="text-sm font-semibold text-gray-700">Pengembalian Barang</p>
+                    <p className="text-xs text-gray-500">Proses pengembalian mudah dalam 7 hari</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Shield size={16} className="text-purple-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-[13px] font-semibold text-gray-700">Garansi Seapedia</p>
-                    <p className="text-[12px] text-gray-500">Uang kembali jika produk tidak sesuai</p>
+                    <p className="text-sm font-semibold text-gray-700">Garansi Seapedia</p>
+                    <p className="text-xs text-gray-500">Uang kembali jika produk tidak sesuai</p>
                   </div>
                 </div>
               </div>
@@ -287,16 +287,16 @@ export default function ProductDetailPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <ShieldCheck size={14} className="text-green-500 flex-shrink-0" />
-                    <Link to={`/store/${product.storeSlug}`} className="text-[14px] font-bold text-gray-800 hover:text-green-600 transition-colors truncate">
+                    <Link to={`/store/${product.storeSlug}`} className="text-sm font-bold text-gray-800 hover:text-green-600 transition-colors truncate">
                       {product.storeName}
                     </Link>
                   </div>
-                  <div className="flex items-center gap-1 text-[11px] text-gray-400">
+                  <div className="flex items-center gap-1 text-xs text-gray-400">
                     <MapPin size={11} />
                     <span>Jakarta, Indonesia</span>
                   </div>
                 </div>
-                <Link to={`/store/${product.storeSlug}`} className="flex-shrink-0 px-4 py-2 rounded-full border-2 border-green-500 text-green-600 text-[12px] font-semibold hover:bg-green-50 transition-colors">
+                <Link to={`/store/${product.storeSlug}`} className="flex-shrink-0 px-4 py-2 rounded-full border-2 border-green-500 text-green-600 text-xs font-semibold hover:bg-green-50 transition-colors">
                   Kunjungi
                 </Link>
               </div>
@@ -305,16 +305,16 @@ export default function ProductDetailPage() {
 
               {/* Description */}
               <div>
-                <h3 className="text-[15px] font-bold text-gray-800 mb-3">Deskripsi Produk</h3>
-                <div className="text-[13px] text-gray-600 leading-relaxed whitespace-pre-wrap">
+                <h3 className="text-base font-bold text-gray-800 mb-3">Deskripsi Produk</h3>
+                <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
                   {product.description}
                 </div>
               </div>
 
               {/* Product details table */}
               <div className="mt-5">
-                <h3 className="text-[15px] font-bold text-gray-800 mb-3">Detail Produk</h3>
-                <div className="grid grid-cols-2 gap-y-2 text-[13px]">
+                <h3 className="text-base font-bold text-gray-800 mb-3">Detail Produk</h3>
+                <div className="grid grid-cols-2 gap-y-2 text-sm">
                   {[
                     { label: "Kondisi", value: "Baru" },
                     { label: "Berat Satuan", value: `${product.weight}g` },
@@ -335,7 +335,7 @@ export default function ProductDetailPage() {
               <div className="sticky top-20 space-y-4">
                 {/* Cart message banner */}
                 {cartMsg && (
-                  <div className={`flex items-center gap-2 p-3 rounded-xl text-[12px] font-semibold ${cartMsg.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                  <div className={`flex items-center gap-2 p-3 rounded-xl text-xs font-semibold ${cartMsg.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
                     {cartMsg.type === "success" ? <CheckCircle size={16} /> : <AlertTriangle size={16} />}
                     {cartMsg.text}
                   </div>
@@ -343,7 +343,7 @@ export default function ProductDetailPage() {
 
                 {/* Quantity selector */}
                 <div>
-                  <p className="text-[13px] font-semibold text-gray-700 mb-2">Atur jumlah</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">Atur jumlah</p>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden">
                       <button
@@ -355,7 +355,7 @@ export default function ProductDetailPage() {
                       </button>
                       <input
                         type="number"
-                        className="w-12 h-9 text-center text-[14px] font-bold outline-none border-x border-gray-200"
+                        className="w-12 h-9 text-center text-sm font-bold outline-none border-x border-gray-200"
                         value={qty}
                         onChange={(e) => setQty(Math.max(1, Math.min(product.stock, parseInt((e.target as any).value) || 1)))}
                       />
@@ -367,14 +367,14 @@ export default function ProductDetailPage() {
                         +
                       </button>
                     </div>
-                    <span className="text-[12px] text-gray-400">Stok: <b className="text-gray-700">{product.stock}</b></span>
+                    <span className="text-xs text-gray-400">Stok: <b className="text-gray-700">{product.stock}</b></span>
                   </div>
                 </div>
 
                 {/* Subtotal */}
                 <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
-                  <span className="text-[12px] text-gray-500">Subtotal</span>
-                  <span className="text-[16px] font-semibold text-gray-900">{formatCurrency(product.price * qty)}</span>
+                  <span className="text-xs text-gray-500">Subtotal</span>
+                  <span className="text-base font-semibold text-gray-900">{formatCurrency(product.price * qty)}</span>
                 </div>
 
                 {/* CTA Buttons */}
@@ -382,7 +382,7 @@ export default function ProductDetailPage() {
                   <button
                     onClick={() => handleAddToCart(false)}
                     disabled={addingToCart || product.stock === 0}
-                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-green-500 text-green-600 font-bold text-[14px] hover:bg-green-50 transition-colors disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-green-500 text-green-600 font-bold text-sm hover:bg-green-50 transition-colors disabled:opacity-50"
                   >
                     <ShoppingCart size={18} />
                     {product.stock === 0 ? "Stok Habis" : "+ Keranjang"}
@@ -390,7 +390,7 @@ export default function ProductDetailPage() {
                   <button
                     onClick={() => handleAddToCart(true)}
                     disabled={addingToCart || product.stock === 0}
-                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-[14px] transition-colors disabled:opacity-50 shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-sm transition-colors disabled:opacity-50 shadow-sm"
                   >
                     <Zap size={18} />
                     Beli Langsung
@@ -398,7 +398,7 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Chat seller */}
-                <button className="w-full flex items-center justify-center gap-2 h-10 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-[13px] hover:bg-gray-50 transition-colors">
+                <button className="w-full flex items-center justify-center gap-2 h-10 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">
                   <MessageCircle size={16} />
                   Chat Penjual
                 </button>
@@ -410,7 +410,7 @@ export default function ProductDetailPage() {
                     { icon: "", text: "Produk original & bergaransi" },
                     { icon: "", text: "Pengiriman ke seluruh Indonesia" },
                   ].map((b, i) => (
-                    <div key={i} className="flex items-center gap-2 text-[11px] text-gray-500">
+                    <div key={i} className="flex items-center gap-2 text-xs text-gray-500">
                       <span>{b.icon}</span>
                       <span>{b.text}</span>
                     </div>
@@ -425,8 +425,8 @@ export default function ProductDetailPage() {
         {relatedProducts.length > 0 && (
           <div className="bg-white rounded-xl shadow-sm mt-4 p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-[16px] font-bold text-gray-900">Pilihan Lainnya Untukmu</h2>
-              <Link to="/search" className="text-[13px] text-green-600 font-semibold flex items-center gap-1 hover:underline">
+              <h2 className="text-base font-bold text-gray-900">Pilihan Lainnya Untukmu</h2>
+              <Link to="/search" className="text-sm text-green-600 font-semibold flex items-center gap-1 hover:underline">
                 Lihat Semua <ChevronRight size={14} />
               </Link>
             </div>
