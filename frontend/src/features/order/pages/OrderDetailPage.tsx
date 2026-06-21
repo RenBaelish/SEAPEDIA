@@ -119,7 +119,7 @@ export default function OrderDetailPage() {
                 <div key={hist.id} className="relative pl-4 border-l-2 border-brand-200">
                   <div className="absolute w-2 h-2 bg-brand-500 rounded-full -left-[5px] top-1"></div>
                   <p className="text-xs font-bold text-gray-800">{hist.status}</p>
-                  <p className="text-[10px] text-gray-400 mb-1">{new Date(hist.createdAt).toLocaleString('id-ID')}</p>
+                  <p className="text-xs text-gray-400 mb-1">{new Date(hist.createdAt).toLocaleString('id-ID')}</p>
                   <p className="text-xs text-gray-600">{hist.note}</p>
                 </div>
               ))}

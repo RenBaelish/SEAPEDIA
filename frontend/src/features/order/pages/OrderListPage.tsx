@@ -85,7 +85,7 @@ export default function OrderListPage() {
 
   return (
     <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
-            <h1 className="text-[20px] font-bold text-gray-800 mb-6">Daftar Transaksi</h1>
+            <h1 className="text-xl font-bold text-gray-800 mb-6">Daftar Transaksi</h1>
 
             {/* Filter Bar */}
             <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -94,19 +94,19 @@ export default function OrderListPage() {
                 <input
                   type="text"
                   placeholder="Cari transaksimu di sini"
-                  className="w-full h-10 pl-10 pr-4 border border-gray-200 rounded-lg text-[13px] outline-none focus:border-green-500 transition-colors"
+                  className="w-full h-10 pl-10 pr-4 border border-gray-200 rounded-lg text-sm outline-none focus:border-green-500 transition-colors"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery((e.target as any).value)}
                 />
               </div>
 
               <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 md:pb-0">
-                <span className="text-[13px] font-semibold text-gray-700 mr-2 shrink-0">Status</span>
+                <span className="text-sm font-semibold text-gray-700 mr-2 shrink-0">Status</span>
                 {["Semua", "Berlangsung", "Berhasil", "Tidak Berhasil"].map(filter => (
                   <button
                     key={filter}
                     onClick={() => setActiveFilter(filter)}
-                    className={`shrink-0 px-4 h-9 rounded-lg border text-[13px] font-semibold transition-colors ${activeFilter === filter ? "border-green-500 bg-green-50 text-green-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+                    className={`shrink-0 px-4 h-9 rounded-lg border text-sm font-semibold transition-colors ${activeFilter === filter ? "border-green-500 bg-green-50 text-green-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
                   >
                     {filter}
                   </button>
@@ -124,11 +124,11 @@ export default function OrderListPage() {
                 <div className="inline-flex items-center justify-center w-32 h-32 bg-gray-50 rounded-full mb-6">
                   <ShoppingBag size={48} className="text-gray-300" />
                 </div>
-                <h3 className="text-[18px] font-bold text-gray-800 mb-2">Oops, nggak ada transaksi yang sesuai filter</h3>
-                <p className="text-[14px] text-gray-500 mb-6">Coba ubah filter atau kata kunci pencarianmu, ya.</p>
+                <h3 className="text-lg font-bold text-gray-800 mb-2">Oops, nggak ada transaksi yang sesuai filter</h3>
+                <p className="text-sm text-gray-500 mb-6">Coba ubah filter atau kata kunci pencarianmu, ya.</p>
                 <button
                   onClick={() => { setActiveFilter("Semua"); setSearchQuery(""); }}
-                  className="px-6 h-10 bg-green-500 hover:bg-green-600 text-white font-bold text-[13px] rounded-lg transition-colors"
+                  className="px-6 h-10 bg-green-500 hover:bg-green-600 text-white font-bold text-sm rounded-lg transition-colors"
                 >
                   Reset Filter
                 </button>
@@ -146,21 +146,21 @@ export default function OrderListPage() {
                       <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-3">
                         <div className="flex items-center gap-3">
                           <ShoppingBag size={16} className="text-gray-400" />
-                          <span className="text-[12px] font-semibold text-gray-600">Belanja</span>
+                          <span className="text-xs font-semibold text-gray-600">Belanja</span>
                           <span className="text-gray-300">•</span>
-                          <span className="text-[12px] text-gray-500">{new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                          <span className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                           <span className="text-gray-300">•</span>
-                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${statusInfo.bg} ${statusInfo.color}`}>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded ${statusInfo.bg} ${statusInfo.color}`}>
                             {statusInfo.label}
                           </span>
                         </div>
-                        <span className="text-[12px] text-gray-400 hidden md:block">INV/{order.id.substring(0, 8).toUpperCase()}</span>
+                        <span className="text-xs text-gray-400 hidden md:block">INV/{order.id.substring(0, 8).toUpperCase()}</span>
                       </div>
 
                       {/* Store Name */}
                       <div className="flex items-center gap-2 mb-3">
                         <CheckCircle size={14} className="text-blue-500" />
-                        <span className="text-[13px] font-bold text-gray-800">{order.store?.name || "Toko SEAPEDIA"}</span>
+                        <span className="text-sm font-bold text-gray-800">{order.store?.name || "Toko SEAPEDIA"}</span>
                       </div>
 
                       {/* Content Row */}
@@ -174,10 +174,10 @@ export default function OrderListPage() {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-[14px] font-semibold text-gray-800 mb-1 line-clamp-1">{firstItem.productName || "Produk SEAPEDIA"}</h4>
-                            <p className="text-[12px] text-gray-500 mb-1">{firstItem.quantity || 1} barang x {formatCurrency(Number(firstItem.price || order.total))}</p>
+                            <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-1">{firstItem.productName || "Produk SEAPEDIA"}</h4>
+                            <p className="text-xs text-gray-500 mb-1">{firstItem.quantity || 1} barang x {formatCurrency(Number(firstItem.price || order.total))}</p>
                             {extraItemsCount > 0 && (
-                              <p className="text-[11px] text-gray-400">+{extraItemsCount} produk lainnya</p>
+                              <p className="text-xs text-gray-400">+{extraItemsCount} produk lainnya</p>
                             )}
                           </div>
                         </div>
@@ -185,8 +185,8 @@ export default function OrderListPage() {
                         {/* Total & Action */}
                         <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-[150px] shrink-0 border-t md:border-t-0 md:border-l border-gray-100 pt-3 md:pt-0 md:pl-4">
                           <div className="text-left md:text-right mb-0 md:mb-3">
-                            <p className="text-[11px] text-gray-500 mb-0.5">Total Belanja</p>
-                            <p className="text-[14px] font-bold text-gray-900">{formatCurrency(Number(order.total))}</p>
+                            <p className="text-xs text-gray-500 mb-0.5">Total Belanja</p>
+                            <p className="text-sm font-bold text-gray-900">{formatCurrency(Number(order.total))}</p>
                           </div>
                         </div>
                       </div>
@@ -195,7 +195,7 @@ export default function OrderListPage() {
                       <div className="flex items-center justify-end mt-4 pt-3 border-t border-gray-100">
                         <Link 
                           to={`/orders/${order.id}`}
-                          className="px-6 h-9 flex items-center justify-center rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold text-[13px] transition-colors"
+                          className="px-6 h-9 flex items-center justify-center rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold text-sm transition-colors"
                         >
                           Lihat Detail Transaksi
                         </Link>
