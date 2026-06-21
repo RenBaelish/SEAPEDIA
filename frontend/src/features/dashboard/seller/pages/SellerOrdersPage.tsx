@@ -44,8 +44,11 @@ export default function SellerOrdersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-headline-md text-secondary">Kelola Pesanan</h1>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Kelola Pesanan</h1>
+          <p className="text-sm text-gray-500 mt-1">Pantau dan proses pesanan yang masuk ke toko Anda.</p>
+        </div>
       </div>
 
       {orders.length === 0 ? (

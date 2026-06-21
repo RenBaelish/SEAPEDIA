@@ -104,18 +104,23 @@ export default function StoreSettingsPage() {
 
   return (
     <div className="max-w-2xl space-y-6">
-      <h1 className="text-headline-md text-secondary">
-        {store ? "Pengaturan Toko" : "Buat Toko"}
-      </h1>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {store ? "Pengaturan Toko" : "Buat Toko"}
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">Ubah profil, deskripsi, dan status toko Anda.</p>
+        </div>
+      </div>
 
       {/* Store avatar preview */}
       {store && (
         <Card className="flex items-center gap-4">
           <Avatar name={store.name} src={store.logoUrl} size="xl" />
           <div>
-            <p className="text-[14px] font-bold text-secondary">{store.name}</p>
-            <p className="text-[12px] text-tertiary">/{store.slug}</p>
-            <p className={`text-[11px] font-bold mt-1 ${store.status === "ACTIVE" ? "text-success" : "text-error"}`}>
+            <p className="text-sm font-bold text-secondary">{store.name}</p>
+            <p className="text-xs text-tertiary">/{store.slug}</p>
+            <p className={`text-xs font-bold mt-1 ${store.status === "ACTIVE" ? "text-success" : "text-error"}`}>
               {store.status}
             </p>
           </div>
@@ -123,15 +128,15 @@ export default function StoreSettingsPage() {
       )}
 
       {apiError && (
-        <div className="p-3 bg-red-50 text-error text-[12px] font-semibold rounded-md">{apiError}</div>
+        <div className="p-3 bg-red-50 text-error text-xs font-semibold rounded-md">{apiError}</div>
       )}
       {successMsg && (
-        <div className="p-3 bg-green-50 text-success text-[12px] font-semibold rounded-md">{successMsg}</div>
+        <div className="p-3 bg-green-50 text-success text-xs font-semibold rounded-md">{successMsg}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <Card>
-          <h3 className="text-[14px] font-bold text-secondary mb-4 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-secondary mb-4 flex items-center gap-2">
             <Store size={16} /> Informasi Toko
           </h3>
           <div className="space-y-4">

@@ -26,14 +26,11 @@ export default function SellerDashboardPage() {
   const [hasStore, setHasStore] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      api.get("/stores/me"),
-      api.get("/reports/seller/income").catch(() => ({ data: { data: { totalIncome: 0 } } }))
-    ])
-      .then(([storeRes, incomeRes]) => { 
-        setStore(storeRes.data.data); 
-        setHasStore(!!storeRes.data.data); 
-        setIncome(incomeRes.data.data);
+    api.get("/stores/me/stats")
+      .then((res) => { 
+        setStore(res.data.data.store); 
+        setHasStore(true); 
+        setIncome(res.data.data.income);
       })
       .catch((err) => {
         if (err.response?.status === 404) setHasStore(false);
@@ -54,11 +51,11 @@ export default function SellerDashboardPage() {
     return (
       <div className="w-full max-w-lg mx-auto py-16 text-center">
         <Store size={48} className="text-tertiary mx-auto mb-4" />
-        <h2 className="text-headline-md text-secondary mb-2">Belum Punya Toko</h2>
-        <p className="text-body-sm text-tertiary mb-8">
+        <h2 className="text-2xl font-bold text-secondary mb-2">Belum Punya Toko</h2>
+        <p className="text-xs text-tertiary mb-8">
           Buat toko Anda sekarang untuk mulai berjualan di SEAPEDIA.
         </p>
-        <Link to="/seller/store/settings" className="btn-primary h-10 px-6 inline-flex items-center gap-2 rounded-md text-[12px] font-bold">
+        <Link to="/seller/store/settings" className="btn-primary h-10 px-6 inline-flex items-center gap-2 rounded-md text-xs font-bold">
           <Plus size={16} /> Buat Toko Sekarang
         </Link>
       </div>
@@ -66,51 +63,54 @@ export default function SellerDashboardPage() {
   }
 
   const stats = [
-    { label: "Total Pendapatan", value: formatCurrency(income?.totalIncome || 0), icon: TrendingUp, color: "text-brand-500", bg: "bg-brand-50" },
-    { label: "Total Penjualan", value: store?.totalSales ?? 0, icon: ShoppingBag, color: "text-primary", bg: "bg-primary-light" },
-    { label: "Total Produk", value: store?._count?.products ?? 0, icon: Package, color: "text-blue-500", bg: "bg-blue-50" },
-    { label: "Rating Toko", value: (store?.rating ?? 0).toFixed(1), icon: Store, color: "text-purple-500", bg: "bg-purple-50" },
+    { label: "Total Pendapatan", value: formatCurrency(income?.totalIncome || 0), icon: TrendingUp, color: "text-brand-500", bg: "bg-brand-100", link: "/seller/wallet", linkLabel: "Cek Saldo" },
+    { label: "Total Penjualan", value: store?.totalSales ?? 0, icon: ShoppingBag, color: "text-primary", bg: "bg-primary-light", link: "/seller/orders", linkLabel: "Kelola Pesanan" },
+    { label: "Total Produk", value: store?._count?.products ?? 0, icon: Package, color: "text-blue-500", bg: "bg-blue-100", link: "/seller/products", linkLabel: "Kelola Produk" },
+    { label: "Rating Toko", value: (store?.rating ?? 0).toFixed(1), icon: Store, color: "text-purple-500", bg: "bg-purple-100", link: `/store/${store?.domain}`, linkLabel: "Lihat Toko" },
   ];
 
   return (
     <div className="space-y-6">
       {/* Welcome banner */}
-      <div className="flex items-center justify-between">
+      <div className="flex justify-between items-end mb-6">
         <div>
-          <h1 className="text-headline-md text-secondary">
-            Selamat datang, <span className="text-primary">{user?.fullName}</span>!
+          <h1 className="text-2xl font-bold text-gray-800">
+            Selamat datang, <span className="text-brand-600">{user?.fullName}</span>!
           </h1>
-          <p className="text-body-sm text-tertiary mt-1">
-            Toko: <span className="font-bold text-secondary">{store?.name}</span>
+          <p className="text-sm text-gray-500 mt-1">
+            Toko: <span className="font-bold text-gray-700">{store?.name}</span>
             &nbsp;·&nbsp;
-            <span className={`font-semibold ${store?.status === "ACTIVE" ? "text-success" : "text-error"}`}>
-              {store?.status}
+            <span className={`font-semibold ${store?.status === "ACTIVE" ? "text-green-600" : "text-red-600"}`}>
+              {store?.status === 'ACTIVE' ? 'Aktif' : store?.status === 'SUSPENDED' ? 'Ditangguhkan' : store?.status}
             </span>
           </p>
         </div>
         <Link
           to="/seller/products/new"
-          className="btn-primary h-10 px-4 inline-flex items-center gap-2 rounded-md text-[12px] font-bold"
+          className="btn-primary h-10 px-4 inline-flex items-center gap-2 rounded-md text-xs font-bold"
         >
           <Plus size={14} /> Tambah Produk
         </Link>
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => {
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label}>
-              <div className="flex items-center gap-3">
-                <div className={`p-2.5 rounded-lg ${stat.bg}`}>
-                  <Icon size={20} className={stat.color} />
+            <Card key={idx} className="flex flex-col">
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                  <Icon size={20} />
                 </div>
                 <div>
-                  <p className="text-[11px] text-tertiary font-semibold uppercase tracking-wide">{stat.label}</p>
-                  <p className="text-[22px] font-medium text-secondary leading-tight">{stat.value}</p>
+                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <h3 className="text-2xl font-bold text-gray-800">{stat.value}</h3>
                 </div>
               </div>
+              <Link to={stat.link} className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+                {stat.linkLabel} &rarr;
+              </Link>
             </Card>
           );
         })}
@@ -118,7 +118,7 @@ export default function SellerDashboardPage() {
 
       {/* Quick links */}
       <Card>
-        <h3 className="text-[14px] font-bold text-secondary mb-4">Aksi Cepat</h3>
+        <h3 className="text-sm font-bold text-secondary mb-4">Aksi Cepat</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: "Kelola Produk", to: "/seller/products", icon: Package },
@@ -130,7 +130,7 @@ export default function SellerDashboardPage() {
               <Link
                 key={link.to}
                 to={link.to}
-                className="flex items-center gap-2 p-3 border border-muted rounded-md hover:border-primary hover:bg-primary-light text-secondary hover:text-primary transition-all text-[12px] font-semibold"
+                className="flex items-center gap-2 p-3 border border-muted rounded-md hover:border-primary hover:bg-primary-light text-secondary hover:text-primary transition-all text-xs font-semibold"
               >
                 <Icon size={16} />
                 {link.label}

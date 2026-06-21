@@ -153,19 +153,19 @@ export default function SellerProductFormPage() {
         >
           <ArrowLeft size={16} />
         </Link>
-        <h1 className="text-headline-md text-secondary">
+        <h1 className="text-2xl font-bold text-secondary">
           {isEdit ? "Edit Produk" : "Tambah Produk"}
         </h1>
       </div>
 
       {apiError && (
-        <div className="p-3 bg-red-50 text-error text-[12px] font-semibold rounded-md">{apiError}</div>
+        <div className="p-3 bg-red-50 text-error text-xs font-semibold rounded-md">{apiError}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Basic Info */}
         <Card>
-          <h3 className="text-[14px] font-bold text-secondary mb-4">Informasi Produk</h3>
+          <h3 className="text-sm font-bold text-secondary mb-4">Informasi Produk</h3>
           <div className="space-y-4">
             <Input
               label="Nama Produk *"
@@ -184,11 +184,11 @@ export default function SellerProductFormPage() {
             />
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-semibold text-secondary">Kategori *</label>
+                <label className="text-xs font-semibold text-secondary">Kategori *</label>
                 <select
                   value={form.categoryId}
                   onChange={(e) => setField("categoryId", (e.target as any).value)}
-                  className={`w-full bg-surface text-on-surface text-[12px] border rounded-md outline-none h-10 px-3 transition-colors ${
+                  className={`w-full bg-surface text-on-surface text-xs border rounded-md outline-none h-10 px-3 transition-colors ${
                     errors.categoryId ? "border-error" : "border-border focus:border-primary"
                   }`}
                 >
@@ -197,14 +197,14 @@ export default function SellerProductFormPage() {
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
-                {errors.categoryId && <p className="text-[11px] text-error">{errors.categoryId}</p>}
+                {errors.categoryId && <p className="text-xs text-error">{errors.categoryId}</p>}
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-[12px] font-semibold text-secondary">Status</label>
+                <label className="text-xs font-semibold text-secondary">Status</label>
                 <select
                   value={form.status}
                   onChange={(e) => setField("status", (e.target as any).value as any)}
-                  className="w-full bg-surface text-on-surface text-[12px] border border-border rounded-md outline-none h-10 px-3 focus:border-primary transition-colors"
+                  className="w-full bg-surface text-on-surface text-xs border border-border rounded-md outline-none h-10 px-3 focus:border-primary transition-colors"
                 >
                   <option value="DRAFT">Draft (tidak tampil)</option>
                   <option value="ACTIVE">Aktif (tampil publik)</option>
@@ -217,7 +217,7 @@ export default function SellerProductFormPage() {
 
         {/* Pricing & Stock */}
         <Card>
-          <h3 className="text-[14px] font-bold text-secondary mb-4">Harga & Stok</h3>
+          <h3 className="text-sm font-bold text-secondary mb-4">Harga & Stok</h3>
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Harga (IDR) *"
@@ -256,8 +256,8 @@ export default function SellerProductFormPage() {
 
         {/* Images */}
         <Card>
-          <h3 className="text-[14px] font-bold text-secondary mb-2">Gambar Produk</h3>
-          <p className="text-[11px] text-tertiary mb-4">
+          <h3 className="text-sm font-bold text-secondary mb-2">Gambar Produk</h3>
+          <p className="text-xs text-tertiary mb-4">
             Tambahkan URL gambar (maks. 8). Pastikan URL dapat diakses publik.
           </p>
 
@@ -302,7 +302,7 @@ export default function SellerProductFormPage() {
 
         {/* Submit */}
         <div className="flex gap-3">
-          <Link to="/seller/products" className="btn-secondary h-10 px-4 inline-flex items-center rounded-md text-[12px] font-bold">
+          <Link to="/seller/products" className="btn-secondary h-10 px-4 inline-flex items-center rounded-md text-xs font-bold">
             Batal
           </Link>
           <Button type="submit" loading={loading}>

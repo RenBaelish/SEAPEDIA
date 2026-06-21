@@ -84,9 +84,9 @@ export default function SellerProductsPage() {
     return (
       <div className="w-full max-w-lg mx-auto py-16 text-center">
         <Store size={48} className="text-tertiary mx-auto mb-4" />
-        <h2 className="text-headline-md text-secondary mb-2">Buat Toko Dulu</h2>
-        <p className="text-body-sm text-tertiary mb-6">Anda harus memiliki toko sebelum bisa menambah produk.</p>
-        <Link to="/seller/store/settings" className="btn-primary h-10 px-6 inline-flex items-center gap-2 rounded-md text-[12px] font-bold">
+        <h2 className="text-2xl font-bold text-secondary mb-2">Buat Toko Dulu</h2>
+        <p className="text-xs text-tertiary mb-6">Anda harus memiliki toko sebelum bisa menambah produk.</p>
+        <Link to="/seller/store/settings" className="btn-primary h-10 px-6 inline-flex items-center gap-2 rounded-md text-xs font-bold">
           Buat Toko
         </Link>
       </div>
@@ -95,15 +95,14 @@ export default function SellerProductsPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-headline-md text-secondary">Produk Saya</h1>
-        <Link
-          to="/seller/products/new"
-          className="btn-primary h-10 px-4 inline-flex items-center gap-2 rounded-md text-[12px] font-bold"
-        >
-          <Plus size={14} /> Tambah Produk
-        </Link>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Daftar Produk</h1>
+          <p className="text-sm text-gray-500 mt-1">Kelola inventaris dan katalog produk toko Anda.</p>
+        </div>
+        <Button onClick={() => navigate("/seller/products/new")} className="h-9 px-4 gap-2 text-sm bg-primary hover:bg-primary-hover shadow-sm">
+          <Plus size={16} /> Tambah
+        </Button>
       </div>
 
       {/* Search */}
@@ -122,14 +121,14 @@ export default function SellerProductsPage() {
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center text-tertiary text-[12px]">
+          <div className="py-16 text-center text-tertiary text-xs">
             {products.length === 0
               ? "Belum ada produk. Tambahkan produk pertama Anda!"
               : "Tidak ada produk yang cocok."}
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-[12px]">
+            <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-muted bg-[#f9fafb]">
                   <th className="text-left px-4 py-3 font-bold text-secondary w-[40%]">Produk</th>
@@ -152,7 +151,7 @@ export default function SellerProductsPage() {
                         />
                         <div>
                           <p className="font-semibold text-secondary line-clamp-1">{product.name}</p>
-                          <p className="text-[11px] text-tertiary">{product.categoryName}</p>
+                          <p className="text-xs text-tertiary">{product.categoryName}</p>
                         </div>
                       </div>
                     </td>
@@ -226,7 +225,7 @@ export default function SellerProductsPage() {
           </div>
         }
       >
-        <p className="text-[12px] text-secondary">
+        <p className="text-xs text-secondary">
           Produk ini akan dihapus dari katalog publik. Tindakan ini tidak dapat dibatalkan.
         </p>
       </Modal>

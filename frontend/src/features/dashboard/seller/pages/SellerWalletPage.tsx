@@ -49,7 +49,7 @@ export default function SellerWalletPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-headline-md text-secondary">Dompet Pendapatan</h1>
+        <h1 className="text-2xl font-bold text-secondary">Dompet Pendapatan</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -65,7 +65,7 @@ export default function SellerWalletPage() {
           <div className="relative z-10 text-white space-y-6">
             <div className="flex items-center gap-2">
               <WalletIcon size={20} className="fill-white" />
-              <span className="font-bold tracking-widest text-[14px]">Saldo Pendapatan</span>
+              <span className="font-bold tracking-widest text-sm">Saldo Pendapatan</span>
             </div>
             
             <div>
@@ -85,18 +85,18 @@ export default function SellerWalletPage() {
         {/* Transactions History */}
         <Card className="md:col-span-2">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-[14px] font-bold text-secondary">Riwayat Penjualan</h3>
+            <h3 className="text-sm font-bold text-secondary">Riwayat Penjualan</h3>
           </div>
 
           <div className="space-y-6">
             {Object.keys(groupedTransactions).length === 0 ? (
-              <div className="text-center py-12 text-tertiary text-[12px]">
+              <div className="text-center py-12 text-tertiary text-xs">
                 Belum ada transaksi penjualan bulan ini.
               </div>
             ) : (
               Object.entries(groupedTransactions).map(([date, txs]) => (
                 <div key={date}>
-                  <h4 className="text-[12px] font-bold text-secondary mb-3">{date}</h4>
+                  <h4 className="text-xs font-bold text-secondary mb-3">{date}</h4>
                   <div className="space-y-3">
                     {txs.map((tx) => {
                       const isIncome = tx.type === 'INCOME';
@@ -124,13 +124,13 @@ export default function SellerWalletPage() {
                               <Icon size={20} />
                             </div>
                             <div>
-                              <p className="text-[13px] font-bold text-secondary">{tx.description || tx.type}</p>
-                              <p className="text-[11px] text-tertiary">
+                              <p className="text-sm font-bold text-secondary">{tx.description || tx.type}</p>
+                              <p className="text-xs text-tertiary">
                                 {new Date(tx.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} • Berhasil
                               </p>
                             </div>
                           </div>
-                          <div className={`font-medium text-[14px] ${isIncome || isTopup ? 'text-green-600' : 'text-secondary'}`}>
+                          <div className={`font-medium text-sm ${isIncome || isTopup ? 'text-green-600' : 'text-secondary'}`}>
                             {isIncome || isTopup ? '+' : '-'}{formatCurrency(Number(tx.amount))}
                           </div>
                         </div>
