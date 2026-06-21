@@ -11,7 +11,7 @@ export function Chip({ active = false, as: Tag = "button", className, children, 
     <Tag
       className={clsx(
         "inline-flex items-center justify-center gap-1",
-        "text-[12px] leading-[18px] font-semibold",
+        "text-xs leading-[18px] font-semibold",
         "border rounded-full px-3 h-8",
         "transition-colors duration-150 whitespace-nowrap",
         active

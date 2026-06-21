@@ -22,7 +22,7 @@ export function Badge({ variant = "muted", className, children, ...props }: Badg
     <span
       className={clsx(
         "inline-flex items-center justify-center rounded-full",
-        "text-[11px] leading-[14px] font-semibold",
+        "text-xs leading-[14px] font-semibold",
         "px-2.5 py-0.5",
         variantMap[variant],
         className

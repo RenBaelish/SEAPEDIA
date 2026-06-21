@@ -73,7 +73,7 @@ export function Modal({
         {(title || showClose) && (
           <div className="flex items-center justify-between p-4 border-b border-muted">
             {title && (
-              <h3 className="text-[18px] font-semibold leading-[22px] text-on-surface">
+              <h3 className="text-lg font-semibold leading-[22px] text-on-surface">
                 {title}
               </h3>
             )}

@@ -18,7 +18,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={clsx("flex flex-col gap-1", fullWidth && "w-full")}>
         {label && (
-          <label htmlFor={inputId} className="text-[12px] font-semibold text-secondary">
+          <label htmlFor={inputId} className="text-xs font-semibold text-secondary">
             {label}
           </label>
         )}
@@ -30,7 +30,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={clsx(
-              "w-full bg-surface text-on-surface text-[12px] leading-[18px]",
+              "w-full bg-surface text-on-surface text-xs leading-[18px]",
               "border border-border rounded-md outline-none",
               "h-10 transition-[border-color,box-shadow] duration-150",
               leftIcon ? "pl-9 pr-4" : "px-4",
@@ -47,8 +47,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             <span className="absolute right-3 text-tertiary">{rightIcon}</span>
           )}
         </div>
-        {error && <p className="text-[11px] text-error">{error}</p>}
-        {hint && !error && <p className="text-[11px] text-tertiary">{hint}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
+        {hint && !error && <p className="text-xs text-tertiary">{hint}</p>}
       </div>
     );
   }
@@ -69,7 +69,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className={clsx("flex flex-col gap-1", fullWidth && "w-full")}>
         {label && (
-          <label htmlFor={inputId} className="text-[12px] font-semibold text-secondary">
+          <label htmlFor={inputId} className="text-xs font-semibold text-secondary">
             {label}
           </label>
         )}
@@ -77,7 +77,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={inputId}
           className={clsx(
-            "w-full bg-surface text-on-surface text-[12px] leading-[18px]",
+            "w-full bg-surface text-on-surface text-xs leading-[18px]",
             "border border-border rounded-md outline-none resize-y p-3",
             "transition-[border-color,box-shadow] duration-150",
             error
@@ -89,7 +89,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           rows={4}
           {...props}
         />
-        {error && <p className="text-[11px] text-error">{error}</p>}
+        {error && <p className="text-xs text-error">{error}</p>}
       </div>
     );
   }

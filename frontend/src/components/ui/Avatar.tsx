@@ -11,11 +11,11 @@ interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const sizeClasses: Record<AvatarSize, string> = {
-  xs: "w-6 h-6 text-[10px]",
-  sm: "w-8 h-8 text-[11px]",
-  md: "w-10 h-10 text-[12px]",
-  lg: "w-12 h-12 text-[14px]",
-  xl: "w-16 h-16 text-[18px]",
+  xs: "w-6 h-6 text-xs",
+  sm: "w-8 h-8 text-xs",
+  md: "w-10 h-10 text-xs",
+  lg: "w-12 h-12 text-sm",
+  xl: "w-16 h-16 text-lg",
 };
 
 function getInitials(name?: string) {
