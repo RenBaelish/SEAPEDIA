@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { orders, users, stores, wallets, walletMutations } from '../db/schema';
-import { eq, inArray, sql } from 'drizzle-orm';
+import { orders, users, stores, wallets, walletMutations, categories, promos, products } from '../db/schema';
+import { eq, inArray, sql, desc } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -32,15 +32,164 @@ adminRouter.get('/dashboard', async (c) => {
   
   const userCount = await db.select({ count: sql<number>`count(*)` }).from(users).get();
   const storeCount = await db.select({ count: sql<number>`count(*)` }).from(stores).get();
-  const activeOrders = await db.select({ count: sql<number>`count(*)` }).from(orders).where(inArray(orders.status, ['SEDANG_DIKEMAS', 'MENUNGGU_PENGIRIM', 'SEDANG_DIKIRIM'])).get();
-  const completedOrders = await db.select({ count: sql<number>`count(*)` }).from(orders).where(eq(orders.status, 'PESANAN_SELESAI')).get();
+  const productCount = await db.select({ count: sql<number>`count(*)` }).from(products).get();
+  const orderCount = await db.select({ count: sql<number>`count(*)` }).from(orders).get();
+  
+  // Hitung revenue (contoh: 20% dari total pesanan selesai)
+  const completedOrders = await db.select({ totalAmount: orders.totalAmount }).from(orders).where(eq(orders.status, 'PESANAN_SELESAI')).all();
+  const revenue = completedOrders.reduce((sum, order) => sum + (order.totalAmount * 0.2), 0);
   
   return c.json({
     data: {
       users: userCount?.count || 0,
       stores: storeCount?.count || 0,
-      activeOrders: activeOrders?.count || 0,
-      completedOrders: completedOrders?.count || 0,
+      products: productCount?.count || 0,
+      orders: orderCount?.count || 0,
+      revenue: revenue || 0,
+    }
+  });
+});
+
+adminRouter.get('/users', async (c) => {
+  const db = drizzle(c.env.DB);
+  // Get all users
+  const allUsers = await db.select({
+    id: users.id,
+    fullName: users.fullName,
+    username: users.username,
+    email: users.email,
+    profilePictureUrl: users.profilePictureUrl,
+    status: users.status,
+    createdAt: users.createdAt
+  }).from(users).orderBy(desc(users.createdAt)).all();
+
+  return c.json({ data: allUsers });
+});
+
+adminRouter.put('/users/:id/status', async (c) => {
+  const db = drizzle(c.env.DB);
+  const userId = c.req.param('id');
+  const body = await c.req.json();
+  
+  if (!['ACTIVE', 'BANNED'].includes(body.status)) {
+    return c.json({ message: 'Invalid status' }, 400);
+  }
+
+  await db.update(users)
+    .set({ status: body.status })
+    .where(eq(users.id, userId));
+
+  return c.json({ message: `User status updated to ${body.status}` });
+});
+
+adminRouter.get('/stores', async (c) => {
+  const db = drizzle(c.env.DB);
+  const allStores = await db.select().from(stores).orderBy(desc(stores.createdAt)).all();
+  return c.json({ data: allStores });
+});
+
+adminRouter.put('/stores/:id/status', async (c) => {
+  const db = drizzle(c.env.DB);
+  const storeId = c.req.param('id');
+  const body = await c.req.json();
+  
+  if (!['ACTIVE', 'SUSPENDED'].includes(body.status)) {
+    return c.json({ message: 'Invalid status' }, 400);
+  }
+
+  await db.update(stores)
+    .set({ status: body.status })
+    .where(eq(stores.id, storeId));
+
+  return c.json({ message: `Store status updated to ${body.status}` });
+});
+
+adminRouter.get('/categories', async (c) => {
+  const db = drizzle(c.env.DB);
+  const allCategories = await db.select().from(categories).all();
+  return c.json({ data: allCategories });
+});
+
+adminRouter.post('/categories', async (c) => {
+  const db = drizzle(c.env.DB);
+  const body = await c.req.json();
+  if (!body.name || !body.slug) return c.json({ message: 'Name and slug required' }, 400);
+
+  const existing = await db.select().from(categories).where(eq(categories.slug, body.slug)).get();
+  if (existing) return c.json({ message: 'Category slug already exists' }, 400);
+
+  await db.insert(categories).values({
+    id: crypto.randomUUID(),
+    name: body.name,
+    slug: body.slug,
+    iconUrl: body.iconUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'
+  });
+
+  return c.json({ message: 'Kategori berhasil ditambahkan' });
+});
+
+adminRouter.get('/promos', async (c) => {
+  const db = drizzle(c.env.DB);
+  // Get platform promos (where storeId is null)
+  // Since we don't have isNull helper imported, we can just use sql
+  const platformPromos = await db.select().from(promos).where(sql`${promos.storeId} IS NULL`).orderBy(desc(promos.createdAt)).all();
+  return c.json({ data: platformPromos });
+});
+
+adminRouter.post('/promos', async (c) => {
+  const db = drizzle(c.env.DB);
+  const body = await c.req.json();
+  
+  if (!body.code || !body.discountAmount || !body.quota) return c.json({ message: 'Incomplete data' }, 400);
+
+  const existing = await db.select().from(promos).where(eq(promos.code, body.code)).get();
+  if (existing) return c.json({ message: 'Promo code already exists' }, 400);
+
+  await db.insert(promos).values({
+    id: crypto.randomUUID(),
+    storeId: null, // null for platform promo
+    code: body.code,
+    discountAmount: body.discountAmount,
+    type: body.type || 'DISCOUNT',
+    quota: body.quota
+  });
+
+  return c.json({ message: 'Promo platform berhasil dibuat' });
+});
+
+adminRouter.get('/analytics', async (c) => {
+  const db = drizzle(c.env.DB);
+  
+  // Example analytics: get top stores by order count
+  const topStores = await db.select({
+    id: stores.id,
+    name: stores.name,
+    domain: stores.domain,
+    orderCount: sql<number>`count(${orders.id})`
+  })
+  .from(stores)
+  .leftJoin(orders, eq(orders.storeId, stores.id))
+  .groupBy(stores.id)
+  .orderBy(desc(sql<number>`count(${orders.id})`))
+  .limit(5)
+  .all();
+
+  const topProducts = await db.select({
+    id: products.id,
+    name: products.name,
+    sold: products.sold,
+    price: products.price,
+    thumbnailUrl: products.thumbnailUrl
+  })
+  .from(products)
+  .orderBy(desc(products.sold))
+  .limit(5)
+  .all();
+
+  return c.json({
+    data: {
+      topStores,
+      topProducts
     }
   });
 });

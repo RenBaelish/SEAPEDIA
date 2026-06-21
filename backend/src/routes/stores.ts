@@ -2,8 +2,8 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
-import { stores } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { stores, products, orders } from '../db/schema';
+import { eq, sql } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -82,6 +82,42 @@ storeRouter.get('/me', async (c) => {
   }
 
   return c.json({ data: store });
+});
+
+// Get My Store Stats
+storeRouter.get('/me/stats', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return c.json({ message: 'Unauthorized' }, 401);
+
+  const token = authHeader.split(' ')[1];
+  let payload;
+  try {
+    payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret', "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const db = drizzle(c.env.DB);
+  const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
+  
+  if (!store) return c.json({ message: 'Store not found' }, 404);
+
+  const productCount = await db.select({ count: sql<number>`count(*)` }).from(products).where(eq(products.storeId, store.id)).get();
+  const storeOrders = await db.select({ totalAmount: orders.totalAmount, status: orders.status }).from(orders).where(eq(orders.storeId, store.id)).all();
+  
+  const totalSalesCount = storeOrders.filter(o => o.status === 'PESANAN_SELESAI').length;
+  const totalIncome = storeOrders.filter(o => o.status === 'PESANAN_SELESAI').reduce((sum, order) => sum + order.totalAmount, 0);
+
+  return c.json({ 
+    data: {
+      store: {
+        ...store,
+        _count: { products: productCount?.count || 0 },
+        totalSales: totalSalesCount
+      },
+      income: { totalIncome }
+    }
+  });
 });
 
 const updateStoreSchema = z.object({
