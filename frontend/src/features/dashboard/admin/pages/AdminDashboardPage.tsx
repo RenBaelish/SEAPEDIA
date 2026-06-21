@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { formatCurrency } from "../../../../lib/format";
 import { api } from "../../../../lib/api";
 import { Users, Store, Package, ShoppingBag, Clock, DollarSign, Activity } from "lucide-react";
@@ -6,6 +7,7 @@ import { useConfirm } from "../../../../contexts/ConfirmContext";
 import { useAlert } from "../../../../contexts/AlertContext";
 import { Button } from "../../../../components/ui/Button";
 import { Input } from "../../../../components/ui/Input";
+import { Card } from "../../../../components/ui/Card";
 
 export default function AdminDashboardPage() {
   const { showConfirm } = useConfirm();
@@ -19,7 +21,7 @@ export default function AdminDashboardPage() {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/admin/dashboard/stats");
+      const res = await api.get("/admin/dashboard");
       setStats(res.data.data);
     } catch (err) {
       console.error(err);
@@ -56,36 +58,41 @@ export default function AdminDashboardPage() {
   if (loading) return <div className="p-8 text-center text-gray-500">Memuat dashboard...</div>;
 
   const statCards = [
-    { label: "Total Pengguna", value: stats?.users || 0, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Total Toko", value: stats?.stores || 0, icon: Store, color: "text-purple-600", bg: "bg-purple-50" },
-    { label: "Total Produk", value: stats?.products || 0, icon: Package, color: "text-orange-600", bg: "bg-orange-50" },
-    { label: "Total Pesanan", value: stats?.orders || 0, icon: ShoppingBag, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Estimasi Pendapatan Platform (20% Ongkir)", value: formatCurrency(stats?.revenue || 0), icon: DollarSign, color: "text-brand-600", bg: "bg-brand-50" },
+    { label: "Total Pengguna", value: stats?.users || 0, icon: Users, color: "text-blue-600", bg: "bg-blue-100", link: "/admin/users", linkLabel: "Kelola Pengguna" },
+    { label: "Total Toko", value: stats?.stores || 0, icon: Store, color: "text-purple-600", bg: "bg-purple-100", link: "/admin/stores", linkLabel: "Lihat Toko" },
+    { label: "Total Produk", value: stats?.products || 0, icon: Package, color: "text-orange-600", bg: "bg-orange-100", link: "/admin/analytics", linkLabel: "Lihat Produk" },
+    { label: "Total Pesanan", value: stats?.orders || 0, icon: ShoppingBag, color: "text-emerald-600", bg: "bg-emerald-100", link: "/admin/analytics", linkLabel: "Pantau Pesanan" },
+    { label: "Pendapatan Platform (20%)", value: formatCurrency(stats?.revenue || 0), icon: DollarSign, color: "text-brand-600", bg: "bg-brand-100", link: "/admin/analytics", linkLabel: "Lihat Pendapatan" },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Activity size={28} className="text-brand-600" />
-        <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+      <div className="flex justify-between items-end mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Ringkasan statistik dan performa platform.</p>
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <div key={idx} className={`bg-white rounded-xl p-6 border border-gray-100 shadow-sm ${idx === 4 ? 'md:col-span-2 lg:col-span-4' : ''}`}>
-              <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-lg ${stat.bg}`}>
-                  <Icon size={24} className={stat.color} />
+            <Card key={idx} className="flex flex-col">
+              <div className="flex items-center gap-3 mb-4">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
+                  <Icon size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <h3 className="text-2xl font-bold text-gray-800">{stat.value}</h3>
                 </div>
               </div>
-            </div>
+              <Link to={stat.link} className="text-brand-600 text-sm font-medium mt-auto hover:underline">
+                {stat.linkLabel} &rarr;
+              </Link>
+            </Card>
           );
         })}
       </div>
