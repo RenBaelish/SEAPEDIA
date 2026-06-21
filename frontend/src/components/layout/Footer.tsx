@@ -31,7 +31,7 @@ export function Footer() {
             <Link to="/" className="inline-block mb-3">
               <img src="/logo-name.png" alt="SEAPEDIA Logo" className="h-10 w-auto object-contain" />
             </Link>
-            <p className="text-[12px] text-tertiary leading-relaxed mb-4">
+            <p className="text-xs text-tertiary leading-relaxed mb-4">
               Marketplace multi-peran terpercaya. Belanja apa saja, kirim ke mana saja.
             </p>
             {/* Social */}
@@ -52,13 +52,13 @@ export function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
-              <h4 className="text-[12px] font-bold text-secondary mb-3">{section}</h4>
+              <h4 className="text-xs font-bold text-secondary mb-3">{section}</h4>
               <ul className="flex flex-col gap-2">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
                       to={link.href}
-                      className="text-[12px] text-tertiary hover:text-primary transition-colors"
+                      className="text-xs text-tertiary hover:text-primary transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -70,7 +70,7 @@ export function Footer() {
         </div>
 
         <div className="divider mt-8 mb-4" />
-        <p className="text-[11px] text-tertiary text-center">
+        <p className="text-xs text-tertiary text-center">
            {new Date().getFullYear()} SEAPEDIA. Hak cipta dilindungi.
         </p>
       </div>

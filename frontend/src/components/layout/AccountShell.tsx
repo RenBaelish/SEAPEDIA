@@ -50,8 +50,8 @@ export default function AccountShell() {
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[14px] font-bold text-gray-800 truncate">{user?.fullName}</p>
-                  <Link to="/account" className="text-[11px] text-green-600 font-semibold hover:underline flex items-center gap-1">
+                  <p className="text-sm font-bold text-gray-800 truncate">{user?.fullName}</p>
+                  <Link to="/account" className="text-xs text-green-600 font-semibold hover:underline flex items-center gap-1">
                     Edit Profil
                   </Link>
                 </div>
@@ -60,7 +60,7 @@ export default function AccountShell() {
               {/* Member badge */}
               <div className="mt-3 flex items-center gap-1.5 bg-amber-50 border border-amber-100 px-2.5 py-1.5 rounded-lg">
                 <Star size={12} className="text-amber-400 fill-amber-400" />
-                <span className="text-[11px] font-bold text-amber-700">Member SEAPEDIA</span>
+                <span className="text-xs font-bold text-amber-700">Member SEAPEDIA</span>
               </div>
             </div>
 
@@ -68,14 +68,14 @@ export default function AccountShell() {
             {SIDEBAR_MENU.map(group => (
               <div key={group.group} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{group.group}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{group.group}</p>
                 </div>
                 {group.items.map(item => (
                   <Link
                     key={item.id}
                     to={item.href}
                     className={clsx(
-                      "flex items-center gap-3 px-4 py-3 text-[13px] transition-colors border-b border-gray-50 last:border-0",
+                      "flex items-center gap-3 px-4 py-3 text-sm transition-colors border-b border-gray-50 last:border-0",
                       isActive(item.href) 
                         ? "bg-green-50 text-green-700 font-semibold border-l-2 border-l-green-500" 
                         : "text-gray-700 hover:bg-green-50 hover:text-green-700"

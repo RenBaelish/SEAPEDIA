@@ -113,7 +113,7 @@ export function Navbar() {
       {/* Top bar */}
       <div className="border-b border-gray-100 hidden md:block bg-[#f3f4f5]">
         <div className="page-container">
-          <div className="flex items-center justify-between h-8 text-[12px] text-gray-500">
+          <div className="flex items-center justify-between h-8 text-xs text-gray-500">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1 font-semibold text-gray-800 hover:text-green-600 transition-colors cursor-pointer">
                 <Smartphone size={14}/> Download SEAPEDIA App
@@ -143,7 +143,7 @@ export function Navbar() {
             <button
               onMouseEnter={() => setCategoryMenuOpen(true)}
               onClick={() => setCategoryMenuOpen(o => !o)}
-              className="flex items-center px-3 py-1.5 rounded-md text-[13px] text-gray-600 hover:bg-gray-100 transition-colors"
+              className="flex items-center px-3 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors"
             >
               Kategori
             </button>
@@ -164,7 +164,7 @@ export function Navbar() {
                         key={cat.slug}
                         onMouseEnter={() => setHoveredCategory(cat)}
                         onClick={() => { navigate(`/search?q=${cat.label}`); setCategoryMenuOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-[12px] text-left transition-colors ${
+                        className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-left transition-colors ${
                           hoveredCategory.slug === cat.slug
                             ? "bg-white text-green-600 font-semibold border-l-[3px] border-green-500"
                             : "text-gray-700 hover:bg-white"
@@ -182,14 +182,14 @@ export function Navbar() {
                 <div className="flex-1 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <hoveredCategory.icon size={20} className="text-green-500"/>
-                    <h3 className="font-extrabold text-gray-800 text-[16px]">{hoveredCategory.label}</h3>
+                    <h3 className="font-extrabold text-gray-800 text-base">{hoveredCategory.label}</h3>
                   </div>
                   <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                     {hoveredCategory.subs.map((sub) => (
                       <button
                         key={sub}
                         onClick={() => { navigate(`/search?q=${sub}`); setCategoryMenuOpen(false); }}
-                        className="text-left text-[13px] text-gray-600 hover:text-green-600 py-1.5 rounded-lg transition-colors"
+                        className="text-left text-sm text-gray-600 hover:text-green-600 py-1.5 rounded-lg transition-colors"
                       >
                         {sub}
                       </button>
@@ -211,7 +211,7 @@ export function Navbar() {
                 onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery((e.target as any).value)}
                 placeholder="Cari di SEAPEDIA"
-                className="w-full h-[40px] pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-[13px] outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-gray-400"
+                className="w-full h-[40px] pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-gray-400"
                 aria-label="Cari produk"
               />
             </form>
@@ -221,7 +221,7 @@ export function Navbar() {
               <div className="absolute left-0 top-0 w-full pt-[50px] pb-4 bg-white border border-gray-200 rounded-b-xl shadow-lg z-[5]">
                 <div className="px-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[13px] font-bold text-gray-800">Pencarian Populer</span>
+                    <span className="text-sm font-bold text-gray-800">Pencarian Populer</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["MacBook Pro M3", "Sepatu Ventela", "Kipas Angin", "Poco X6 Pro"].map(term => (
@@ -229,7 +229,7 @@ export function Navbar() {
                         key={term}
                         type="button"
                         onClick={() => { setSearchQuery(term); setIsSearchFocused(false); navigate(`/search?q=${term}`); }}
-                        className="px-3 py-1.5 bg-gray-100 hover:bg-green-50 hover:text-green-600 rounded-full text-[12px] text-gray-600 transition-colors"
+                        className="px-3 py-1.5 bg-gray-100 hover:bg-green-50 hover:text-green-600 rounded-full text-xs text-gray-600 transition-colors"
                       >
                         {term}
                       </button>
@@ -256,7 +256,7 @@ export function Navbar() {
                       <Link to="/cart" className="relative p-1.5 rounded-md hover:bg-gray-100 transition-colors block">
                         <ShoppingCart size={22} className="text-gray-600" />
                         {totalCartItems > 0 && (
-                          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-[10px] font-bold rounded-full px-1">
+                          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full px-1">
                             {totalCartItems > 99 ? "99+" : totalCartItems}
                           </span>
                         )}
@@ -270,16 +270,16 @@ export function Navbar() {
                             {totalCartItems === 0 ? (
                               <>
                                 <ShoppingCart size={40} className="text-gray-300 mb-3" />
-                                <p className="text-[14px] font-bold text-gray-800">Wah, keranjang belanjamu kosong</p>
-                                <p className="text-[12px] text-gray-500 mt-1 mb-4">Yuk, isi dengan barang-barang impianmu!</p>
-                                <Link to="/search" className="btn-primary w-full py-2 text-[12px] font-bold rounded-md">
+                                <p className="text-sm font-bold text-gray-800">Wah, keranjang belanjamu kosong</p>
+                                <p className="text-xs text-gray-500 mt-1 mb-4">Yuk, isi dengan barang-barang impianmu!</p>
+                                <Link to="/search" className="btn-primary w-full py-2 text-xs font-bold rounded-md">
                                   Mulai Belanja
                                 </Link>
                               </>
                             ) : (
                               <>
-                                <p className="text-[14px] font-bold text-gray-800">Keranjang ({totalCartItems})</p>
-                                <Link to="/cart" className="mt-4 text-green-600 text-[12px] font-bold hover:underline">
+                                <p className="text-sm font-bold text-gray-800">Keranjang ({totalCartItems})</p>
+                                <Link to="/cart" className="mt-4 text-green-600 text-xs font-bold hover:underline">
                                   Lihat Keranjang
                                 </Link>
                               </>
@@ -306,10 +306,10 @@ export function Navbar() {
                       <div className="absolute right-0 top-full pt-2 z-[200]">
                         <div className="w-[320px] bg-white border border-gray-200 shadow-xl rounded-lg animate-slideDown origin-top-right">
                           <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                          <span className="font-bold text-[14px] text-gray-800">Notifikasi</span>
+                          <span className="font-bold text-sm text-gray-800">Notifikasi</span>
                           <Settings size={14} className="text-gray-500 cursor-pointer hover:text-green-600" />
                         </div>
-                        <div className="p-6 text-center text-gray-500 text-[12px]">
+                        <div className="p-6 text-center text-gray-500 text-xs">
                           Belum ada notifikasi baru.
                         </div>
                       </div>
@@ -332,9 +332,9 @@ export function Navbar() {
                       <div className="absolute right-0 top-full pt-2 z-[200]">
                         <div className="w-[320px] bg-white border border-gray-200 shadow-xl rounded-lg animate-slideDown origin-top-right">
                           <div className="p-4 border-b border-gray-100">
-                          <span className="font-bold text-[14px] text-gray-800">Pesan</span>
+                          <span className="font-bold text-sm text-gray-800">Pesan</span>
                         </div>
-                        <div className="p-6 text-center text-gray-500 text-[12px]">
+                        <div className="p-6 text-center text-gray-500 text-xs">
                           Belum ada pesan baru.
                         </div>
                       </div>
@@ -358,7 +358,7 @@ export function Navbar() {
                           <Store size={14} className="text-gray-400" />
                         )}
                       </div>
-                      <span className="text-[13px] font-semibold text-gray-700 truncate max-w-[80px]">Toko</span>
+                      <span className="text-sm font-semibold text-gray-700 truncate max-w-[80px]">Toko</span>
                     </Link>
                   )}
 
@@ -368,7 +368,7 @@ export function Navbar() {
                     className="flex items-center gap-2 px-1.5 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
                   >
                     <Avatar src={user.profilePictureUrl} name={user.fullName} size="sm" />
-                    <span className="text-[13px] font-semibold text-gray-700 max-w-[90px] truncate">{user.fullName.split(" ")[0]}</span>
+                    <span className="text-sm font-semibold text-gray-700 max-w-[90px] truncate">{user.fullName.split(" ")[0]}</span>
                   </button>
 
                   {/* Account Dropdown */}
@@ -378,32 +378,32 @@ export function Navbar() {
                         <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
                         <Avatar src={user.profilePictureUrl} name={user.fullName} size="md" />
                         <div className="flex flex-col min-w-0">
-                          <p className="text-[14px] font-bold text-gray-800 truncate">{user.fullName}</p>
-                          <p className="text-[12px] text-gray-500 truncate">{user.email}</p>
+                          <p className="text-sm font-bold text-gray-800 truncate">{user.fullName}</p>
+                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
                         </div>
                       </div>
 
                       <div className="py-1">
-                        <Link to="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                        <Link to="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                           Pengaturan Akun
                         </Link>
                         {user.roles.includes(RoleType.BUYER) && (
-                          <Link to="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                          <Link to="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             Pesanan Saya
                           </Link>
                         )}
                         {user.roles.includes(RoleType.ADMIN) && (
-                          <Link to="/admin" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                          <Link to="/admin" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             Dashboard Admin
                           </Link>
                         )}
                         {user.roles.includes(RoleType.DRIVER) && (
-                          <Link to="/driver" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                          <Link to="/driver" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             Dashboard Driver
                           </Link>
                         )}
                         {user.roles.includes(RoleType.SELLER) && (
-                          <Link to="/seller" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-50">
+                          <Link to="/seller" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             Dashboard Penjual
                           </Link>
                         )}
@@ -412,7 +412,7 @@ export function Navbar() {
                       <div className="border-t border-gray-100 pt-1">
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-[13px] text-red-500 hover:bg-red-50"
+                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50"
                         >
                           Keluar
                         </button>
@@ -424,10 +424,10 @@ export function Navbar() {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Link to="/auth/login" className="text-[13px] font-semibold text-green-600 px-4 h-9 border border-green-500 rounded-md flex items-center hover:bg-green-50 transition-colors">
+                <Link to="/auth/login" className="text-sm font-semibold text-green-600 px-4 h-9 border border-green-500 rounded-md flex items-center hover:bg-green-50 transition-colors">
                   Masuk
                 </Link>
-                <Link to="/auth/register" className="text-[13px] font-semibold text-white px-4 h-9 bg-green-500 hover:bg-green-600 rounded-md flex items-center transition-colors">
+                <Link to="/auth/register" className="text-sm font-semibold text-white px-4 h-9 bg-green-500 hover:bg-green-600 rounded-md flex items-center transition-colors">
                   Daftar
                 </Link>
               </div>

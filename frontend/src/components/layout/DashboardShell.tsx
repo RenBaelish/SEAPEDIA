@@ -108,7 +108,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
               end={item.path === `/${role.toLowerCase()}`}
               className={({ isActive }) =>
                 clsx(
-                  "flex items-center gap-3 mx-2 mb-0.5 px-2.5 py-2 rounded-md text-[12px] font-semibold transition-colors",
+                  "flex items-center gap-3 mx-2 mb-0.5 px-2.5 py-2 rounded-md text-xs font-semibold transition-colors",
                   isActive
                     ? "bg-primary-light text-primary"
                     : "text-secondary hover:bg-muted"
@@ -133,8 +133,8 @@ export function DashboardShell({ role }: DashboardShellProps) {
             <div className="flex items-center gap-2">
               <Avatar src={store?.logoUrl || user?.profilePictureUrl} name={store?.name || user?.fullName} size="sm" />
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-secondary truncate">{store?.name || user?.fullName}</p>
-                <p className="text-[11px] text-tertiary truncate">{store?.slug ? `/${store.slug}` : user?.email}</p>
+                <p className="text-xs font-semibold text-secondary truncate">{store?.name || user?.fullName}</p>
+                <p className="text-xs text-tertiary truncate">{store?.slug ? `/${store.slug}` : user?.email}</p>
               </div>
               <div className="flex flex-col gap-1 shrink-0 ml-auto">
                 <button
@@ -187,7 +187,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
       >
         {/* Topbar */}
         <div className="h-14 bg-surface border-b border-muted flex items-center px-6 sticky top-0 z-40">
-          <h1 className="text-[16px] font-bold text-secondary">{roleTitles[role]}</h1>
+          <h1 className="text-base font-bold text-secondary">{roleTitles[role]}</h1>
         </div>
 
         {/* Page content */}
