@@ -11,6 +11,7 @@ export const users = sqliteTable('users', {
   phoneNumber: text('phone_number'),
   gender: text('gender'),
   birthDate: text('birth_date'),
+  status: text('status').notNull().default('ACTIVE'), // ACTIVE, BANNED
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
@@ -132,7 +133,7 @@ export const orderItems = sqliteTable('order_items', {
 
 export const promos = sqliteTable('promos', {
   id: text('id').primaryKey(),
-  storeId: text('store_id').notNull().references(() => stores.id),
+  storeId: text('store_id').references(() => stores.id),
   code: text('code').notNull().unique(),
   discountAmount: integer('discount_amount').notNull(),
   type: text('type').notNull(), // 'SHIPPING' or 'DISCOUNT'
