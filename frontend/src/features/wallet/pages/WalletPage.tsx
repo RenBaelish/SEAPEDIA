@@ -67,7 +67,7 @@ export default function WalletPage() {
 
   return (
     <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px] flex flex-col gap-6">
-      <h1 className="text-[20px] font-bold text-gray-800">Dompet SEAPAY</h1>
+      <h1 className="text-xl font-bold text-gray-800">Dompet SEAPAY</h1>
       
       <div className="flex flex-col md:flex-row gap-6">
         
@@ -85,7 +85,7 @@ export default function WalletPage() {
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-1">
                   <WalletIcon size={20} className="fill-white" />
-                  <span className="font-bold tracking-widest text-[14px]">SEAPAY <span className="text-blue-200">PLUS</span></span>
+                  <span className="font-bold tracking-widest text-sm">SEAPAY <span className="text-blue-200">PLUS</span></span>
                   <Info size={14} className="ml-1 opacity-70" />
                 </div>
                 <button className="text-white hover:text-blue-100 transition-colors">
@@ -97,7 +97,7 @@ export default function WalletPage() {
                 <h1 className="text-3xl font-extrabold tracking-tight">{formatCurrency(Number(wallet.balance))}</h1>
                 <button 
                   onClick={() => setIsTopupModalOpen(true)}
-                  className="px-4 py-1.5 rounded-full border border-white text-white font-semibold text-[13px] hover:bg-white/10 transition-colors"
+                  className="px-4 py-1.5 rounded-full border border-white text-white font-semibold text-sm hover:bg-white/10 transition-colors"
                 >
                   Top-up
                 </button>
@@ -108,16 +108,16 @@ export default function WalletPage() {
                 <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm cursor-pointer">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <CreditCard size={14} className="text-blue-100" />
-                    <span className="text-[13px] font-bold text-white">SEAPAY <span className="font-normal opacity-80">later</span></span>
+                    <span className="text-sm font-bold text-white">SEAPAY <span className="font-normal opacity-80">later</span></span>
                   </div>
-                  <p className="text-[12px] font-semibold text-green-300">Daftar Sekarang</p>
+                  <p className="text-xs font-semibold text-green-300">Daftar Sekarang</p>
                 </div>
                 <div className="flex-1 bg-white/10 rounded-xl p-3 backdrop-blur-sm cursor-pointer">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Coins size={14} className="text-blue-100" />
-                    <span className="text-[13px] font-bold text-white">SEAPAY <span className="font-normal opacity-80">coins</span></span>
+                    <span className="text-sm font-bold text-white">SEAPAY <span className="font-normal opacity-80">coins</span></span>
                   </div>
-                  <p className="text-[13px] font-bold text-white">0</p>
+                  <p className="text-sm font-bold text-white">0</p>
                 </div>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function WalletPage() {
 
           {/* Penting untuk kamu */}
           <div className="mt-8">
-            <h3 className="text-[15px] font-bold text-gray-800 mb-3">Penting untuk kamu</h3>
+            <h3 className="text-base font-bold text-gray-800 mb-3">Penting untuk kamu</h3>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 overflow-hidden relative group cursor-pointer">
               <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4 group-hover:scale-110 transition-transform">
                 <WalletIcon size={80} />
@@ -134,12 +134,12 @@ export default function WalletPage() {
                 <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
                   <PlusCircle size={14} />
                 </div>
-                <span className="text-[12px] font-bold text-gray-500">Top-up SEAPAY</span>
+                <span className="text-xs font-bold text-gray-500">Top-up SEAPAY</span>
               </div>
-              <p className="text-[13px] text-gray-700 leading-relaxed mb-3 relative z-10">
+              <p className="text-sm text-gray-700 leading-relaxed mb-3 relative z-10">
                 Dapatkan 3x bonus cashback bulanan dengan minimal top-up Rp500.000!
               </p>
-              <button className="text-[13px] font-bold text-green-600 hover:text-green-700 relative z-10">
+              <button className="text-sm font-bold text-green-600 hover:text-green-700 relative z-10">
                 Pelajari Lebih Lanjut
               </button>
             </div>
@@ -149,18 +149,18 @@ export default function WalletPage() {
         {/* ─── Kanan: Riwayat Transaksi ───────────────────────────────────── */}
         <div className="flex-1 w-full mt-0">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-[16px] font-bold text-gray-800 flex items-center gap-2">
+            <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
               <WalletIcon size={18} className="text-gray-400" /> Riwayat Transaksi
             </h2>
           </div>  {/* Filter Bar */}
             <div className="flex flex-wrap gap-3 mb-6 border-b border-gray-100 pb-6">
-              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">
+              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 Semua Tanggal <Calendar size={14} className="ml-4" />
               </button>
-              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">
+              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 Semua Metode <ChevronDown size={14} className="ml-4" />
               </button>
-              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-[13px] text-gray-600 hover:bg-gray-50 transition-colors">
+              <button className="flex items-center gap-2 px-3 h-9 rounded-lg border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
                 Semua Transaksi <ChevronDown size={14} className="ml-4" />
               </button>
             </div>
@@ -168,13 +168,13 @@ export default function WalletPage() {
             {/* List Transaksi */}
             <div className="space-y-6">
               {Object.keys(groupedTransactions).length === 0 ? (
-                <div className="py-12 text-center text-gray-500 text-[13px]">
+                <div className="py-12 text-center text-gray-500 text-sm">
                   Belum ada transaksi bulan ini.
                 </div>
               ) : (
                 Object.entries(groupedTransactions).map(([dateStr, txs]) => (
                   <div key={dateStr}>
-                    <h4 className="text-[14px] font-bold text-gray-800 mb-4">{dateStr}</h4>
+                    <h4 className="text-sm font-bold text-gray-800 mb-4">{dateStr}</h4>
                     <div className="space-y-0">
                       {txs.map((tx, index) => {
                         const isIncome = tx.type === "TOPUP" || tx.type === "REFUND" || tx.type === "COMMISSION" || tx.type === "DELIVERY_EARNING";
@@ -183,19 +183,19 @@ export default function WalletPage() {
                         return (
                           <div key={tx.id} className={`flex items-start justify-between py-4 ${index !== txs.length - 1 ? "border-b border-gray-50" : ""}`}>
                             <div className="flex items-start gap-3">
-                              <div className="mt-0.5 border border-gray-200 rounded px-1 text-[8px] font-bold text-gray-500 uppercase">
+                              <div className="mt-0.5 border border-gray-200 rounded px-1 text-xs font-bold text-gray-500 uppercase">
                                 RP
                               </div>
                               <div>
-                                <p className="text-[14px] font-bold text-gray-800 mb-1">{tx.description || tx.type}</p>
-                                <p className="text-[12px] text-gray-400">{timeStr} WIB</p>
+                                <p className="text-sm font-bold text-gray-800 mb-1">{tx.description || tx.type}</p>
+                                <p className="text-xs text-gray-400">{timeStr} WIB</p>
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className={`text-[14px] font-bold mb-1 ${isIncome ? "text-gray-800" : "text-red-500"}`}>
+                              <p className={`text-sm font-bold mb-1 ${isIncome ? "text-gray-800" : "text-red-500"}`}>
                                 {isIncome ? "" : "-"}{formatCurrency(Number(tx.amount))}
                               </p>
-                              <div className="flex items-center justify-end gap-1.5 text-[11px] text-gray-500">
+                              <div className="flex items-center justify-end gap-1.5 text-xs text-gray-500">
                                 <WalletIcon size={12} className="text-blue-500 fill-blue-100" /> SEAPAY
                               </div>
                             </div>
@@ -208,7 +208,7 @@ export default function WalletPage() {
               )}
 
               {Object.keys(groupedTransactions).length > 0 && (
-                <button className="w-full py-4 mt-2 text-[13px] font-bold text-gray-500 hover:text-green-600 transition-colors border-t border-gray-50">
+                <button className="w-full py-4 mt-2 text-sm font-bold text-gray-500 hover:text-green-600 transition-colors border-t border-gray-50">
                   Lihat berikutnya
                 </button>
               )}
@@ -227,14 +227,14 @@ export default function WalletPage() {
               </button>
             </div>
             <form onSubmit={handleTopup} className="p-6">
-              <label className="block text-[13px] font-bold text-gray-700 mb-2">Pilih Nominal Top-up</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Pilih Nominal Top-up</label>
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {[10000, 50000, 100000, 250000, 500000, 1000000].map(amt => (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => setTopupAmount(amt.toString())}
-                    className={`h-10 rounded-lg border text-[13px] font-semibold transition-colors ${topupAmount === amt.toString() ? "border-blue-500 bg-blue-50 text-blue-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
+                    className={`h-10 rounded-lg border text-sm font-semibold transition-colors ${topupAmount === amt.toString() ? "border-blue-500 bg-blue-50 text-blue-600" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}
                   >
                     {formatCurrency(amt).replace("Rp", "")}
                   </button>
@@ -247,13 +247,13 @@ export default function WalletPage() {
                   value={topupAmount}
                   onChange={(e) => setTopupAmount((e.target as any).value)}
                   placeholder="Nominal lain (Min. Rp10.000)"
-                  className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-xl outline-none focus:border-blue-500 text-[14px] font-semibold text-gray-800"
+                  className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-xl outline-none focus:border-blue-500 text-sm font-semibold text-gray-800"
                 />
               </div>
               <button 
                 type="submit" 
                 disabled={loading || Number(topupAmount) < 10000}
-                className="w-full h-12 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-[14px] transition-colors disabled:opacity-50"
+                className="w-full h-12 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm transition-colors disabled:opacity-50"
               >
                 {loading ? "Memproses..." : "Lanjut Top-up"}
               </button>

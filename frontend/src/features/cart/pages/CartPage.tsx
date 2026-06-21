@@ -72,7 +72,7 @@ export default function CartPage() {
     return (
       <div className="bg-gray-50 min-h-screen pt-6">
         <div className="page-container max-w-[1200px]">
-          <h1 className="text-[20px] font-bold text-gray-800 mb-4">Keranjang</h1>
+          <h1 className="text-xl font-bold text-gray-800 mb-4">Keranjang</h1>
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1 bg-white rounded-xl h-[400px] " />
             <div className="w-full md:w-[320px] bg-white rounded-xl h-[250px] " />
@@ -90,15 +90,15 @@ export default function CartPage() {
             <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full text-gray-300 mb-5">
               <ShoppingBag size={48} />
             </div>
-            <h2 className="text-[20px] font-bold text-gray-800 mb-2">Keranjang belanjamu kosong</h2>
-            <p className="text-[14px] text-gray-500 mb-8">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</p>
-            <Link to="/" className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold text-[14px] px-10 h-11 rounded-xl transition-colors">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Keranjang belanjamu kosong</h2>
+            <p className="text-sm text-gray-500 mb-8">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</p>
+            <Link to="/" className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold text-sm px-10 h-11 rounded-xl transition-colors">
               Mulai Belanja
             </Link>
           </div>
 
           {/* Rekomendasi */}
-          <h2 className="text-[18px] font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
+          <h2 className="text-lg font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {recommendations.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -114,7 +114,7 @@ export default function CartPage() {
   return (
     <div className="bg-gray-50 min-h-screen pt-6 pb-16">
       <div className="page-container max-w-[1200px]">
-        <h1 className="text-[20px] font-bold text-gray-800 mb-4">Keranjang</h1>
+        <h1 className="text-xl font-bold text-gray-800 mb-4">Keranjang</h1>
         
         <div className="flex flex-col md:flex-row gap-6 items-start">
           
@@ -125,9 +125,9 @@ export default function CartPage() {
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-between">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 rounded text-green-500 focus:ring-green-500 cursor-pointer" checked readOnly />
-                <span className="text-[14px] font-semibold text-gray-700">Pilih Semua</span>
+                <span className="text-sm font-semibold text-gray-700">Pilih Semua</span>
               </label>
-              <button onClick={handleClearCart} className="text-[13px] font-bold text-green-600 hover:text-green-700">
+              <button onClick={handleClearCart} className="text-sm font-bold text-green-600 hover:text-green-700">
                 Hapus
               </button>
             </div>
@@ -140,10 +140,10 @@ export default function CartPage() {
                 <div className="flex items-center gap-3 mb-4">
                   <input type="checkbox" className="w-4 h-4 rounded text-green-500 focus:ring-green-500 cursor-pointer" checked readOnly />
                   <ShieldCheck size={18} className="text-green-500" />
-                  <Link to={`/store/${(cart.store as any).slug}`} className="text-[14px] font-bold text-gray-800 hover:text-green-600 transition-colors">
+                  <Link to={`/store/${(cart.store as any).slug}`} className="text-sm font-bold text-gray-800 hover:text-green-600 transition-colors">
                     {cart.store.name}
                   </Link>
-                  <span className="text-[12px] text-gray-400 flex items-center gap-1 ml-auto">
+                  <span className="text-xs text-gray-400 flex items-center gap-1 ml-auto">
                     <MapPin size={12} /> Jakarta
                   </span>
                 </div>
@@ -167,21 +167,21 @@ export default function CartPage() {
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <Link to={`/product/${p.slug}`} className="text-[14px] text-gray-800 hover:text-green-600 line-clamp-2 leading-snug mb-1">
+                          <Link to={`/product/${p.slug}`} className="text-sm text-gray-800 hover:text-green-600 line-clamp-2 leading-snug mb-1">
                             {p.name}
                           </Link>
                           
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-[15px] font-bold text-gray-900">{formatCurrency(Number(p.price))}</span>
+                            <span className="text-base font-bold text-gray-900">{formatCurrency(Number(p.price))}</span>
                             {discountPercent > 0 && (
-                              <span className="text-[11px] text-gray-400 line-through">{formatCurrency(Number(p.comparePrice))}</span>
+                              <span className="text-xs text-gray-400 line-through">{formatCurrency(Number(p.comparePrice))}</span>
                             )}
                             {discountPercent > 0 && (
-                              <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
+                              <span className="text-xs font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
                             )}
                           </div>
                           
-                          <button className="text-[12px] text-green-600 font-semibold hover:underline">Tulis catatan</button>
+                          <button className="text-xs text-green-600 font-semibold hover:underline">Tulis catatan</button>
                         </div>
                       </div>
 
@@ -204,7 +204,7 @@ export default function CartPage() {
                           </button>
                           <input 
                             type="text" 
-                            className="w-full h-full text-center text-[13px] font-bold outline-none border-none text-gray-800" 
+                            className="w-full h-full text-center text-sm font-bold outline-none border-none text-gray-800" 
                             value={item.quantity} 
                             readOnly
                           />
@@ -230,29 +230,29 @@ export default function CartPage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 cursor-pointer hover:border-green-300 transition-colors flex items-center justify-between group">
               <div className="flex items-center gap-3">
                 <Ticket size={20} className="text-green-500" />
-                <span className="text-[13px] font-semibold text-gray-700 group-hover:text-green-600">Makin hemat pakai promo</span>
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-green-600">Makin hemat pakai promo</span>
               </div>
               <ChevronRight size={16} className="text-gray-400 group-hover:text-green-600" />
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h3 className="text-[14px] font-bold text-gray-800 mb-4">Ringkasan belanja</h3>
+              <h3 className="text-sm font-bold text-gray-800 mb-4">Ringkasan belanja</h3>
               
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[13px] text-gray-600">Total Harga ({cart.items.length} barang)</span>
-                <span className="text-[14px] text-gray-600">{formatCurrency(subtotal)}</span>
+                <span className="text-sm text-gray-600">Total Harga ({cart.items.length} barang)</span>
+                <span className="text-sm text-gray-600">{formatCurrency(subtotal)}</span>
               </div>
 
               <div className="border-t border-gray-100 mb-4" />
 
               <div className="flex items-center justify-between mb-6">
-                <span className="text-[14px] font-bold text-gray-800">Total Belanja</span>
-                <span className="text-[18px] font-bold text-gray-900">{formatCurrency(subtotal)}</span>
+                <span className="text-sm font-bold text-gray-800">Total Belanja</span>
+                <span className="text-lg font-bold text-gray-900">{formatCurrency(subtotal)}</span>
               </div>
 
               <button 
                 onClick={() => navigate("/checkout")}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-[14px] h-11 rounded-xl transition-colors shadow-sm"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-sm h-11 rounded-xl transition-colors shadow-sm"
               >
                 Beli ({cart.items.reduce((sum, item) => sum + item.quantity, 0)})
               </button>
@@ -262,7 +262,7 @@ export default function CartPage() {
 
         {/* ─── Rekomendasi untukmu ─────────────────────────────── */}
         <div className="mt-12">
-          <h2 className="text-[18px] font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
+          <h2 className="text-lg font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {recommendations.map((p) => (
               <ProductCard key={p.id} product={p} />
