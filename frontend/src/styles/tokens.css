@@ -20,27 +20,33 @@
   /* Typography */
   --font-family: "Open Sauce One", "Inter", system-ui, sans-serif;
 
-  /* Font sizes */
-  --fs-headline-display: 32px;
-  --lh-headline-display: 38px;
-  --fs-headline-lg: 28px;
-  --lh-headline-lg: 33px;
-  --fs-headline-md: 20px;
-  --lh-headline-md: 24px;
-  --fs-headline-sm: 18px;
-  --lh-headline-sm: 22px;
-  --fs-body-lg: 16px;
-  --lh-body-lg: 24px;
-  --fs-body-md: 14px;
-  --lh-body-md: 21px;
-  --fs-body-sm: 12px;
-  --lh-body-sm: 18px;
-  --fs-label-lg: 14px;
-  --lh-label-lg: 21px;
-  --fs-label-md: 12px;
-  --lh-label-md: 16px;
-  --fs-caption: 11px;
-  --lh-caption: 14px;
+  /* Typography Scale */
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  
+  --text-xl: 20px;
+  --text-xl--line-height: 28px; /* H5 */
+  
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px; /* H4 */
+  
+  --text-3xl: 32px;
+  --text-3xl--line-height: 40px; /* H3 */
+  
+  --text-4xl: 40px;
+  --text-4xl--line-height: 48px; /* H2 */
+  
+  --text-5xl: 48px;
+  --text-5xl--line-height: 56px; /* H1 */
 
   /* Border radius */
   --radius-none: 0px;

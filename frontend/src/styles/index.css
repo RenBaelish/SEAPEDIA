@@ -3,6 +3,46 @@
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
 
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('../../font/OpenSauceOne-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('../../font/OpenSauceOne-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('../../font/OpenSauceOne-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('../../font/OpenSauceOne-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url('../../font/OpenSauceOne-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
@@ -30,10 +70,11 @@
   }
 
   /* Headings use Open Sauce One weight system */
-  h1 { font-size: var(--fs-headline-display); line-height: var(--lh-headline-display); font-weight: 700; }
-  h2 { font-size: var(--fs-headline-lg); line-height: var(--lh-headline-lg); font-weight: 700; }
-  h3 { font-size: var(--fs-headline-md); line-height: var(--lh-headline-md); font-weight: 600; }
-  h4 { font-size: var(--fs-headline-sm); line-height: var(--lh-headline-sm); font-weight: 600; }
+  h1 { @apply text-5xl font-extrabold; }
+  h2 { @apply text-4xl font-extrabold; }
+  h3 { @apply text-3xl font-extrabold; }
+  h4 { @apply text-2xl font-bold; }
+  h5 { @apply text-xl font-bold; }
 
   a {
     color: inherit;
