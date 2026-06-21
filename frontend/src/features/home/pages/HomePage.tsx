@@ -68,8 +68,8 @@ export default function HomePage() {
       {/* ─── Kategori Populer ─────────────────────────────────── */}
       <div className="bg-white mt-3 rounded-xl mx-auto max-w-[1200px] px-4 md:px-6 py-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-gray-900">Kategori Populer</h2>
-          <Link to="/search" className="text-[13px] text-green-600 font-semibold flex items-center gap-1 hover:underline">
+          <h2 className="text-base font-bold text-gray-900">Kategori Populer</h2>
+          <Link to="/search" className="text-sm text-green-600 font-semibold flex items-center gap-1 hover:underline">
             Lihat Semua <ChevronRight size={14} />
           </Link>
         </div>
@@ -83,7 +83,7 @@ export default function HomePage() {
               <div className="w-12 h-12 rounded-full bg-green-50 group-hover:bg-green-100 flex items-center justify-center text-2xl transition-colors">
                 {cat.emoji}
               </div>
-              <span className="text-[10px] font-medium text-gray-600 leading-tight">{cat.label}</span>
+              <span className="text-xs font-medium text-gray-600 leading-tight">{cat.label}</span>
             </Link>
           ))}
         </div>
@@ -93,8 +93,8 @@ export default function HomePage() {
       <div className="bg-white mt-3 rounded-xl mx-auto max-w-[1200px] px-4 md:px-6 py-6 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
           <Zap size={20} className="text-yellow-500" />
-          <h2 className="text-[16px] font-bold text-gray-900">Top Up & Tagihan</h2>
-          <Link to="/search?q=tagihan" className="ml-auto text-[13px] text-green-600 font-semibold hover:underline">Lihat Semua</Link>
+          <h2 className="text-base font-bold text-gray-900">Top Up & Tagihan</h2>
+          <Link to="/search?q=tagihan" className="ml-auto text-sm text-green-600 font-semibold hover:underline">Lihat Semua</Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
@@ -108,7 +108,7 @@ export default function HomePage() {
               className="flex items-center gap-3 p-3 rounded-xl border-2 border-gray-100 hover:border-green-300 hover:bg-green-50 transition-all text-left"
             >
               <span className="text-2xl">{item.emoji}</span>
-              <span className="text-[13px] font-semibold text-gray-700">{item.label}</span>
+              <span className="text-sm font-semibold text-gray-700">{item.label}</span>
             </button>
           ))}
         </div>
@@ -124,8 +124,8 @@ export default function HomePage() {
           <div key={i} className={`bg-gradient-to-r ${b.gradient} rounded-xl p-4 flex items-center gap-4 text-white cursor-pointer hover:opacity-90 transition-opacity shadow-sm`}>
             <span className="text-4xl">{b.icon}</span>
             <div>
-              <p className="font-bold text-[15px]">{b.title}</p>
-              <p className="text-[12px] opacity-90">{b.subtitle}</p>
+              <p className="font-bold text-base">{b.title}</p>
+              <p className="text-xs opacity-90">{b.subtitle}</p>
             </div>
           </div>
         ))}
@@ -134,8 +134,8 @@ export default function HomePage() {
       {/* ─── Produk Incaranmu ─────────────────────────────────── */}
       <div className="bg-white mt-3 rounded-xl mx-auto max-w-[1200px] px-4 md:px-6 py-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-gray-900">Produk Incaranmu</h2>
-          <Link to="/search" className="text-[13px] text-green-600 font-semibold flex items-center gap-1 hover:underline">
+          <h2 className="text-base font-bold text-gray-900">Produk Incaranmu</h2>
+          <Link to="/search" className="text-sm text-green-600 font-semibold flex items-center gap-1 hover:underline">
             Lihat Semua <ChevronRight size={14} />
           </Link>
         </div>
@@ -146,7 +146,7 @@ export default function HomePage() {
         </div>
         {!loadingProducts && products.length > 0 && (
           <div className="text-center mt-6">
-            <Link to="/search" className="inline-flex items-center gap-2 px-8 py-3 border-2 border-green-500 text-green-600 font-semibold rounded-full hover:bg-green-50 transition-colors text-[14px]">
+            <Link to="/search" className="inline-flex items-center gap-2 px-8 py-3 border-2 border-green-500 text-green-600 font-semibold rounded-full hover:bg-green-50 transition-colors text-sm">
               Lihat Lebih Banyak <ChevronRight size={16} />
             </Link>
           </div>
@@ -156,7 +156,7 @@ export default function HomePage() {
       {/* ─── Featured Stores ──────────────────────────────────── */}
       <div className="bg-white mt-3 rounded-xl mx-auto max-w-[1200px] px-4 md:px-6 py-6 shadow-sm">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[16px] font-bold text-gray-900">Toko Pilihan</h2>
+          <h2 className="text-base font-bold text-gray-900">Toko Pilihan</h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
@@ -174,9 +174,9 @@ export default function HomePage() {
                 {store.emoji}
               </div>
               <div>
-                <p className="text-[12px] font-bold text-gray-800 line-clamp-2">{store.name}</p>
-                <p className="text-[10px] text-gray-400 flex items-center justify-center gap-1 mt-1"><MapPin size={10} />{store.location}</p>
-                <span className="text-[10px] text-green-600 font-semibold mt-1 block">{store.badge}</span>
+                <p className="text-xs font-bold text-gray-800 line-clamp-2">{store.name}</p>
+                <p className="text-xs text-gray-400 flex items-center justify-center gap-1 mt-1"><MapPin size={10} />{store.location}</p>
+                <span className="text-xs text-green-600 font-semibold mt-1 block">{store.badge}</span>
               </div>
             </Link>
           ))}
@@ -185,21 +185,21 @@ export default function HomePage() {
 
       {/* ─── App Reviews ────────────────────────────────────────── */}
       <div id="reviews" className="bg-white mt-3 rounded-xl mx-auto max-w-[1200px] px-4 md:px-6 py-8 shadow-sm">
-        <h2 className="text-[16px] font-bold text-gray-900 mb-6">Apa Kata Mereka tentang SEAPEDIA?</h2>
+        <h2 className="text-base font-bold text-gray-900 mb-6">Apa Kata Mereka tentang SEAPEDIA?</h2>
         <div className="grid md:grid-cols-[1fr_380px] gap-6">
           <div className="flex flex-col gap-4">
             {loadingReviews ? (
-              <p className="text-[13px] text-gray-400">Memuat ulasan...</p>
+              <p className="text-sm text-gray-400">Memuat ulasan...</p>
             ) : reviews.length === 0 ? (
-              <p className="text-[13px] text-gray-400">Belum ada ulasan. Jadilah yang pertama!</p>
+              <p className="text-sm text-gray-400">Belum ada ulasan. Jadilah yang pertama!</p>
             ) : (
               reviews.map((review) => (
                 <Card key={review.id} className="flex gap-4">
                   <Avatar name={review.guestName} />
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[12px] font-bold text-gray-800">{review.guestName}</span>
-                      <span className="text-[11px] text-gray-400">
+                      <span className="text-xs font-bold text-gray-800">{review.guestName}</span>
+                      <span className="text-xs text-gray-400">
                         {new Date(review.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                       </span>
                     </div>
@@ -208,7 +208,7 @@ export default function HomePage() {
                         <Star key={i} size={12} className={i < review.rating ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"} />
                       ))}
                     </div>
-                    <p className="text-[12px] text-gray-600">{review.comment}</p>
+                    <p className="text-xs text-gray-600">{review.comment}</p>
                   </div>
                 </Card>
               ))
@@ -216,8 +216,8 @@ export default function HomePage() {
           </div>
           <div className="sticky top-20 h-fit">
             <Card padding="lg">
-              <h3 className="text-[15px] font-bold text-gray-800 mb-1">Beri Ulasan</h3>
-              <p className="text-[12px] text-gray-400 mb-5">Bagikan pengalaman belanjamu di SEAPEDIA.</p>
+              <h3 className="text-base font-bold text-gray-800 mb-1">Beri Ulasan</h3>
+              <p className="text-xs text-gray-400 mb-5">Bagikan pengalaman belanjamu di SEAPEDIA.</p>
               <AppReviewForm onSuccess={fetchReviews} />
             </Card>
           </div>

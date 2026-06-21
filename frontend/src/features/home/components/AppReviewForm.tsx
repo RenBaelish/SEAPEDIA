@@ -36,7 +36,7 @@ export function AppReviewForm({ onSuccess }: AppReviewFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <div className="bg-red-50 text-error p-3 rounded-md text-[12px] font-semibold">
+        <div className="bg-red-50 text-error p-3 rounded-md text-xs font-semibold">
           {error}
         </div>
       )}
@@ -52,7 +52,7 @@ export function AppReviewForm({ onSuccess }: AppReviewFormProps) {
       />
 
       <div className="flex flex-col gap-1">
-        <label className="text-[12px] font-semibold text-secondary">Penilaian</label>
+        <label className="text-xs font-semibold text-secondary">Penilaian</label>
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
