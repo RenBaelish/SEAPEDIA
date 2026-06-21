@@ -55,7 +55,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
           </div>
         }
       >
-        <div className="text-[14px] text-gray-700 whitespace-pre-line leading-relaxed">
+        <div className="text-sm text-gray-700 whitespace-pre-line leading-relaxed">
           {options.message}
         </div>
       </Modal>

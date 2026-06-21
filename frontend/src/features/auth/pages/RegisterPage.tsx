@@ -66,8 +66,8 @@ export default function RegisterPage() {
             </Link>
           </div>
           <div className="text-center mb-8">
-            <h2 className="text-[22px] font-bold text-gray-900 tracking-tight">Daftar Sekarang</h2>
-            <p className="mt-2 text-[13px] text-gray-500">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Daftar Sekarang</h2>
+            <p className="mt-2 text-sm text-gray-500">
               Sudah punya akun SEAPEDIA?{" "}
               <Link to="/auth/login" className="font-bold text-green-600 hover:text-green-500 transition-colors">
                 Masuk di sini
@@ -76,7 +76,7 @@ export default function RegisterPage() {
           </div>
 
           {apiError && (
-            <div className="mb-6 p-3 bg-red-50 text-red-600 text-[13px] font-medium rounded-lg text-center">
+            <div className="mb-6 p-3 bg-red-50 text-red-600 text-sm font-medium rounded-lg text-center">
               {apiError}
             </div>
           )}
@@ -121,20 +121,20 @@ export default function RegisterPage() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-[14px] font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             >
               {loading ? "Memproses..." : "Daftar SEAPEDIA"}
             </button>
           </form>
           
           <div className="mt-6 text-center">
-            <p className="text-[12px] text-gray-500 leading-relaxed">
+            <p className="text-xs text-gray-500 leading-relaxed">
               Dengan mendaftar, Anda menyetujui<br/> 
               <a href="#" className="font-semibold text-green-600">Syarat & Ketentuan</a> serta <a href="#" className="font-semibold text-green-600">Kebijakan Privasi</a> SEAPEDIA.
             </p>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+          <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-1.5 text-xs text-gray-400">
             <ShieldCheck size={14} className="text-green-500" />
             Terlindungi oleh reCAPTCHA dan Kebijakan Privasi SEAPEDIA
           </div>

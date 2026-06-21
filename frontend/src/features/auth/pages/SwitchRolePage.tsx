@@ -58,14 +58,14 @@ export default function SwitchRolePage() {
     <div className="flex justify-center items-center py-16">
       <Card padding="lg" className="w-full max-w-[450px]">
         <div className="text-center mb-8">
-          <h1 className="text-headline-md text-secondary mb-2">Pilih Peran Anda</h1>
-          <p className="text-[12px] text-tertiary">
+          <h1 className="text-2xl font-bold text-secondary mb-2">Pilih Peran Anda</h1>
+          <p className="text-xs text-tertiary">
             Akun Anda memiliki akses ke beberapa peran. Masuk sebagai:
           </p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-error text-[12px] font-semibold rounded-md text-center">
+          <div className="mb-4 p-3 bg-red-50 text-error text-xs font-semibold rounded-md text-center">
             {error}
           </div>
         )}
@@ -93,10 +93,10 @@ export default function SwitchRolePage() {
                   <Icon size={24} />
                 </div>
                 <div className="flex-1">
-                  <h3 className={`text-[14px] font-bold ${isActive ? "text-primary" : "text-secondary"}`}>
+                  <h3 className={`text-sm font-bold ${isActive ? "text-primary" : "text-secondary"}`}>
                     {Config.label}
                   </h3>
-                  <p className="text-[12px] text-tertiary">{Config.desc}</p>
+                  <p className="text-xs text-tertiary">{Config.desc}</p>
                 </div>
                 {loading === role && (
                   <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
