@@ -66,3 +66,57 @@ reviewRouter.post('/', zValidator('json', reviewSchema), async (c) => {
 
   return c.json({ message: 'Review added successfully' }, 201);
 });
+
+const appReviewSchema = z.object({
+  guestName: z.string().min(2),
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(10)
+});
+
+reviewRouter.get('/app', async (c) => {
+  const db = drizzle(c.env.DB);
+  
+  const appReviews = await db
+    .select({
+      id: reviews.id,
+      rating: reviews.rating,
+      comment: reviews.comment,
+      createdAt: reviews.createdAt,
+      guestName: reviews.guestName,
+      user: {
+        id: users.id,
+        fullName: users.fullName,
+        username: users.username
+      }
+    })
+    .from(reviews)
+    .leftJoin(users, eq(reviews.userId, users.id)) // leftJoin because guestName reviews have no user
+    .orderBy(desc(reviews.createdAt));
+
+  // Format to standard shape for frontend
+  const formattedReviews = appReviews.map(r => ({
+    id: r.id,
+    guestName: r.guestName || r.user?.fullName || 'Anonymous',
+    rating: r.rating,
+    comment: r.comment,
+    createdAt: r.createdAt
+  }));
+
+  return c.json({ data: formattedReviews });
+});
+
+reviewRouter.post('/app', zValidator('json', appReviewSchema), async (c) => {
+  const db = drizzle(c.env.DB);
+  const data = c.req.valid('json');
+
+  const reviewId = crypto.randomUUID();
+
+  await db.insert(reviews).values({
+    id: reviewId,
+    guestName: data.guestName,
+    rating: data.rating,
+    comment: data.comment
+  });
+
+  return c.json({ message: 'App review added successfully' }, 201);
+});

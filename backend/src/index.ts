@@ -11,6 +11,7 @@ import { orderRouter } from './routes/orders'
 import { promoRouter } from './routes/promos'
 import { deliveryRouter } from './routes/deliveries'
 import { adminRouter } from './routes/admin'
+import { categoryRouter } from './routes/categories'
 import { swaggerUI } from '@hono/swagger-ui'
 import openapiSpec from '../openapi.json'
 import seedHandler from './seed'
@@ -47,6 +48,7 @@ app.route('/orders', orderRouter)
 app.route('/promos', promoRouter)
 app.route('/deliveries', deliveryRouter)
 app.route('/admin', adminRouter)
+app.route('/categories', categoryRouter)
 
 app.get('/seed', (c) => seedHandler.fetch(c.req.raw, c.env))
 

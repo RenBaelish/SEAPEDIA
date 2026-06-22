@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
 import { products, stores, categories } from '../db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, like, or, desc } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -249,7 +249,12 @@ productRouter.get('/seller/mine', async (c) => {
 // Get All Products (Public Catalog)
 productRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);
-  const allProducts = await db
+  const q = c.req.query('q');
+  const categorySlug = c.req.query('category');
+  const limitStr = c.req.query('limit');
+  const limit = limitStr ? parseInt(limitStr, 10) : 50;
+
+  let query = db
     .select({
       id: products.id,
       name: products.name,
@@ -272,7 +277,30 @@ productRouter.get('/', async (c) => {
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
-    .leftJoin(categories, eq(products.categoryId, categories.id));
+    .leftJoin(categories, eq(products.categoryId, categories.id))
+    .$dynamic();
+
+  const conditions = [];
+  
+  if (q) {
+    conditions.push(
+      or(
+        like(products.name, `%${q}%`),
+        like(products.description, `%${q}%`),
+        like(categories.name, `%${q}%`)
+      )
+    );
+  }
+
+  if (categorySlug) {
+    conditions.push(eq(categories.slug, categorySlug));
+  }
+
+  if (conditions.length > 0) {
+    query = query.where(and(...conditions));
+  }
+
+  const allProducts = await query.limit(limit).orderBy(desc(products.createdAt));
 
   const mappedProducts = allProducts.map(p => ({
     ...p,
