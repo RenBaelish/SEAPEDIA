@@ -4,7 +4,7 @@ import { z } from "zod";
 import { api } from "../../../lib/api";
 import { useAuthStore } from "../../../store/auth.store";
 import { Input } from "../../../components/ui/Input";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, ArrowRight } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Format email tidak valid"),
@@ -14,7 +14,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
-  
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError(null);
-    
+
     const parsed = loginSchema.safeParse(formData);
     if (!parsed.success) {
       const fieldErrors: any = {};
@@ -40,9 +40,7 @@ export default function LoginPage() {
     try {
       const res = await api.post("/auth/login", formData);
       const { user, tokens } = res.data.data;
-      
       setUser(user, tokens);
-      
       if (user.roles.length > 1) {
         navigate("/auth/switch-role");
       } else {
@@ -56,94 +54,79 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-[440px]">
-        <div className="bg-white py-10 px-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:rounded-2xl border border-gray-100 relative sm:px-10">
-          <div className="text-center mb-6">
-            <Link to="/" className="inline-block">
-              <img
-                className="mx-auto h-12 w-auto"
-                src="/logo-name.png"
-                alt="SEAPEDIA"
-              />
-            </Link>
-          </div>
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Masuk</h2>
-            <p className="mt-2 text-sm text-gray-500">
-              Belum punya akun SEAPEDIA?{" "}
-              <Link to="/auth/register" className="font-bold text-green-600 hover:text-green-500 transition-colors">
+    <div className="min-h-screen bg-[#F7F5F0] flex flex-col justify-center py-12 px-4">
+      <div className="mx-auto w-full max-w-[420px]">
+
+        {/* Logo */}
+        <div className="text-center mb-6">
+          <Link to="/">
+            <img src="/logo-name.png" alt="SEAPEDIA" className="h-10 w-auto mx-auto" />
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A]">
+          {/* Yellow header bar */}
+          <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5">
+            <h2 className="text-2xl font-extrabold text-nb-black tracking-tight">Masuk</h2>
+            <p className="text-sm font-medium text-gray-700 mt-1">
+              Belum punya akun?{" "}
+              <Link to="/auth/register" className="font-extrabold text-nb-black underline hover:no-underline">
                 Daftar di sini
               </Link>
             </p>
           </div>
 
-          {apiError && (
-            <div className="mb-6 p-3 bg-red-50 text-red-600 text-sm font-medium rounded-lg text-center">
-              {apiError}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <Input
-              label="Nomor HP atau Email"
-              type="text"
-              placeholder="Contoh: 08123456789 atau email@domain.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: (e.target as any).value })}
-              error={errors.email}
-            />
-            
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-bold text-gray-700">Password</label>
-                <a href="#" className="text-xs font-semibold text-green-600 hover:text-green-500 transition-colors">Lupa Kata Sandi?</a>
+          <div className="px-6 py-6">
+            {/* API Error */}
+            {apiError && (
+              <div className="mb-5 p-3 border-2 border-nb-red bg-red-50 text-nb-red text-sm font-bold">
+                {apiError}
               </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                type="password"
-                placeholder="Masukkan password Anda"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: (e.target as any).value })}
-                error={errors.password}
+                label="Email"
+                type="email"
+                placeholder="email@domain.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: (e.target as any).value })}
+                error={errors.email}
               />
-            </div>
 
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all disabled:opacity-70 disabled:cursor-not-allowed mt-2"
-            >
-              {loading ? "Memproses..." : "Masuk"}
-            </button>
-          </form>
-
-          <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-nb-black uppercase tracking-wide">Password</label>
+                  <a href="#" className="text-xs font-bold text-nb-blue hover:underline">Lupa Kata Sandi?</a>
+                </div>
+                <Input
+                  type="password"
+                  placeholder="Masukkan password Anda"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: (e.target as any).value })}
+                  error={errors.password}
+                />
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-3 bg-white text-gray-500 text-xs">atau masuk dengan</span>
-              </div>
-            </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <button className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5 mr-2" alt="Google" />
-                Google
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 border-3 border-nb-black bg-nb-black text-white font-extrabold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none mt-2"
+                style={{ borderWidth: '3px' }}
+              >
+                {loading ? (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>Masuk <ArrowRight size={16} strokeWidth={3} /></>
+                )}
               </button>
-              <button className="w-full inline-flex justify-center py-2.5 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                <svg className="w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                </svg>
-                Facebook
-              </button>
+            </form>
+
+            <div className="mt-6 pt-5 border-t-2 border-gray-200 flex items-center justify-center gap-1.5 text-xs text-gray-400">
+              <ShieldCheck size={14} className="text-green-500" />
+              Terlindungi oleh kebijakan privasi SEAPEDIA
             </div>
-          </div>
-          
-          <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-            <ShieldCheck size={14} className="text-green-500" />
-            Terlindungi oleh reCAPTCHA dan Kebijakan Privasi SEAPEDIA
           </div>
         </div>
       </div>
