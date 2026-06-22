@@ -46,11 +46,11 @@ export default function StoreProfilePage() {
 
   if (loading) {
     return (
-      <div className="bg-gray-50 min-h-screen">
-        <div className="h-[200px] bg-gray-200 " />
+      <div className="bg-[#F7F5F0] min-h-screen">
+        <div className="h-[200px] border-b-4 border-nb-black bg-gray-200" />
         <div className="page-container -mt-8 relative z-10">
-          <div className="bg-white rounded-xl h-32  mb-4" />
-          <div className="bg-white rounded-xl h-96 " />
+          <div className="bg-white border-4 border-nb-black h-32 mb-4" />
+          <div className="bg-white border-4 border-nb-black h-96" />
         </div>
       </div>
     );
@@ -58,88 +58,91 @@ export default function StoreProfilePage() {
 
   if (!store) {
     return (
-      <div className="page-container py-16 text-center">
-        <div className="text-6xl mb-4"></div>
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Toko Tidak Ditemukan</h1>
-        <p className="text-gray-500 mb-6">Toko yang Anda cari mungkin sudah ditutup atau link salah.</p>
-        <Link to="/" className="inline-flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-green-600 transition-colors">
-          Kembali ke Beranda
-        </Link>
+      <div className="bg-[#F7F5F0] min-h-screen pt-16 pb-16">
+        <div className="page-container max-w-4xl text-center">
+          <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-10">
+            <h1 className="text-2xl font-extrabold text-nb-black mb-2">Toko Tidak Ditemukan</h1>
+            <p className="text-sm font-semibold text-gray-600 mb-6">Toko yang Anda cari mungkin sudah ditutup atau link salah.</p>
+            <Link to="/" className="btn-primary inline-flex">
+              Kembali ke Beranda
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
+    <div className="bg-[#F7F5F0] min-h-screen pb-16">
       
-      {/* ─── Cover / Banner ─────────────────────────────────── */}
-      <div className="h-[120px] md:h-[240px] bg-gradient-to-r from-green-500 to-emerald-700 w-full relative">
+      {/* ─── Cover / Banner ── */}
+      <div className="h-[120px] md:h-[240px] bg-nb-black w-full relative border-b-4 border-nb-black">
         {store.bannerUrl ? (
           <img src={store.bannerUrl} alt="Banner" className="w-full h-full object-cover opacity-90" />
         ) : (
-          <div className="absolute inset-0 pattern-dots text-white/10" />
+          <div className="absolute inset-0 bg-[url('https://placehold.co/1200x240/1A1A1A/FFFFFF?text=Seapedia+Store')] bg-cover opacity-50" />
         )}
       </div>
 
       <div className="page-container max-w-[1200px] -mt-10 md:-mt-14 relative z-10">
         
-        {/* ─── Header Toko ────────────────────────────────────── */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4 p-5 flex flex-col md:flex-row gap-5 items-start md:items-center">
+        {/* ─── Header Toko ── */}
+        <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] mb-5 p-5 flex flex-col md:flex-row gap-5 items-start md:items-center">
           
           {/* Logo & Info */}
           <div className="flex items-center gap-4 flex-1">
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white border-4 border-white shadow-md overflow-hidden flex-shrink-0 flex items-center justify-center relative">
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] flex-shrink-0 flex items-center justify-center relative overflow-hidden" style={{ borderWidth: '3px' }}>
               {store.logoUrl ? (
                 <img src={store.logoUrl} alt={store.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center text-3xl">
-                  
+                <div className="w-full h-full bg-nb-yellow flex items-center justify-center text-3xl font-black text-nb-black">
+                  {store.name.charAt(0)}
                 </div>
               )}
             </div>
             
             <div>
-              <h1 className="text-lg md:text-2xl font-bold text-gray-900 flex items-center gap-1.5 mb-1">
+              <h1 className="text-lg md:text-2xl font-extrabold text-nb-black flex items-center gap-1.5 mb-1">
                 {store.name}
-                <CheckCircle size={18} className="text-blue-500 fill-blue-50" />
+                <img src="/icon/verify-icon.png" alt="verified" className="w-5 h-5 object-contain" />
               </h1>
-              <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap">
+              <div className="flex items-center gap-3 text-sm text-gray-700 font-bold flex-wrap">
                 <span className="flex items-center gap-1">
-                  <MapPin size={14} className="text-gray-400" />
+                  <MapPin size={14} className="text-nb-black" strokeWidth={3} />
                   Jakarta
                 </span>
                 <span className="flex items-center gap-1">
-                  <Star size={14} className="text-amber-400 fill-amber-400" />
-                  <b className="text-gray-700">{(store.rating ?? 0).toFixed(1)}</b>
+                  <Star size={14} className="text-nb-yellow fill-nb-yellow" strokeWidth={2} />
+                  <b className="text-nb-black">{(store.rating ?? 0).toFixed(1)}</b>
                 </span>
                 <span className="flex items-center gap-1">
-                  <b className="text-gray-700">{store.totalSales}</b> pesanan
+                  <b className="text-nb-black">{store.totalSales}</b> pesanan
                 </span>
               </div>
-              <p className="text-xs text-gray-500 mt-1.5 max-w-[500px] line-clamp-1">{store.description || "Official Store di SEAPEDIA."}</p>
+              <p className="text-xs text-gray-600 font-medium mt-1.5 max-w-[500px] line-clamp-1">{store.description || "Official Store di SEAPEDIA."}</p>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold text-sm transition-colors">
+            <button className="flex-1 md:flex-none btn-primary h-10 px-6 text-sm">
               Follow
             </button>
-            <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold text-sm transition-colors">
-              <MessageCircle size={18} /> Chat
+            <button className="flex items-center justify-center gap-2 px-4 py-2 border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow font-extrabold text-sm transition-colors" style={{ borderWidth: '3px' }}>
+              <MessageCircle size={18} strokeWidth={2.5} /> Chat
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-              <Share2 size={18} />
+            <button className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
+              <Share2 size={18} strokeWidth={2.5} />
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-              <Info size={18} />
+            <button className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
+              <Info size={18} strokeWidth={2.5} />
             </button>
           </div>
         </div>
 
-        {/* ─── Navigation Tabs ────────────────────────────────── */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-4 sticky top-16 z-20">
-          <div className="flex overflow-x-auto hide-scrollbar border-b border-gray-100 px-2">
+        {/* ─── Navigation Tabs ── */}
+        <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] mb-5 sticky top-16 z-20">
+          <div className="flex overflow-x-auto hide-scrollbar border-b-3 border-nb-black px-2" style={{ borderBottomWidth: '3px' }}>
             {[
               { id: "beranda", label: "Beranda" },
               { id: "produk", label: "Produk" },
@@ -148,13 +151,13 @@ export default function StoreProfilePage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-4 text-sm font-bold whitespace-nowrap transition-colors relative ${
-                  activeTab === tab.id ? "text-green-600" : "text-gray-500 hover:text-green-600"
+                className={`px-6 py-4 text-sm font-extrabold whitespace-nowrap transition-colors relative ${
+                  activeTab === tab.id ? "text-nb-black" : "text-gray-500 hover:text-nb-black"
                 }`}
               >
                 {tab.label}
                 {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-green-500 rounded-t-full" />
+                  <div className="absolute bottom-0 left-0 w-full h-1.5 bg-nb-blue" />
                 )}
               </button>
             ))}
@@ -164,45 +167,45 @@ export default function StoreProfilePage() {
           {activeTab === "produk" && (
             <div className="p-4 flex items-center gap-3">
               <div className="relative flex-1 max-w-[300px]">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
                 <input 
                   type="text" 
                   placeholder="Cari di toko ini..." 
-                  className="w-full pl-9 pr-4 h-9 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none focus:border-green-500 focus:bg-white transition-colors"
+                  className="w-full pl-9 pr-4 h-10 border-2 border-nb-black bg-white text-sm font-semibold outline-none focus:bg-nb-yellow transition-colors"
                 />
               </div>
-              <div className="h-6 w-px bg-gray-200 mx-2" />
-              <button className="text-sm text-gray-600 font-semibold hover:text-green-600">Terbaru</button>
-              <button className="text-sm text-gray-600 font-semibold hover:text-green-600 ml-4">Terlaris</button>
-              <button className="text-sm text-gray-600 font-semibold hover:text-green-600 ml-4 flex items-center gap-1">Harga <MoreHorizontal size={14} /></button>
+              <div className="h-6 w-[3px] bg-nb-black mx-2" />
+              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black">Terbaru</button>
+              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black ml-4">Terlaris</button>
+              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black ml-4 flex items-center gap-1">Harga <MoreHorizontal size={14} /></button>
             </div>
           )}
         </div>
 
-        {/* ─── Content Area ───────────────────────────────────── */}
+        {/* ─── Content Area ── */}
         
         {activeTab === "beranda" && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Promo Banner / Voucher */}
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-100 rounded-xl p-5 flex items-center justify-between">
+            <div className="bg-nb-yellow border-4 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-orange-800 mb-1">Promo Cashback 10%</h3>
-                <p className="text-xs text-orange-600">Min. Pembelian Rp100.000. S&K Berlaku.</p>
+                <h3 className="text-base font-extrabold text-nb-black mb-1">Promo Cashback 10%</h3>
+                <p className="text-xs font-bold text-gray-800">Min. Pembelian Rp100.000. S&K Berlaku.</p>
               </div>
-              <button className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-orange-600">
+              <button className="bg-white border-2 border-nb-black px-5 py-2 text-sm font-extrabold hover:bg-nb-black hover:text-white transition-colors">
                 Klaim
               </button>
             </div>
 
             {/* Etalase Unggulan */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-base font-bold text-gray-900">Produk Unggulan</h2>
-                <button onClick={() => setActiveTab("produk")} className="text-sm text-green-600 font-semibold hover:underline">Lihat Semua</button>
+                <h2 className="text-base font-extrabold text-nb-black nb-section-title">Produk Unggulan</h2>
+                <button onClick={() => setActiveTab("produk")} className="text-sm font-bold text-nb-black border-2 border-nb-black px-3 py-1 hover:bg-nb-yellow transition-colors">Lihat Semua</button>
               </div>
               {products.length === 0 ? (
                 <div className="py-10 text-center">
-                  <p className="text-gray-500 text-sm">Belum ada produk di etalase ini.</p>
+                  <p className="text-gray-500 font-semibold text-sm">Belum ada produk di etalase ini.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -214,12 +217,14 @@ export default function StoreProfilePage() {
         )}
 
         {activeTab === "produk" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-base font-bold text-gray-900 mb-5">Semua Produk ({products.length})</h2>
+          <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6">
+            <h2 className="text-base font-extrabold text-nb-black mb-5">Semua Produk ({products.length})</h2>
             {products.length === 0 ? (
               <div className="py-20 text-center">
-                <Package size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500">Toko ini belum memiliki produk.</p>
+                <div className="inline-flex items-center justify-center w-20 h-20 border-3 border-nb-black bg-nb-yellow mb-4 rotate-3" style={{ borderWidth: '3px' }}>
+                  <Package size={32} className="text-nb-black" strokeWidth={2.5} />
+                </div>
+                <p className="text-nb-black font-extrabold">Toko ini belum memiliki produk.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -230,10 +235,12 @@ export default function StoreProfilePage() {
         )}
 
         {activeTab === "ulasan" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center py-20">
-             <Star size={48} className="mx-auto text-gray-300 mb-4" />
-             <h3 className="text-base font-bold text-gray-800 mb-2">Ulasan Pembeli</h3>
-             <p className="text-gray-500 text-sm">Menampilkan ulasan dari pembeli yang telah berbelanja di toko ini.</p>
+          <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6 text-center py-20">
+             <div className="inline-flex items-center justify-center w-20 h-20 border-3 border-nb-black bg-[#EBF5FF] mb-4 -rotate-3" style={{ borderWidth: '3px' }}>
+               <Star size={32} className="text-nb-blue fill-nb-blue" strokeWidth={2} />
+             </div>
+             <h3 className="text-base font-extrabold text-nb-black mb-2">Ulasan Pembeli</h3>
+             <p className="text-gray-600 font-semibold text-sm">Menampilkan ulasan dari pembeli yang telah berbelanja di toko ini.</p>
           </div>
         )}
 
