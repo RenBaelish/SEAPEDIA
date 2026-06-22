@@ -4,7 +4,7 @@ import { formatCurrency } from "../../../lib/format";
 import { api } from "../../../lib/api";
 import { CartDto, ProductSummary } from '@/types';
 import { useConfirm } from "../../../contexts/ConfirmContext";
-import { Trash2, Minus, Plus, ShoppingBag, Heart, ShieldCheck, MapPin, Ticket, ChevronRight } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, ShieldCheck, MapPin, Ticket, ChevronRight, ArrowRight } from "lucide-react";
 import { ProductCard } from "../../../components/shared/ProductCard";
 
 export default function CartPage() {
@@ -70,12 +70,12 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="bg-gray-50 min-h-screen pt-6">
-        <div className="page-container max-w-[1200px]">
-          <h1 className="text-xl font-bold text-gray-800 mb-4">Keranjang</h1>
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1 bg-white rounded-xl h-[400px] " />
-            <div className="w-full md:w-[320px] bg-white rounded-xl h-[250px] " />
+      <div className="bg-[#F7F5F0] min-h-screen pt-6">
+        <div className="page-container">
+          <div className="h-8 w-48 skeleton mb-5" />
+          <div className="flex flex-col md:flex-row gap-5">
+            <div className="flex-1 skeleton h-[400px] border-3 border-nb-black" style={{ borderWidth: '3px' }} />
+            <div className="w-full md:w-[300px] skeleton h-[250px] border-3 border-nb-black" style={{ borderWidth: '3px' }} />
           </div>
         </div>
       </div>
@@ -84,21 +84,30 @@ export default function CartPage() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-        <div className="page-container max-w-[1200px]">
-          <div className="bg-white rounded-xl p-10 text-center shadow-sm border border-gray-100 mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-50 rounded-full text-gray-300 mb-5">
-              <ShoppingBag size={48} />
-            </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Keranjang belanjamu kosong</h2>
-            <p className="text-sm text-gray-500 mb-8">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</p>
-            <Link to="/" className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white font-bold text-sm px-10 h-11 rounded-xl transition-colors">
-              Mulai Belanja
+      <div className="bg-[#F7F5F0] min-h-screen pt-6 pb-16">
+        <div className="page-container">
+          {/* Empty state */}
+          <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-10 text-center mb-8">
+            <img
+              src="/icon/ilustrasi-keranjang-kosong-icon.png"
+              alt="Keranjang Kosong"
+              className="w-36 h-36 mx-auto object-contain mb-5"
+            />
+            <h2 className="text-xl font-extrabold text-nb-black mb-2">Keranjang Masih Kosong</h2>
+            <p className="text-sm text-gray-500 font-medium mb-6 max-w-xs mx-auto">
+              Temukan produk incaanmu dan tambahkan ke keranjang!
+            </p>
+            <Link
+              to="/search"
+              className="inline-flex items-center gap-2 px-8 py-3 border-3 border-nb-black bg-nb-yellow font-extrabold text-sm shadow-[4px_4px_0px_#0A0A0A] hover:shadow-[5px_5px_0px_#0A0A0A] hover:-translate-x-px hover:-translate-y-px transition-all"
+              style={{ borderWidth: '3px' }}
+            >
+              Mulai Belanja <ArrowRight size={16} strokeWidth={3} />
             </Link>
           </div>
 
-          {/* Rekomendasi */}
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
+          {/* Recommendations */}
+          <h2 className="text-base font-extrabold text-nb-black nb-section-title mb-4">Rekomendasi untukmu</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {recommendations.map((p) => (
               <ProductCard key={p.id} product={p} />
@@ -112,35 +121,39 @@ export default function CartPage() {
   const subtotal = cart.items.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
 
   return (
-    <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-      <div className="page-container max-w-[1200px]">
-        <h1 className="text-xl font-bold text-gray-800 mb-4">Keranjang</h1>
-        
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          
-          {/* ─── Kiri: Daftar Produk ──────────────────────────────── */}
-          <div className="flex-1 w-full space-y-4">
-            
-            {/* Header Keranjang */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center justify-between">
+    <div className="bg-[#F7F5F0] min-h-screen pt-6 pb-16">
+      <div className="page-container">
+        <h1 className="text-xl font-extrabold text-nb-black mb-5 nb-section-title">Keranjang Belanja</h1>
+
+        <div className="flex flex-col md:flex-row gap-5 items-start">
+
+          {/* ─── Left: Items ── */}
+          <div className="flex-1 w-full space-y-3">
+
+            {/* Header bar */}
+            <div className="bg-white border-3 border-nb-black p-3 flex items-center justify-between"
+              style={{ borderWidth: '3px' }}>
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded text-green-500 focus:ring-green-500 cursor-pointer" checked readOnly />
-                <span className="text-sm font-semibold text-gray-700">Pilih Semua</span>
+                <input type="checkbox" className="w-4 h-4 cursor-pointer accent-nb-black" checked readOnly />
+                <span className="text-sm font-bold text-nb-black">Pilih Semua</span>
               </label>
-              <button onClick={handleClearCart} className="text-sm font-bold text-green-600 hover:text-green-700">
-                Hapus
+              <button
+                onClick={handleClearCart}
+                className="text-sm font-bold text-nb-red hover:underline"
+              >
+                Hapus Semua
               </button>
             </div>
 
-            {/* List Toko & Produk */}
-            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-              
-              {/* Header Toko */}
+            {/* Store & Products */}
+            <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
+              style={{ borderWidth: '3px' }}>
+
               {cart.store && (
-                <div className="flex items-center gap-3 mb-4">
-                  <input type="checkbox" className="w-4 h-4 rounded text-green-500 focus:ring-green-500 cursor-pointer" checked readOnly />
-                  <ShieldCheck size={18} className="text-green-500" />
-                  <Link to={`/store/${(cart.store as any).slug}`} className="text-sm font-bold text-gray-800 hover:text-green-600 transition-colors">
+                <div className="flex items-center gap-3 pb-4 mb-4 border-b-2 border-gray-100">
+                  <input type="checkbox" className="w-4 h-4 cursor-pointer accent-nb-black" checked readOnly />
+                  <img src="/icon/kategori-toko-verify-icon.png" alt="verified" className="w-5 h-5 object-contain" />
+                  <Link to={`/store/${(cart.store as any).slug}`} className="text-sm font-extrabold text-nb-black hover:text-nb-blue transition-colors">
                     {cart.store.name}
                   </Link>
                   <span className="text-xs text-gray-400 flex items-center gap-1 ml-auto">
@@ -149,7 +162,7 @@ export default function CartPage() {
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {cart.items.map((item, index) => {
                   const p = item.product;
                   const discountPercent = p.comparePrice
@@ -158,62 +171,56 @@ export default function CartPage() {
 
                   return (
                     <div key={item.id}>
-                      {index > 0 && <div className="border-t border-gray-100 mb-4" />}
+                      {index > 0 && <div className="border-t-2 border-gray-100 mb-5" />}
                       <div className="flex gap-4">
-                        <input type="checkbox" className="w-4 h-4 rounded text-green-500 focus:ring-green-500 mt-2 cursor-pointer" checked readOnly />
-                        
-                        <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border border-gray-100 shrink-0">
+                        <input type="checkbox" className="w-4 h-4 mt-2 cursor-pointer accent-nb-black flex-shrink-0" checked readOnly />
+
+                        <div className="w-20 h-20 border-2 border-nb-black overflow-hidden shrink-0">
                           <img src={p.images?.[0]?.url || "https://placehold.co/80"} alt={p.name} className="w-full h-full object-cover" />
                         </div>
-                        
+
                         <div className="flex-1 min-w-0">
-                          <Link to={`/product/${p.slug}`} className="text-sm text-gray-800 hover:text-green-600 line-clamp-2 leading-snug mb-1">
+                          <Link to={`/product/${p.slug}`} className="text-sm font-semibold text-nb-black hover:text-nb-blue line-clamp-2 leading-snug mb-1.5">
                             {p.name}
                           </Link>
-                          
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-base font-bold text-gray-900">{formatCurrency(Number(p.price))}</span>
+
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-base font-extrabold text-nb-black">{formatCurrency(Number(p.price))}</span>
                             {discountPercent > 0 && (
-                              <span className="text-xs text-gray-400 line-through">{formatCurrency(Number(p.comparePrice))}</span>
-                            )}
-                            {discountPercent > 0 && (
-                              <span className="text-xs font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
+                              <>
+                                <span className="text-xs text-gray-400 line-through">{formatCurrency(Number(p.comparePrice))}</span>
+                                <span className="text-xs font-bold text-nb-red border border-nb-red px-1">-{discountPercent}%</span>
+                              </>
                             )}
                           </div>
-                          
-                          <button className="text-xs text-green-600 font-semibold hover:underline">Tulis catatan</button>
-                        </div>
-                      </div>
 
-                      {/* Action Bar (Heart, Trash, Qty) */}
-                      <div className="flex items-center justify-end gap-5 mt-2">
-                        <button className="text-gray-400 hover:text-red-500 transition-colors">
-                          <Heart size={18} />
-                        </button>
-                        <button onClick={() => handleRemoveItem(item.id)} className="text-gray-400 hover:text-gray-600 transition-colors">
-                          <Trash2 size={18} />
-                        </button>
-                        <div className="w-px h-5 bg-gray-200" />
-                        <div className="flex items-center border border-gray-200 rounded-lg w-[100px] h-8">
-                          <button 
-                            onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                            disabled={item.quantity <= 1}
-                            className="w-8 h-full flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-30"
-                          >
-                            <Minus size={14} />
-                          </button>
-                          <input 
-                            type="text" 
-                            className="w-full h-full text-center text-sm font-bold outline-none border-none text-gray-800" 
-                            value={item.quantity} 
-                            readOnly
-                          />
-                          <button 
-                            onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-full flex items-center justify-center text-green-600 hover:bg-green-50"
-                          >
-                            <Plus size={14} />
-                          </button>
+                          {/* Controls */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center border-2 border-nb-black overflow-hidden">
+                              <button
+                                onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                                disabled={item.quantity <= 1}
+                                className="w-8 h-8 flex items-center justify-center hover:bg-nb-yellow disabled:opacity-30 font-bold transition-colors"
+                              >
+                                <Minus size={14} strokeWidth={3} />
+                              </button>
+                              <span className="w-10 h-8 flex items-center justify-center text-sm font-extrabold border-x-2 border-nb-black">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                                className="w-8 h-8 flex items-center justify-center hover:bg-nb-yellow font-bold transition-colors"
+                              >
+                                <Plus size={14} strokeWidth={3} />
+                              </button>
+                            </div>
+                            <button
+                              onClick={() => handleRemoveItem(item.id)}
+                              className="p-2 border-2 border-gray-200 text-gray-400 hover:border-nb-red hover:text-nb-red hover:bg-red-50 transition-all"
+                            >
+                              <Trash2 size={16} strokeWidth={2} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -223,53 +230,66 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* ─── Kanan: Ringkasan Belanja ─────────────────────────── */}
-          <div className="w-full md:w-[320px] shrink-0 sticky top-24 space-y-4">
-            
-            {/* Promo Box */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 cursor-pointer hover:border-green-300 transition-colors flex items-center justify-between group">
+          {/* ─── Right: Summary ── */}
+          <div className="w-full md:w-[300px] shrink-0 sticky top-24 space-y-3">
+
+            {/* Promo */}
+            <div className="bg-white border-3 border-nb-black p-4 flex items-center justify-between cursor-pointer hover:bg-nb-yellow transition-colors"
+              style={{ borderWidth: '3px' }}>
               <div className="flex items-center gap-3">
-                <Ticket size={20} className="text-green-500" />
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-green-600">Makin hemat pakai promo</span>
+                <Ticket size={18} strokeWidth={2.5} />
+                <span className="text-sm font-bold text-nb-black">Gunakan Promo</span>
               </div>
-              <ChevronRight size={16} className="text-gray-400 group-hover:text-green-600" />
+              <ChevronRight size={16} strokeWidth={3} />
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-              <h3 className="text-sm font-bold text-gray-800 mb-4">Ringkasan belanja</h3>
-              
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-600">Total Harga ({cart.items.length} barang)</span>
-                <span className="text-sm text-gray-600">{formatCurrency(subtotal)}</span>
+            {/* Summary card */}
+            <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
+              style={{ borderWidth: '3px' }}>
+              <h3 className="text-sm font-extrabold text-nb-black mb-4 pb-3 border-b-2 border-gray-100">Ringkasan Belanja</h3>
+
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">Total ({cart.items.length} barang)</span>
+                  <span className="font-semibold text-nb-black">{formatCurrency(subtotal)}</span>
+                </div>
               </div>
 
-              <div className="border-t border-gray-100 mb-4" />
-
-              <div className="flex items-center justify-between mb-6">
-                <span className="text-sm font-bold text-gray-800">Total Belanja</span>
-                <span className="text-lg font-bold text-gray-900">{formatCurrency(subtotal)}</span>
+              <div className="border-t-2 border-nb-black pt-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-extrabold text-nb-black">Total Belanja</span>
+                  <span className="text-lg font-extrabold text-nb-black">{formatCurrency(subtotal)}</span>
+                </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => navigate("/checkout")}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold text-sm h-11 rounded-xl transition-colors shadow-sm"
+                className="w-full flex items-center justify-center gap-2 py-3 border-3 border-nb-black bg-nb-black text-white font-extrabold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all"
+                style={{ borderWidth: '3px' }}
               >
-                Beli ({cart.items.reduce((sum, item) => sum + item.quantity, 0)})
+                Beli ({cart.items.reduce((sum, item) => sum + item.quantity, 0)}) <ArrowRight size={16} strokeWidth={3} />
               </button>
             </div>
+
+            {/* Trust badge */}
+            <div className="flex items-center gap-2 text-xs text-gray-500 px-1">
+              <ShieldCheck size={14} className="text-green-500 shrink-0" />
+              <span>Belanja aman & terpercaya bersama SEAPEDIA</span>
+            </div>
           </div>
         </div>
 
-        {/* ─── Rekomendasi untukmu ─────────────────────────────── */}
-        <div className="mt-12">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Rekomendasi untukmu</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {recommendations.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+        {/* Recommendations */}
+        {recommendations.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-base font-extrabold text-nb-black nb-section-title mb-4">Rekomendasi untukmu</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {recommendations.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
           </div>
-        </div>
-        
+        )}
       </div>
     </div>
   );
