@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { Package, ShoppingBag, TrendingUp, Store, Plus } from "lucide-react";
+import { Package, ShoppingBag, TrendingUp, Store, Plus, ArrowRight } from "lucide-react";
 import { api } from "../../../../lib/api";
 import { useAuthStore } from "../../../../store/auth.store";
-import { Card } from "../../../../components/ui/Card";
 import { formatCurrency } from "../../../../lib/format";
 
 interface StoreData {
@@ -27,9 +26,9 @@ export default function SellerDashboardPage() {
 
   useEffect(() => {
     api.get("/stores/me/stats")
-      .then((res) => { 
-        setStore(res.data.data.store); 
-        setHasStore(true); 
+      .then((res) => {
+        setStore(res.data.data.store);
+        setHasStore(true);
         setIncome(res.data.data.income);
       })
       .catch((err) => {
@@ -40,105 +39,156 @@ export default function SellerDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-40">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-32 skeleton border-2 border-gray-200" />
+          ))}
+        </div>
       </div>
     );
   }
 
-  // No store yet — prompt to create one
   if (!hasStore) {
     return (
       <div className="w-full max-w-lg mx-auto py-16 text-center">
-        <Store size={48} className="text-tertiary mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-secondary mb-2">Belum Punya Toko</h2>
-        <p className="text-xs text-tertiary mb-8">
-          Buat toko Anda sekarang untuk mulai berjualan di SEAPEDIA.
-        </p>
-        <Link to="/seller/store/settings" className="btn-primary h-10 px-6 inline-flex items-center gap-2 rounded-md text-xs font-bold">
-          <Plus size={16} /> Buat Toko Sekarang
-        </Link>
+        <div className="border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-10 bg-white">
+          <div className="w-16 h-16 bg-nb-yellow border-2 border-nb-black mx-auto mb-4 flex items-center justify-center">
+            <Store size={32} strokeWidth={2} />
+          </div>
+          <h2 className="text-xl font-extrabold text-nb-black mb-2">Belum Punya Toko</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Buat toko Anda sekarang untuk mulai berjualan di SEAPEDIA.
+          </p>
+          <Link
+            to="/seller/store/settings"
+            className="inline-flex items-center gap-2 px-6 py-3 border-3 border-nb-black bg-nb-black text-white font-bold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all"
+            style={{ borderWidth: '3px' }}
+          >
+            <Plus size={16} /> Buat Toko Sekarang
+          </Link>
+        </div>
       </div>
     );
   }
 
-  const stats = [
-    { label: "Total Pendapatan", value: formatCurrency(income?.totalIncome || 0), icon: TrendingUp, color: "text-brand-500", bg: "bg-brand-100", link: "/seller/wallet", linkLabel: "Cek Saldo" },
-    { label: "Total Penjualan", value: store?.totalSales ?? 0, icon: ShoppingBag, color: "text-primary", bg: "bg-primary-light", link: "/seller/orders", linkLabel: "Kelola Pesanan" },
-    { label: "Total Produk", value: store?._count?.products ?? 0, icon: Package, color: "text-blue-500", bg: "bg-blue-100", link: "/seller/products", linkLabel: "Kelola Produk" },
-    { label: "Rating Toko", value: (store?.rating ?? 0).toFixed(1), icon: Store, color: "text-purple-500", bg: "bg-purple-100", link: `/store/${store?.domain}`, linkLabel: "Lihat Toko" },
+  const statCards = [
+    {
+      label: "Total Pendapatan",
+      value: formatCurrency(income?.totalIncome || 0),
+      icon: TrendingUp,
+      accent: "bg-nb-yellow",
+      link: "/seller/wallet",
+      linkLabel: "Cek Saldo",
+    },
+    {
+      label: "Total Penjualan",
+      value: store?.totalSales ?? 0,
+      icon: ShoppingBag,
+      accent: "bg-nb-blue",
+      link: "/seller/orders",
+      linkLabel: "Kelola Pesanan",
+    },
+    {
+      label: "Total Produk",
+      value: store?._count?.products ?? 0,
+      icon: Package,
+      accent: "bg-gray-800",
+      link: "/seller/products",
+      linkLabel: "Kelola Produk",
+    },
+    {
+      label: "Rating Toko",
+      value: `${(store?.rating ?? 0).toFixed(1)} ★`,
+      icon: Store,
+      accent: "bg-nb-green",
+      link: `/store/${store?.slug}`,
+      linkLabel: "Lihat Toko",
+    },
+  ];
+
+  const quickLinks = [
+    { label: "Tambah Produk", to: "/seller/products/new", icon: Plus },
+    { label: "Kelola Produk", to: "/seller/products", icon: Package },
+    { label: "Lihat Pesanan", to: "/seller/orders", icon: ShoppingBag },
+    { label: "Pengaturan Toko", to: "/seller/store/settings", icon: Store },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Welcome banner */}
-      <div className="flex justify-between items-end mb-6">
+    <div className="space-y-5">
+
+      {/* ── Welcome ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Selamat datang, <span className="text-brand-600">{user?.fullName}</span>!
+          <h1 className="text-xl font-extrabold text-nb-black">
+            Selamat datang, <span className="text-nb-blue">{user?.fullName}</span>!
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Toko: <span className="font-bold text-gray-700">{store?.name}</span>
+          <p className="text-sm text-gray-500 mt-0.5 font-medium">
+            Toko: <span className="font-bold text-nb-black">{store?.name}</span>
             &nbsp;·&nbsp;
-            <span className={`font-semibold ${store?.status === "ACTIVE" ? "text-green-600" : "text-red-600"}`}>
-              {store?.status === 'ACTIVE' ? 'Aktif' : store?.status === 'SUSPENDED' ? 'Ditangguhkan' : store?.status}
+            <span className={store?.status === "ACTIVE" ? "text-green-600 font-bold" : "text-nb-red font-bold"}>
+              {store?.status === 'ACTIVE' ? '● Aktif' : '● Ditangguhkan'}
             </span>
           </p>
         </div>
         <Link
           to="/seller/products/new"
-          className="btn-primary h-10 px-4 inline-flex items-center gap-2 rounded-md text-xs font-bold"
+          className="inline-flex items-center gap-2 px-4 py-2.5 border-2 border-nb-black bg-nb-black text-white font-bold text-sm shadow-[3px_3px_0px_#FFE600] hover:shadow-[4px_4px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all self-start"
         >
-          <Plus size={14} /> Tambah Produk
+          <Plus size={14} strokeWidth={3} /> Tambah Produk
         </Link>
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, idx) => {
+      {/* ── Stat Cards (Soft Brutalism) ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((stat, idx) => {
           const Icon = stat.icon;
           return (
-            <Card key={idx} className="flex flex-col">
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
-                  <Icon size={20} />
+            <div
+              key={idx}
+              className="bg-white border-2 border-gray-200 hover:border-nb-black shadow-[2px_2px_0px_rgba(0,0,0,0.08)] hover:shadow-[3px_3px_0px_#0A0A0A] transition-all p-4 flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-9 h-9 flex items-center justify-center ${stat.accent} border-2 border-nb-black`}>
+                  <Icon size={18} className="text-white" strokeWidth={2} />
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
-                  <h3 className="text-2xl font-bold text-gray-800">{stat.value}</h3>
-                </div>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{stat.label}</p>
               </div>
-              <Link to={stat.link} className="text-brand-600 text-sm font-medium mt-auto hover:underline">
-                {stat.linkLabel} &rarr;
+              <p className="text-2xl font-extrabold text-nb-black mb-3">{stat.value}</p>
+              <Link
+                to={stat.link}
+                className="mt-auto inline-flex items-center gap-1 text-xs font-bold text-nb-black hover:text-nb-blue transition-colors"
+              >
+                {stat.linkLabel} <ArrowRight size={12} strokeWidth={3} />
               </Link>
-            </Card>
+            </div>
           );
         })}
       </div>
 
-      {/* Quick links */}
-      <Card>
-        <h3 className="text-sm font-bold text-secondary mb-4">Aksi Cepat</h3>
+      {/* ── Quick Actions ── */}
+      <div className="bg-white border-2 border-gray-200 p-4">
+        <h3 className="text-sm font-extrabold text-nb-black mb-4 flex items-center gap-2">
+          <span className="w-1 h-4 bg-nb-yellow inline-block" />
+          Aksi Cepat
+        </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { label: "Kelola Produk", to: "/seller/products", icon: Package },
-            { label: "Lihat Pesanan", to: "/seller/orders", icon: ShoppingBag },
-            { label: "Pengaturan Toko", to: "/seller/store/settings", icon: Store },
-          ].map((link) => {
+          {quickLinks.map((link) => {
             const Icon = link.icon;
             return (
               <Link
                 key={link.to}
                 to={link.to}
-                className="flex items-center gap-2 p-3 border border-muted rounded-md hover:border-primary hover:bg-primary-light text-secondary hover:text-primary transition-all text-xs font-semibold"
+                className="flex items-center gap-2 p-3 border-2 border-gray-200 bg-white hover:border-nb-black hover:bg-gray-50 text-gray-700 hover:text-nb-black transition-all text-xs font-bold"
               >
-                <Icon size={16} />
+                <Icon size={15} strokeWidth={2} />
                 {link.label}
               </Link>
             );
           })}
         </div>
-      </Card>
+      </div>
+
     </div>
   );
 }
