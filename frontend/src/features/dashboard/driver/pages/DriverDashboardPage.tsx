@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Truck, Map, DollarSign, Wallet } from "lucide-react";
+import { Truck, Map, DollarSign, Wallet, ArrowRight } from "lucide-react";
 import { api } from "../../../../lib/api";
 import { useAuthStore } from "../../../../store/auth.store";
-import { Card } from "../../../../components/ui/Card";
 import { formatCurrency } from "../../../../lib/format";
 import { Link } from "react-router-dom";
 
@@ -25,7 +24,7 @@ export default function DriverDashboardPage() {
     ]).then(([myJobsRes, availableJobsRes, earningsRes, walletRes]) => {
       const active = myJobsRes.data.data.filter((j: any) => j.status === 'DIKIRIM').length;
       const available = availableJobsRes.data.data.length;
-      
+
       setStats({
         activeDeliveries: active,
         availableJobs: available,
@@ -39,93 +38,109 @@ export default function DriverDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-40">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-32 skeleton border-2 border-gray-200" />
+          ))}
+        </div>
       </div>
     );
   }
 
+  const statCards = [
+    {
+      label: "Pengiriman Aktif",
+      value: stats.activeDeliveries,
+      icon: Truck,
+      accent: "bg-nb-blue",
+      link: "/driver/my-deliveries",
+      linkLabel: "Lihat Pengiriman",
+    },
+    {
+      label: "Job Tersedia",
+      value: stats.availableJobs,
+      icon: Map,
+      accent: "bg-nb-yellow",
+      link: "/driver/jobs",
+      linkLabel: "Ambil Job",
+    },
+    {
+      label: "Total Penghasilan",
+      value: formatCurrency(stats.totalEarnings),
+      icon: DollarSign,
+      accent: "bg-nb-green",
+      link: "/driver/earnings",
+      linkLabel: "Lihat Riwayat",
+    },
+    {
+      label: "Saldo Dompet",
+      value: formatCurrency(stats.walletBalance),
+      icon: Wallet,
+      accent: "bg-gray-800",
+      link: "/driver/wallet",
+      linkLabel: "Kelola Dompet",
+    },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Halo, <span className="text-brand-600">{user?.fullName}</span>
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">Ringkasan aktivitas dan pendapatan pengiriman Anda hari ini.</p>
+    <div className="space-y-5">
+
+      {/* ── Welcome ── */}
+      <div>
+        <h1 className="text-xl font-extrabold text-nb-black">
+          Halo, <span className="text-nb-blue">{user?.fullName}</span>!
+        </h1>
+        <p className="text-sm text-gray-500 mt-0.5 font-medium">
+          Ringkasan aktivitas dan pendapatan pengiriman Anda hari ini.
+        </p>
+      </div>
+
+      {/* ── Stats ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {statCards.map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <div
+              key={idx}
+              className="bg-white border-2 border-gray-200 hover:border-nb-black shadow-[2px_2px_0px_rgba(0,0,0,0.08)] hover:shadow-[3px_3px_0px_#0A0A0A] transition-all p-4 flex flex-col"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className={`w-9 h-9 flex items-center justify-center ${stat.accent} border-2 border-nb-black`}>
+                  <Icon size={18} className="text-white" strokeWidth={2} />
+                </div>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">{stat.label}</p>
+              </div>
+              <p className="text-2xl font-extrabold text-nb-black mb-3">{stat.value}</p>
+              <Link
+                to={stat.link}
+                className="mt-auto inline-flex items-center gap-1 text-xs font-bold text-nb-black hover:text-nb-blue transition-colors"
+              >
+                {stat.linkLabel} <ArrowRight size={12} strokeWidth={3} />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Quick Tips ── */}
+      <div className="bg-white border-2 border-gray-200 p-4">
+        <h3 className="text-sm font-extrabold text-nb-black mb-3 flex items-center gap-2">
+          <span className="w-1 h-4 bg-nb-blue inline-block" />
+          Informasi Driver
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-gray-600 font-medium">
+          <div className="bg-gray-50 border border-gray-200 p-3">
+            <span className="font-bold text-nb-black">Cara Ambil Job:</span>{" "}
+            Buka menu Job Board, pilih pesanan yang tersedia, dan konfirmasi pengambilan.
+          </div>
+          <div className="bg-gray-50 border border-gray-200 p-3">
+            <span className="font-bold text-nb-black">Pencairan Saldo:</span>{" "}
+            Penghasilan akan otomatis masuk ke dompet setelah pengiriman dikonfirmasi selesai.
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
-              <Truck size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Pengiriman Aktif</p>
-              <h3 className="text-2xl font-bold text-gray-800">{stats.activeDeliveries}</h3>
-            </div>
-          </div>
-          <Link to="/driver/my-deliveries" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
-            Lihat Pengiriman &rarr;
-          </Link>
-        </Card>
-
-        <Card className="flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
-              <Map size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Pekerjaan Tersedia</p>
-              <h3 className="text-2xl font-bold text-gray-800">{stats.availableJobs}</h3>
-            </div>
-          </div>
-          <Link to="/driver/jobs" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
-            Cari Pekerjaan &rarr;
-          </Link>
-        </Card>
-
-        <Card className="flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
-              <DollarSign size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Total Penghasilan</p>
-              <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(stats.totalEarnings)}</h3>
-            </div>
-          </div>
-          <Link to="/driver/earnings" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
-            Lihat Laporan &rarr;
-          </Link>
-        </Card>
-
-        <Card className="flex flex-col">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600">
-              <Wallet size={20} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Saldo Dompet</p>
-              <h3 className="text-2xl font-bold text-gray-800">{formatCurrency(stats.walletBalance)}</h3>
-            </div>
-          </div>
-          <Link to="/driver/wallet" className="text-brand-600 text-sm font-medium mt-auto hover:underline">
-            Tarik Saldo &rarr;
-          </Link>
-        </Card>
-      </div>
-      
-      <div className="bg-brand-50 border border-brand-100 rounded-xl p-6 mt-8">
-        <h3 className="text-lg font-bold text-brand-800 mb-2">Tips Pengiriman Cepat</h3>
-        <ul className="list-disc list-inside text-brand-700 space-y-1 text-sm">
-          <li>Pastikan aplikasi tetap terbuka saat melakukan pengiriman.</li>
-          <li>Ambil pekerjaan yang lokasinya berdekatan untuk efisiensi rute.</li>
-          <li>Hubungi pembeli atau toko jika ada kendala alamat.</li>
-        </ul>
-      </div>
     </div>
   );
 }
