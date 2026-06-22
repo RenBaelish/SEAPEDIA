@@ -50,8 +50,8 @@
 
   html {
     font-family: var(--font-family);
-    color: var(--color-on-surface);
-    background-color: var(--color-bg);
+    color: var(--color-nb-black);
+    background-color: var(--color-nb-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
@@ -69,10 +69,10 @@
     flex-direction: column;
   }
 
-  /* Headings use Open Sauce One weight system */
-  h1 { @apply text-5xl font-extrabold; }
-  h2 { @apply text-4xl font-extrabold; }
-  h3 { @apply text-3xl font-extrabold; }
+  /* Neo-Brutalism heading hierarchy */
+  h1 { @apply text-5xl font-extrabold tracking-tight; }
+  h2 { @apply text-4xl font-extrabold tracking-tight; }
+  h3 { @apply text-3xl font-bold; }
   h4 { @apply text-2xl font-bold; }
   h5 { @apply text-xl font-bold; }
 
@@ -98,125 +98,331 @@
   }
 }
 
-/* ─── Component Layer ─────────────────────────────────────────────────────── */
+/* ─── Neo-Brutalism Component Layer ──────────────────────────────────────── */
 
 @layer components {
-  /* Button — Primary (green CTA) */
-  .btn-primary {
+
+  /* ── Page Layout ── */
+  .page-container {
+    @apply w-full max-w-[1200px] mx-auto px-4 md:px-6;
+  }
+
+  .section {
+    @apply py-10 md:py-14;
+  }
+
+  .divider {
+    @apply w-full h-[3px] bg-nb-black;
+  }
+
+  /* ── Neo-Brutalism Card ── */
+  .nb-card {
+    background: var(--color-nb-surface);
+    border: 3px solid var(--color-nb-black);
+    box-shadow: var(--shadow-nb-md);
+    border-radius: var(--nb-border-radius);
+    transition: box-shadow 120ms ease, transform 120ms ease;
+  }
+  .nb-card:hover {
+    box-shadow: var(--shadow-nb-lg);
+    transform: translate(-1px, -1px);
+  }
+
+  /* ── Soft Card (Dashboard) ── */
+  .nb-card-soft {
+    background: var(--color-nb-surface);
+    border: 2px solid #E5E7EB;
+    box-shadow: var(--shadow-soft-sm);
+    border-radius: 4px;
+    transition: box-shadow 120ms ease;
+  }
+  .nb-card-soft:hover {
+    box-shadow: var(--shadow-soft-md);
+  }
+
+  /* ── Neo-Brutalism Button (Primary = Black + Yellow hover) ── */
+  .nb-btn {
     @apply inline-flex items-center justify-center gap-2;
-    @apply bg-primary text-white font-bold text-[12px] leading-[16px];
-    @apply rounded-md px-4;
+    @apply font-bold text-sm;
     height: var(--btn-height);
-    transition: background-color 150ms ease;
+    padding: var(--btn-padding);
+    border: 3px solid var(--color-nb-black);
+    box-shadow: var(--shadow-nb-sm);
+    border-radius: var(--nb-border-radius);
+    transition: box-shadow 100ms ease, transform 100ms ease, background-color 100ms ease;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
   }
-  .btn-primary:hover { @apply bg-primary-hover; }
-  .btn-primary:disabled { @apply opacity-50 cursor-not-allowed; }
-
-  /* Button — Secondary (outline) */
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2;
-    @apply bg-white text-secondary font-bold text-[12px] leading-[16px] border border-border;
-    @apply rounded-md px-4;
-    height: var(--btn-height);
-    transition: border-color 150ms ease, background-color 150ms ease;
+  .nb-btn:hover {
+    box-shadow: var(--shadow-nb-md);
+    transform: translate(-1px, -1px);
   }
-  .btn-secondary:hover { @apply bg-muted; }
-
-  /* Button — Ghost (link-style) */
-  .btn-link {
-    @apply inline-flex items-center gap-1;
-    @apply text-[12px] leading-[18px] text-on-surface;
-    @apply p-0 bg-transparent;
-    transition: color 150ms ease;
+  .nb-btn:active {
+    box-shadow: none;
+    transform: translate(2px, 2px);
   }
-  .btn-link:hover { @apply text-primary; }
-
-  /* Card */
-  .card {
-    @apply bg-surface rounded-md border border-muted p-4;
-    box-shadow: var(--shadow-card);
-    transition: box-shadow 150ms ease;
+  .nb-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
   }
-  .card:hover { box-shadow: var(--shadow-card-hover); }
 
-  /* Input */
-  .input {
-    @apply w-full bg-surface text-on-surface text-[12px] leading-[18px];
-    @apply border border-border rounded-md outline-none;
+  .nb-btn-primary {
+    background: var(--color-nb-black);
+    color: var(--color-nb-white);
+  }
+  .nb-btn-primary:hover:not(:disabled) {
+    background: var(--color-nb-black);
+    color: var(--color-nb-yellow);
+  }
+
+  .nb-btn-yellow {
+    background: var(--color-nb-yellow);
+    color: var(--color-nb-black);
+  }
+  .nb-btn-yellow:hover:not(:disabled) {
+    background: #FFD700;
+  }
+
+  .nb-btn-white {
+    background: var(--color-nb-white);
+    color: var(--color-nb-black);
+  }
+  .nb-btn-white:hover:not(:disabled) {
+    background: var(--color-nb-bg);
+  }
+
+  .nb-btn-danger {
+    background: var(--color-nb-red);
+    color: var(--color-nb-white);
+    border-color: var(--color-nb-red);
+  }
+  .nb-btn-danger:hover:not(:disabled) {
+    background: #c0392b;
+    border-color: #c0392b;
+  }
+
+  /* ── Neo-Brutalism Input ── */
+  .nb-input {
+    @apply w-full font-medium text-sm;
     height: var(--input-height);
-    padding: var(--input-padding);
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    padding: 0 14px;
+    background: var(--color-nb-white);
+    color: var(--color-nb-black);
+    border: 3px solid var(--color-nb-black);
+    border-radius: var(--nb-border-radius);
+    outline: none;
+    transition: border-color 100ms ease, box-shadow 100ms ease;
+  }
+  .nb-input:focus {
+    border-color: var(--color-nb-black);
+    box-shadow: 4px 4px 0 var(--color-nb-yellow);
+  }
+  .nb-input::placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+  }
+  .nb-input.error {
+    border-color: var(--color-nb-red);
+  }
+  .nb-input.error:focus {
+    box-shadow: 4px 4px 0 var(--color-nb-red);
+  }
+
+  .nb-textarea {
+    @apply w-full font-medium text-sm;
+    padding: 12px 14px;
+    background: var(--color-nb-white);
+    color: var(--color-nb-black);
+    border: 3px solid var(--color-nb-black);
+    border-radius: var(--nb-border-radius);
+    outline: none;
+    resize: vertical;
+    transition: box-shadow 100ms ease;
+  }
+  .nb-textarea:focus {
+    box-shadow: 4px 4px 0 var(--color-nb-yellow);
+  }
+  .nb-textarea::placeholder {
+    color: #9CA3AF;
+    font-weight: 400;
+  }
+
+  /* ── Badge / Status chips ── */
+  .nb-badge {
+    @apply inline-flex items-center justify-center;
+    @apply font-bold text-xs;
+    padding: 3px 10px;
+    border: 2px solid var(--color-nb-black);
+    border-radius: 0;
+  }
+  .nb-badge-yellow  { background: var(--color-nb-yellow); color: var(--color-nb-black); }
+  .nb-badge-black   { background: var(--color-nb-black);  color: var(--color-nb-white); }
+  .nb-badge-white   { background: var(--color-nb-white);  color: var(--color-nb-black); }
+  .nb-badge-red     { background: var(--color-nb-red);    color: var(--color-nb-white); border-color: var(--color-nb-red); }
+  .nb-badge-green   { background: var(--color-success);   color: var(--color-nb-white); border-color: var(--color-success); }
+  .nb-badge-blue    { background: var(--color-nb-blue);   color: var(--color-nb-white); border-color: var(--color-nb-blue); }
+  .nb-badge-muted   { background: #F3F4F6; color: #6B7280; border-color: #D1D5DB; }
+
+  /* ── Section heading ── */
+  .nb-section-title {
+    @apply font-extrabold tracking-tight;
+    border-left: 5px solid var(--color-nb-yellow);
+    padding-left: 12px;
+  }
+
+  /* ── Table ── */
+  .nb-table {
+    @apply w-full text-sm;
+    border: 3px solid var(--color-nb-black);
+    border-collapse: collapse;
+  }
+  .nb-table th {
+    @apply font-bold text-left;
+    background: var(--color-nb-black);
+    color: var(--color-nb-white);
+    padding: 10px 14px;
+    border: 1px solid var(--color-nb-black);
+  }
+  .nb-table td {
+    padding: 10px 14px;
+    border: 1px solid #E5E7EB;
+    border-bottom: 2px solid var(--color-nb-black);
+    background: var(--color-nb-white);
+  }
+  .nb-table tr:last-child td {
+    border-bottom: none;
+  }
+  .nb-table tr:hover td {
+    background: var(--color-primary-light);
+  }
+
+  /* ── Soft Table (Dashboard) ── */
+  .nb-table-soft {
+    @apply w-full text-sm;
+    border: 2px solid #E5E7EB;
+    border-collapse: collapse;
+  }
+  .nb-table-soft th {
+    @apply font-bold text-left text-xs uppercase tracking-wide;
+    background: #F9FAFB;
+    color: #374151;
+    padding: 10px 14px;
+    border-bottom: 2px solid #E5E7EB;
+  }
+  .nb-table-soft td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #F3F4F6;
+    background: var(--color-nb-white);
+  }
+  .nb-table-soft tr:hover td {
+    background: #F9FAFB;
+  }
+
+  /* ── Skeleton ── */
+  .skeleton {
+    background: linear-gradient(90deg, #E5E7EB 25%, #F3F4F6 50%, #E5E7EB 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 2px;
+  }
+
+  /* ── Legacy class aliases (direct CSS to avoid @apply with custom classes) ── */
+  .card {
+    background: var(--color-nb-surface);
+    border: 2px solid #E5E7EB;
+    box-shadow: var(--shadow-soft-sm);
+    border-radius: 4px;
+    transition: box-shadow 120ms ease;
+    padding: 16px;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    height: var(--btn-height);
+    padding: var(--btn-padding);
+    background: var(--color-nb-black);
+    color: var(--color-nb-white);
+    border: 3px solid var(--color-nb-black);
+    box-shadow: var(--shadow-nb-sm);
+    border-radius: var(--nb-border-radius);
+    cursor: pointer;
+  }
+  .btn-primary:hover:not(:disabled) {
+    color: var(--color-nb-yellow);
+    box-shadow: var(--shadow-nb-md);
+    transform: translate(-1px, -1px);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    height: var(--btn-height);
+    padding: var(--btn-padding);
+    background: var(--color-nb-white);
+    color: var(--color-nb-black);
+    border: 3px solid var(--color-nb-black);
+    box-shadow: var(--shadow-nb-sm);
+    border-radius: var(--nb-border-radius);
+    cursor: pointer;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--color-nb-bg);
+    box-shadow: var(--shadow-nb-md);
+    transform: translate(-1px, -1px);
+  }
+  .input {
+    width: 100%;
+    font-weight: 500;
+    font-size: 14px;
+    height: var(--input-height);
+    padding: 0 14px;
+    background: var(--color-nb-white);
+    color: var(--color-nb-black);
+    border: 3px solid var(--color-nb-black);
+    border-radius: var(--nb-border-radius);
+    outline: none;
+    transition: box-shadow 100ms ease;
   }
   .input:focus {
-    @apply border-primary;
-    box-shadow: 0 0 0 3px rgba(0, 170, 91, 0.15);
+    box-shadow: 4px 4px 0 var(--color-nb-yellow);
   }
-  .input::placeholder { @apply text-tertiary; }
-
-  /* Search input */
-  .input-search {
-    @apply w-full bg-surface text-on-surface text-[12px] leading-[18px];
-    @apply border border-border rounded-md outline-none;
-    height: var(--input-height);
-    padding: var(--input-padding);
-    @apply pl-10;
-  }
-  .input-search:focus {
-    @apply border-primary;
-    box-shadow: 0 0 0 3px rgba(0, 170, 91, 0.15);
-  }
-  .input-search::placeholder { @apply text-tertiary; }
-
-  /* Chip / Tag */
-  .chip {
-    @apply inline-flex items-center justify-center;
-    @apply bg-white text-on-surface text-[12px] leading-[18px] font-semibold;
-    @apply border border-border rounded-full;
-    padding: 0 12px;
-    height: 32px;
-    transition: border-color 150ms ease, background-color 150ms ease;
-  }
-  .chip:hover, .chip.active {
-    @apply border-primary bg-primary-light text-primary;
-  }
-
-  /* Badge — maps to order/delivery status */
   .badge {
-    @apply inline-flex items-center justify-center rounded-full;
-    @apply text-[11px] leading-[14px] font-semibold;
-    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 3px 10px;
+    border: 2px solid var(--color-nb-black);
+    border-radius: 0;
   }
-  .badge-success { @apply bg-primary-light text-primary; }
-  .badge-warning { @apply bg-amber-50 text-amber-700; }
-  .badge-error { @apply bg-red-50 text-error; }
-  .badge-info { @apply bg-blue-50 text-blue-700; }
-  .badge-muted { @apply bg-muted text-secondary; }
-
-  /* Page container */
-  .page-container {
-    @apply w-full max-w-[1200px] mx-auto px-4;
-  }
-
-  /* Section spacing */
-  .section {
-    @apply py-8;
-  }
-
-  /* Skeleton loading */
-  .skeleton {
-    @apply bg-muted rounded-md ;
-  }
-
-  /* Divider */
-  .divider {
-    @apply w-full h-px bg-muted;
-  }
+  .badge-success { background: var(--color-success); color: white; border-color: var(--color-success); }
+  .badge-warning { background: #FEF3C7; color: #92400E; border-color: #D97706; }
+  .badge-error   { background: var(--color-nb-red); color: white; border-color: var(--color-nb-red); }
+  .badge-info    { background: var(--color-nb-blue); color: white; border-color: var(--color-nb-blue); }
+  .badge-muted   { background: #F3F4F6; color: #6B7280; border-color: #D1D5DB; }
 }
 
 /* ─── Utilities ───────────────────────────────────────────────────────────── */
 
 @layer utilities {
   .text-brand { color: var(--color-brand); }
+
+  .nb-border  { border: 3px solid var(--color-nb-black); }
+  .nb-shadow  { box-shadow: var(--shadow-nb-md); }
+  .nb-shadow-sm { box-shadow: var(--shadow-nb-sm); }
+  .nb-shadow-lg { box-shadow: var(--shadow-nb-lg); }
+
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -234,4 +440,21 @@
     scrollbar-width: none;
   }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
+}
+
+/* ─── Animations ──────────────────────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
