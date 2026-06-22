@@ -3,7 +3,6 @@ import { useAlert } from "../../../../contexts/AlertContext";
 import { formatCurrency } from "../../../../lib/format";
 import { api } from "../../../../lib/api";
 import { useAuthStore } from "../../../../store/auth.store";
-import { Button } from "../../../../components/ui/Button";
 import { DeliveryStatusBadge } from "../../../../components/ui/Badge";
 import { Navigation, CheckCircle, Package } from "lucide-react";
 
@@ -42,7 +41,11 @@ export default function DriverMyDeliveriesPage() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Memuat data...</div>;
+  if (loading) return (
+    <div className="flex justify-center py-16">
+      <div className="w-10 h-10 border-4 border-nb-black border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   const activeDeliveries = deliveries.filter(d => ['MENUNGGU_DRIVER', 'DIKIRIM'].includes(d.status));
   const completedDeliveries = deliveries.filter(d => ['SELESAI', 'FAILED'].includes(d.status));
@@ -51,65 +54,69 @@ export default function DriverMyDeliveriesPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Pengiriman Saya</h1>
-          <p className="text-sm text-gray-500 mt-1">Pantau dan selesaikan pengiriman aktif Anda di sini.</p>
+          <h1 className="text-xl font-extrabold text-nb-black">Pengiriman Saya</h1>
+          <p className="text-sm font-semibold text-gray-600 mt-1">Pantau dan selesaikan pengiriman aktif Anda di sini.</p>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-          <Navigation size={20} className="text-brand-600" /> Pengiriman Aktif
+      <div className="space-y-5">
+        <h2 className="text-base font-extrabold text-nb-black flex items-center gap-2 uppercase tracking-wide">
+          <div className="w-8 h-8 bg-[#EBF5FF] border-2 border-nb-black flex items-center justify-center">
+            <Navigation size={16} className="text-nb-black" strokeWidth={2.5} />
+          </div>
+          Pengiriman Aktif
         </h2>
 
         {activeDeliveries.length === 0 ? (
-          <div className="bg-white rounded-xl p-8 text-center border border-gray-100 shadow-sm">
-            <p className="text-gray-500">Tidak ada pengiriman aktif saat ini.</p>
+          <div className="bg-[#F7F5F0] border-2 border-nb-black p-10 text-center shadow-[4px_4px_0px_#0A0A0A]">
+            <p className="text-sm font-extrabold text-nb-black">Tidak ada pengiriman aktif saat ini.</p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid gap-5">
             {activeDeliveries.map((job) => (
-              <div key={job.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex items-center gap-3">
-                    <DeliveryStatusBadge status={job.status} />
-                    <span className="text-sm font-bold text-gray-800">{formatCurrency(Number(job.fee) * 0.8)}</span>
+              <div key={job.id} className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
+                <div className="flex justify-between items-start mb-5 pb-4 border-b-2 border-gray-100">
+                  <div className="flex items-center gap-4">
+                    <DeliveryStatusBadge status={job.status} className="border-2 border-nb-black shadow-[2px_2px_0px_#0A0A0A]" />
+                    <span className="text-base font-black text-nb-green">{formatCurrency(Number(job.fee) * 0.8)}</span>
                   </div>
-                  <span className="text-xs text-gray-400">Order #{job.orderId.slice(-6).toUpperCase()}</span>
+                  <span className="text-xs font-black text-nb-black bg-nb-yellow border-2 border-nb-black px-2 py-0.5 uppercase tracking-wide">Order #{job.orderId.slice(-6).toUpperCase()}</span>
                 </div>
 
-                <div className="space-y-3 relative border-l-2 border-gray-100 ml-2 pl-4 py-2 mb-6">
-                  <div className="absolute -left-1.5 top-2 w-3 h-3 bg-brand-500 rounded-full"></div>
+                <div className="space-y-4 relative border-l-3 border-nb-black ml-2 pl-5 py-2 mb-6" style={{ borderLeftWidth: '3px' }}>
+                  <div className="absolute -left-2.5 top-2 w-4 h-4 border-2 border-nb-black bg-white rounded-full"></div>
                   <div>
-                    <p className="text-xs font-bold text-brand-600 mb-1">Lokasi Pengambilan</p>
-                    <p className="text-sm text-gray-800 font-medium">{job.order?.store?.name}</p>
-                    <p className="text-xs text-gray-500">{job.pickupAddress}</p>
+                    <p className="text-xs font-black text-nb-blue mb-1 uppercase tracking-wide">Lokasi Pengambilan</p>
+                    <p className="text-sm text-nb-black font-extrabold">{job.order?.store?.name}</p>
+                    <p className="text-xs font-bold text-gray-600 mt-0.5">{job.pickupAddress}</p>
                   </div>
 
-                  <div className="absolute -left-1.5 bottom-6 w-3 h-3 bg-orange-500 rounded-full"></div>
+                  <div className="absolute -left-2.5 bottom-6 w-4 h-4 border-2 border-nb-black bg-nb-black rounded-full"></div>
                   <div className="pt-2">
-                    <p className="text-xs font-bold text-orange-600 mb-1">Tujuan Pengiriman</p>
-                    <p className="text-xs text-gray-500">{job.dropAddress}</p>
+                    <p className="text-xs font-black text-nb-yellow bg-nb-black px-1.5 py-0.5 inline-block mb-1 uppercase tracking-wide">Tujuan Pengiriman</p>
+                    <p className="text-xs font-bold text-gray-600 mt-0.5">{job.dropAddress}</p>
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-3 mt-4 pt-4 border-t-2 border-gray-100">
                   {job.status === 'MENUNGGU_DRIVER' && (
-                    <Button 
-                      className="flex-1" 
+                    <button 
+                      className="btn-primary flex-1 justify-center disabled:opacity-50" 
                       onClick={() => handleUpdateStatus(job.id, 'take')}
                       disabled={updatingId === job.id}
                     >
-                      Ambil Pekerjaan
-                    </Button>
+                      {updatingId === job.id ? "Memproses..." : "Ambil Pekerjaan"}
+                    </button>
                   )}
                   {job.status === 'DIKIRIM' && (
-                    <Button 
-                      className="flex-1 bg-green-600 hover:bg-green-700 focus:ring-green-500 text-white" 
+                    <button 
+                      className="w-full h-11 border-3 border-nb-black bg-nb-green text-white font-black text-sm hover:bg-nb-black transition-colors shadow-[2px_2px_0px_#0A0A0A] flex items-center justify-center gap-2 disabled:opacity-50" 
                       onClick={() => handleUpdateStatus(job.id, 'complete')}
                       disabled={updatingId === job.id}
+                      style={{ borderWidth: '3px' }}
                     >
-                      <CheckCircle size={18} className="mr-2 inline" /> Konfirmasi Selesai
-                    </Button>
+                      {updatingId === job.id ? "Memproses..." : <><CheckCircle size={18} strokeWidth={2.5} /> Konfirmasi Selesai</>}
+                    </button>
                   )}
                 </div>
               </div>
@@ -119,18 +126,21 @@ export default function DriverMyDeliveriesPage() {
       </div>
 
       {completedDeliveries.length > 0 && (
-        <div className="space-y-4 pt-4 border-t border-gray-100">
-          <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-            <Package size={20} className="text-gray-500" /> Riwayat Terakhir
+        <div className="space-y-4 pt-6 mt-6 border-t-4 border-nb-black">
+          <h2 className="text-base font-extrabold text-nb-black flex items-center gap-2 uppercase tracking-wide">
+            <div className="w-8 h-8 bg-nb-yellow border-2 border-nb-black flex items-center justify-center">
+              <Package size={16} className="text-nb-black" strokeWidth={2.5} />
+            </div>
+            Riwayat Terakhir
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {completedDeliveries.slice(0, 4).map((job) => (
-              <div key={job.id} className="bg-gray-50 rounded-lg p-4 border border-gray-100 flex justify-between items-center opacity-80">
+              <div key={job.id} className="bg-white border-2 border-nb-black p-4 flex justify-between items-center opacity-80 hover:opacity-100 transition-opacity">
                 <div>
-                  <p className="text-xs font-bold text-gray-500 mb-1">Tujuan: {job.dropAddress.split(',')[0]}</p>
-                  <DeliveryStatusBadge status={job.status} />
+                  <p className="text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Tujuan: <span className="font-bold text-gray-600 normal-case">{job.dropAddress.split(',')[0]}</span></p>
+                  <DeliveryStatusBadge status={job.status} className="border-2 border-nb-black" />
                 </div>
-                <p className="font-bold text-brand-600 text-sm">+{formatCurrency(Number(job.fee) * 0.8)}</p>
+                <p className="font-black text-nb-green text-base">+{formatCurrency(Number(job.fee) * 0.8)}</p>
               </div>
             ))}
           </div>
