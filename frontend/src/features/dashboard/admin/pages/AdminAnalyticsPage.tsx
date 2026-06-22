@@ -18,7 +18,11 @@ export default function AdminAnalyticsPage() {
   }, []);
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Memuat data analitik...</div>;
+    return (
+      <div className="flex justify-center py-16">
+        <div className="w-10 h-10 border-4 border-nb-black border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   // Format data for Recharts
@@ -36,47 +40,53 @@ export default function AdminAnalyticsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Analitik Lanjutan</h1>
-          <p className="text-sm text-gray-500 mt-1">Laporan mendalam mengenai toko dan produk terlaris.</p>
+          <h1 className="text-xl font-extrabold text-nb-black">Analitik Lanjutan</h1>
+          <p className="text-sm font-semibold text-gray-600 mt-1">Laporan mendalam mengenai toko dan produk terlaris.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Top Stores Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
-              <Store size={18} className="text-purple-600" /> Top Toko Terlaris
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
+          <div className="p-4 border-b-2 border-nb-black flex items-center justify-between bg-[#F7F5F0]">
+            <h2 className="text-sm font-black text-nb-black uppercase tracking-wide flex items-center gap-2">
+              <div className="w-8 h-8 bg-nb-blue border-2 border-nb-black flex items-center justify-center text-white">
+                <Store size={16} strokeWidth={2.5} />
+              </div>
+              Top Toko Terlaris
             </h2>
-            <TrendingUp size={18} className="text-green-500" />
+            <TrendingUp size={18} className="text-nb-green" strokeWidth={3} />
           </div>
           <div className="p-6 h-[300px]">
             {storeChartData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={storeChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#0A0A0A', fontWeight: 800 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#0A0A0A', fontWeight: 800 }} />
                   <Tooltip 
-                    cursor={{ fill: '#f3f4f6' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    cursor={{ fill: '#F3F4F6' }}
+                    contentStyle={{ borderRadius: '0', border: '2px solid #0A0A0A', boxShadow: '4px 4px 0px #0A0A0A', backgroundColor: '#FFFFFF', fontWeight: 800 }}
                   />
-                  <Bar dataKey="Pesanan" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar dataKey="Pesanan" fill="#0052FF" radius={[0, 0, 0, 0]} barSize={40} stroke="#0A0A0A" strokeWidth={2} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-gray-400">Belum ada data</div>
+              <div className="h-full flex items-center justify-center text-sm font-bold text-gray-500">Belum ada data</div>
             )}
           </div>
         </div>
 
         {/* Top Products Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-            <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
-              <Package size={18} className="text-orange-600" /> Penjualan Produk (Unit)
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
+          <div className="p-4 border-b-2 border-nb-black flex items-center justify-between bg-[#F7F5F0]">
+            <h2 className="text-sm font-black text-nb-black uppercase tracking-wide flex items-center gap-2">
+              <div className="w-8 h-8 bg-nb-yellow border-2 border-nb-black flex items-center justify-center text-nb-black">
+                <Package size={16} strokeWidth={2.5} />
+              </div>
+              Penjualan Produk (Unit)
             </h2>
-            <TrendingUp size={18} className="text-green-500" />
+            <TrendingUp size={18} className="text-nb-green" strokeWidth={3} />
           </div>
           <div className="p-6 h-[300px]">
             {productChartData.length > 0 ? (
@@ -84,86 +94,86 @@ export default function AdminAnalyticsPage() {
                 <AreaChart data={productChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorOrange" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#FCD34D" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#FCD34D" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#0A0A0A', fontWeight: 800 }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#0A0A0A', fontWeight: 800 }} />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    contentStyle={{ borderRadius: '0', border: '2px solid #0A0A0A', boxShadow: '4px 4px 0px #0A0A0A', backgroundColor: '#FFFFFF', fontWeight: 800 }}
                   />
-                  <Area type="monotone" dataKey="Terjual" stroke="#f97316" strokeWidth={3} fillOpacity={1} fill="url(#colorOrange)" />
+                  <Area type="monotone" dataKey="Terjual" stroke="#0A0A0A" strokeWidth={3} fillOpacity={1} fill="url(#colorOrange)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex items-center justify-center text-gray-400">Belum ada data</div>
+              <div className="h-full flex items-center justify-center text-sm font-bold text-gray-500">Belum ada data</div>
             )}
           </div>
         </div>
       </div>
 
       {/* Detail Tables as fallbacks below charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+              <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
-                  <th className="px-5 py-3">Nama Toko</th>
-                  <th className="px-5 py-3 text-right">Total Pesanan</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Nama Toko</th>
+                  <th className="px-5 py-4 text-right">Total Pesanan</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y-2 divide-gray-100">
                 {data.topStores.length > 0 ? (
                   data.topStores.map((store, i) => (
-                    <tr key={store.id} className="hover:bg-gray-50/50">
-                      <td className="px-5 py-3 flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-700 font-bold flex items-center justify-center text-xs">
+                    <tr key={store.id} className="hover:bg-[#F7F5F0] transition-colors border-b-2 border-nb-black last:border-b-0">
+                      <td className="px-5 py-3 flex items-center gap-4 border-r-2 border-nb-black">
+                        <div className="w-8 h-8 border-2 border-nb-black bg-white text-nb-black font-black flex items-center justify-center text-xs shadow-[2px_2px_0px_#0A0A0A]">
                           {i + 1}
                         </div>
-                        <span className="font-bold text-gray-800">{store.name}</span>
+                        <span className="font-extrabold text-nb-black">{store.name}</span>
                       </td>
-                      <td className="px-5 py-3 text-right font-medium text-gray-700">
+                      <td className="px-5 py-3 text-right font-black text-gray-700">
                         {store.orderCount} pesanan
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan={2} className="p-4 text-center text-gray-500">Belum ada data</td></tr>
+                  <tr><td colSpan={2} className="p-6 text-center text-sm font-bold text-gray-500">Belum ada data</td></tr>
                 )}
               </tbody>
             </table>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+              <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
-                  <th className="px-5 py-3">Produk Terlaris</th>
-                  <th className="px-5 py-3 text-right">Terjual</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Produk Terlaris</th>
+                  <th className="px-5 py-4 text-right">Terjual</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y-2 divide-gray-100">
                 {data.topProducts.length > 0 ? (
                   data.topProducts.map((product, i) => (
-                    <tr key={product.id} className="hover:bg-gray-50/50">
-                      <td className="px-5 py-3 flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs shrink-0">
+                    <tr key={product.id} className="hover:bg-[#F7F5F0] transition-colors border-b-2 border-nb-black last:border-b-0">
+                      <td className="px-5 py-3 flex items-center gap-4 border-r-2 border-nb-black">
+                        <div className="w-8 h-8 border-2 border-nb-black bg-white text-nb-black font-black flex items-center justify-center text-xs shadow-[2px_2px_0px_#0A0A0A] shrink-0">
                           {i + 1}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <img src={product.thumbnailUrl} alt={product.name} className="w-8 h-8 rounded border border-gray-200 object-cover" />
-                          <span className="font-bold text-gray-800 line-clamp-1">{product.name}</span>
+                        <div className="flex items-center gap-3">
+                          <img src={product.thumbnailUrl} alt={product.name} className="w-10 h-10 border-2 border-nb-black object-cover" />
+                          <span className="font-extrabold text-nb-black line-clamp-1">{product.name}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-3 text-right font-medium text-gray-700">
+                      <td className="px-5 py-3 text-right font-black text-gray-700">
                         {product.sold} unit
                       </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan={2} className="p-4 text-center text-gray-500">Belum ada data</td></tr>
+                  <tr><td colSpan={2} className="p-6 text-center text-sm font-bold text-gray-500">Belum ada data</td></tr>
                 )}
               </tbody>
             </table>
