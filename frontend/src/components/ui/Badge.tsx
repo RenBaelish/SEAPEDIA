@@ -1,95 +1,68 @@
-import { HTMLAttributes } from 'react';
 import { clsx } from "clsx";
-import { OrderStatus, DeliveryStatus } from '@/types';
 
-type BadgeVariant = "success" | "warning" | "error" | "info" | "muted" | "brand";
+type BadgeVariant =
+  | "default"
+  | "yellow"
+  | "black"
+  | "red"
+  | "green"
+  | "blue"
+  | "muted"
+  | "warning";
 
-interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
+interface BadgeProps {
+  children: React.ReactNode;
   variant?: BadgeVariant;
+  className?: string;
 }
 
 const variantMap: Record<BadgeVariant, string> = {
-  success: "bg-primary-light text-primary",
-  warning: "bg-amber-50 text-amber-700",
-  error: "bg-red-50 text-error",
-  info: "bg-blue-50 text-blue-700",
-  muted: "bg-muted text-secondary",
-  brand: "bg-[#EEEEF9] text-brand",
+  default:  "nb-badge nb-badge-yellow",
+  yellow:   "nb-badge nb-badge-yellow",
+  black:    "nb-badge nb-badge-black",
+  red:      "nb-badge nb-badge-red",
+  green:    "nb-badge nb-badge-green",
+  blue:     "nb-badge nb-badge-blue",
+  muted:    "nb-badge nb-badge-muted",
+  warning:  "nb-badge bg-amber-300 text-amber-900 border-amber-500",
 };
 
-export function Badge({ variant = "muted", className, children, ...props }: BadgeProps) {
+export function Badge({ children, variant = "default", className }: BadgeProps) {
   return (
-    <span
-      className={clsx(
-        "inline-flex items-center justify-center rounded-full",
-        "text-xs leading-[14px] font-semibold",
-        "px-2.5 py-0.5",
-        variantMap[variant],
-        className
-      )}
-      {...props}
-    >
+    <span className={clsx(variantMap[variant], className)}>
       {children}
     </span>
   );
 }
 
-// ─── Status Badge helpers ──────────────────────────────────────────────────
+// Status badge helper used across dashboards
+export function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; variant: BadgeVariant }> = {
+    // Orders
+    MENUNGGU_PEMBAYARAN: { label: "Menunggu Bayar",     variant: "warning" },
+    MENUNGGU_KONFIRMASI: { label: "Menunggu Konfirmasi",variant: "blue" },
+    DIKEMAS:             { label: "Dikemas",            variant: "blue" },
+    DIKIRIM:             { label: "Dikirim",            variant: "blue" },
+    PESANAN_SELESAI:     { label: "Selesai",            variant: "green" },
+    DIBATALKAN:          { label: "Dibatalkan",         variant: "red" },
+    // Delivery
+    MENUNGGU_DRIVER:     { label: "Menunggu Driver",    variant: "warning" },
+    SELESAI:             { label: "Selesai",            variant: "green" },
+    // Store / User
+    ACTIVE:              { label: "Aktif",              variant: "green" },
+    SUSPENDED:           { label: "Suspended",          variant: "warning" },
+    BANNED:              { label: "Banned",             variant: "red" },
+    CLOSED:              { label: "Ditutup",            variant: "muted" },
+    // Product
+    DRAFT:               { label: "Draft",              variant: "muted" },
+    INACTIVE:            { label: "Nonaktif",           variant: "muted" },
+    DELETED:             { label: "Dihapus",            variant: "red" },
+  };
 
-const orderStatusVariant: Record<OrderStatus, BadgeVariant> = {
-  PENDING_PAYMENT: "warning",
-  PAID: "info",
-  PROCESSING: "info",
-  READY_FOR_PICKUP: "info",
-  IN_DELIVERY: "brand",
-  DELIVERED: "success",
-  COMPLETED: "success",
-  CANCELLED: "error",
-  REFUNDED: "muted",
-};
-
-const orderStatusLabel: Record<OrderStatus, string> = {
-  PENDING_PAYMENT: "Menunggu Pembayaran",
-  PAID: "Dibayar",
-  PROCESSING: "Diproses",
-  READY_FOR_PICKUP: "Siap Diambil",
-  IN_DELIVERY: "Dalam Pengiriman",
-  DELIVERED: "Terkirim",
-  COMPLETED: "Selesai",
-  CANCELLED: "Dibatalkan",
-  REFUNDED: "Dikembalikan",
-};
-
-export function OrderStatusBadge({ status }: { status: OrderStatus }) {
-  return (
-    <Badge variant={orderStatusVariant[status]}>
-      {orderStatusLabel[status]}
-    </Badge>
-  );
+  const entry = map[status] ?? { label: status, variant: "muted" as BadgeVariant };
+  return <Badge variant={entry.variant}>{entry.label}</Badge>;
 }
 
-const deliveryStatusVariant: Record<DeliveryStatus, BadgeVariant> = {
-  AWAITING_DRIVER: "muted",
-  DRIVER_ASSIGNED: "info",
-  PICKED_UP: "brand",
-  IN_TRANSIT: "brand",
-  DELIVERED: "success",
-  FAILED: "error",
-};
-
-const deliveryStatusLabel: Record<DeliveryStatus, string> = {
-  AWAITING_DRIVER: "Mencari Driver",
-  DRIVER_ASSIGNED: "Driver Ditugaskan",
-  PICKED_UP: "Diambil Driver",
-  IN_TRANSIT: "Dalam Perjalanan",
-  DELIVERED: "Terkirim",
-  FAILED: "Gagal",
-};
-
-export function DeliveryStatusBadge({ status }: { status: DeliveryStatus }) {
-  return (
-    <Badge variant={deliveryStatusVariant[status]}>
-      {deliveryStatusLabel[status]}
-    </Badge>
-  );
-}
+// Aliases for backward compatibility
+export const OrderStatusBadge = StatusBadge;
+export const DeliveryStatusBadge = StatusBadge;

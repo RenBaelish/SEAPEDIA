@@ -1,62 +1,43 @@
-import { HTMLAttributes } from 'react';
 import { clsx } from "clsx";
 
-type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
-
-interface AvatarProps extends HTMLAttributes<HTMLDivElement> {
-  src?: string | null;
-  alt?: string;
-  name?: string; // for initials fallback
-  size?: AvatarSize;
+interface AvatarProps {
+  name?: string;
+  src?: string;
+  size?: "xs" | "sm" | "md" | "lg";
+  className?: string;
 }
 
-const sizeClasses: Record<AvatarSize, string> = {
-  xs: "w-6 h-6 text-xs",
-  sm: "w-8 h-8 text-xs",
-  md: "w-10 h-10 text-xs",
-  lg: "w-12 h-12 text-sm",
-  xl: "w-16 h-16 text-lg",
+const sizeClasses = {
+  xs:  "w-6 h-6 text-xs",
+  sm:  "w-8 h-8 text-sm",
+  md:  "w-10 h-10 text-base",
+  lg:  "w-14 h-14 text-lg",
 };
 
-function getInitials(name?: string) {
+function getInitials(name?: string): string {
   if (!name) return "?";
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+  const parts = name.trim().split(" ");
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-// Deterministic background color from name
-const colors = [
-  "bg-blue-100 text-blue-700",
-  "bg-green-100 text-green-700",
-  "bg-purple-100 text-purple-700",
-  "bg-amber-100 text-amber-700",
-  "bg-rose-100 text-rose-700",
-  "bg-cyan-100 text-cyan-700",
-];
-function getColor(name?: string) {
-  if (!name) return colors[0];
-  const sum = name.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return colors[sum % colors.length];
-}
+export function Avatar({ name, src, size = "md", className }: AvatarProps) {
+  const initials = getInitials(name);
 
-export function Avatar({ src, alt, name, size = "md", className, ...props }: AvatarProps) {
   return (
     <div
       className={clsx(
-        "rounded-full overflow-hidden flex items-center justify-center shrink-0 select-none",
+        "flex-shrink-0 flex items-center justify-center overflow-hidden",
+        "border-2 border-nb-black font-bold select-none",
         sizeClasses[size],
-        !src && getColor(name),
+        !src && "bg-nb-yellow text-nb-black",
         className
       )}
-      {...props}
     >
       {src ? (
-        <img src={src} alt={alt ?? name ?? "avatar"} className="w-full h-full object-cover" />
+        <img src={src} alt={name || "Avatar"} className="w-full h-full object-cover" />
       ) : (
-        <span className="font-bold">{getInitials(name)}</span>
+        <span>{initials}</span>
       )}
     </div>
   );

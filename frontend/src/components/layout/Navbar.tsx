@@ -1,9 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Search, ShoppingCart, User, ChevronDown, Package, LogOut, Settings,
-  Bell, Wallet, Smartphone, Laptop, Monitor, Heart, Shirt, Home, BookOpen,
-  Gamepad, Car, Baby, Bike, UtensilsCrossed, Gem, Dumbbell, Wrench, ChevronRight,
-  Mail, Store
+  Search, ShoppingCart, User, Package, LogOut, Settings,
+  Bell, Wallet, ChevronDown, ChevronRight, Menu, X, Store
 } from "lucide-react";
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from "../../store/auth.store";
@@ -21,72 +19,54 @@ const roleLabels: Record<RoleType, string> = {
 
 const roleDashboardPath: Partial<Record<RoleType, string>> = {
   SELLER: "/seller",
-  ADMIN: "/admin",
+  ADMIN:  "/admin",
   DRIVER: "/driver",
 };
 
+// Category icons from /public/icon/
 const CATEGORIES = [
-  { label: "Handphone & Tablet", icon: Smartphone, slug: "handphone-tablet", subs: ["Smartphone", "Tablet", "Aksesoris HP"] },
-  { label: "Komputer & Laptop", icon: Laptop, slug: "komputer-laptop", subs: ["Laptop", "PC Desktop", "Mouse & Keyboard"] },
-  { label: "Elektronik", icon: Monitor, slug: "elektronik", subs: ["TV & Monitor", "Audio", "Kamera"] },
-  { label: "Fashion Wanita", icon: Shirt, slug: "fashion-muslim", subs: ["Atasan", "Bawahan", "Hijab & Kerudung"] },
-  { label: "Kesehatan", icon: Heart, slug: "kesehatan", subs: ["Vitamin", "Alat Kesehatan", "Perawatan Tubuh"] },
-  { label: "Kecantikan", icon: Gem, slug: "kecantikan", subs: ["Skincare", "Makeup", "Parfum"] },
-  { label: "Rumah & Dapur", icon: Home, slug: "home-living", subs: ["Furnitur", "Peralatan Masak", "Dekorasi"] },
-  { label: "Makanan & Minuman", icon: UtensilsCrossed, slug: "makanan-minuman", subs: ["Makanan Ringan", "Kopi & Teh", "Bahan Masak"] },
-  { label: "Olahraga", icon: Dumbbell, slug: "olahraga", subs: ["Pakaian Olahraga", "Alat Fitness", "Sepatu Olahraga"] },
-  { label: "Otomotif", icon: Car, slug: "otomotif", subs: ["Aksesori Mobil", "Aksesori Motor", "Oli & Pelumas"] },
-  { label: "Mainan & Hobi", icon: Gamepad, slug: "mainan-hobi", subs: ["Action Figure", "Board Game", "Puzzle"] },
-  { label: "Bayi & Anak", icon: Baby, slug: "bayi-anak", subs: ["Pakaian Bayi", "Mainan Edukasi", "Perlengkapan Bayi"] },
-  { label: "Buku & Alat Tulis", icon: BookOpen, slug: "buku-alat-tulis", subs: ["Novel", "Buku Pelajaran", "Alat Tulis"] },
-  { label: "Sepeda & Skuter", icon: Bike, slug: "sepeda-skuter", subs: ["Sepeda Gunung", "Skuter Listrik", "Helm & Aksesori"] },
-  { label: "Perkakas & Industri", icon: Wrench, slug: "perkakas", subs: ["Alat Tangan", "Mesin & Bor", "Keselamatan Kerja"] },
+  { label: "Handphone & Tablet", icon: "/icon/handphone-icon.png",          slug: "handphone-tablet",   subs: ["Smartphone", "Tablet", "Aksesoris HP"] },
+  { label: "Komputer & Laptop",  icon: "/icon/komputer-icon.png",           slug: "komputer-laptop",    subs: ["Laptop", "PC Desktop", "Mouse & Keyboard"] },
+  { label: "Elektronik",         icon: "/icon/elektronik-icon.png",         slug: "elektronik",         subs: ["TV & Monitor", "Audio", "Kamera"] },
+  { label: "Rumah & Dapur",      icon: "/icon/rumah-tangga-kategori-icon.png", slug: "home-living",    subs: ["Furnitur", "Peralatan Masak", "Dekorasi"] },
+  { label: "Top Up & Tagihan",   icon: "/icon/topup-icon.png",              slug: "topup-tagihan",      subs: ["Pulsa", "Paket Data", "Listrik PLN"] },
+  { label: "Buku & Alat Tulis",  icon: "/icon/buku-kategori-icon.png",     slug: "buku-alat-tulis",    subs: ["Novel", "Buku Pelajaran", "Alat Tulis"] },
+  { label: "Perawatan Hewan",    icon: "/icon/perawatan-hewan-icon.png",   slug: "perawatan-hewan",    subs: ["Makanan Hewan", "Aksesoris Hewan"] },
+  { label: "Keuangan",           icon: "/icon/keuangan-icon.png",           slug: "keuangan",           subs: ["Asuransi", "Investasi"] },
+  { label: "Semua Kategori",     icon: "/icon/kategori-icon.png",           slug: "",                   subs: [] },
 ];
 
 export function Navbar() {
   const { user, isAuthenticated, clearAuth } = useAuthStore();
   const { cart } = useCartStore();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
-  
-  // Hover states for popovers
-  const [isCartHovered, setIsCartHovered] = useState(false);
-  const [isNotifHovered, setIsNotifHovered] = useState(false);
-  const [isMailHovered, setIsMailHovered] = useState(false);
-
   const [hoveredCategory, setHoveredCategory] = useState(CATEGORIES[0]);
-  
-  const menuRef = useRef<HTMLDivElement>(null);
-  const categoryRef = useRef<HTMLDivElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [storeInfo, setStoreInfo] = useState<any>(null);
+
   const searchRef = useRef<HTMLDivElement>(null);
+  const accountRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const [storeInfo, setStoreInfo] = useState<{name: string, logoUrl: string | null} | null>(null);
-
-  const totalCartItems = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setAccountMenuOpen(false);
-      }
-      if (categoryRef.current && !categoryRef.current.contains(e.target as Node)) {
-        setCategoryMenuOpen(false);
-      }
+    function handleClickOutside(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setIsSearchFocused(false);
       }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+        setAccountMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated && user?.roles.includes(RoleType.SELLER)) {
+    if (isAuthenticated && user?.activeRole === "SELLER") {
       api.get('/stores/me').then(res => {
         setStoreInfo(res.data.data);
       }).catch(() => {});
@@ -108,333 +88,292 @@ export function Navbar() {
     navigate("/");
   };
 
+  const cartCount = cart?.items?.length ?? 0;
+
   return (
-    <header className="sticky top-0 z-[100] bg-white shadow-sm font-sans">
-      {/* Top bar */}
-      <div className="border-b border-gray-100 hidden md:block bg-[#f3f4f5]">
+    <header className="sticky top-0 z-[100] bg-white border-b-4 border-nb-black font-sans">
+      {/* ── Top Strip ── */}
+      <div className="bg-nb-black text-white hidden md:block">
         <div className="page-container">
-          <div className="flex items-center justify-between h-8 text-xs text-gray-500">
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-1 font-semibold text-gray-800 hover:text-green-600 transition-colors cursor-pointer">
-                <Smartphone size={14}/> Download SEAPEDIA App
-              </span>
-            </div>
-            <div className="flex items-center gap-5">
-              <Link to="/about" className="hover:text-green-600 transition-colors">Tentang SEAPEDIA</Link>
-              <Link to="/seller" className="hover:text-green-600 transition-colors">Pusat Edukasi Seller</Link>
-              <Link to="/search" className="hover:text-green-600 transition-colors">Promo</Link>
-              <Link to="/help" className="hover:text-green-600 transition-colors">SEAPEDIA Care</Link>
+          <div className="flex items-center justify-between h-8 text-xs">
+            <span className="font-semibold text-nb-yellow">SEAPEDIA — Belanja Lebih Smart</span>
+            <div className="flex items-center gap-5 text-gray-300">
+              <Link to="/about" className="hover:text-nb-yellow transition-colors">Tentang Kami</Link>
+              <Link to="/seller" className="hover:text-nb-yellow transition-colors">Jadi Penjual</Link>
+              <Link to="/search" className="hover:text-nb-yellow transition-colors">Promo</Link>
+              <Link to="/help" className="hover:text-nb-yellow transition-colors">Bantuan</Link>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <div className="page-container relative">
-        <div className="flex items-center gap-4 h-[72px]">
+      {/* ── Main Navbar ── */}
+      <div className="page-container">
+        <div className="flex items-center gap-3 md:gap-4 h-[68px]">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center shrink-0 mr-4" aria-label="SEAPEDIA Beranda">
-            <img src="/logo-name.png" alt="SEAPEDIA Logo" className="h-[42px] w-auto object-contain" />
+          <Link to="/" className="flex items-center shrink-0 mr-2" aria-label="SEAPEDIA Beranda">
+            <img src="/logo-name.png" alt="SEAPEDIA" className="h-9 w-auto object-contain" />
           </Link>
 
-          {/* Category Dropdown (Tokopedia style text button) */}
-          <div className="relative shrink-0" ref={categoryRef}>
+          {/* Category Button (desktop) */}
+          <div
+            className="hidden md:block relative"
+            onMouseEnter={() => setCategoryMenuOpen(true)}
+            onMouseLeave={() => setCategoryMenuOpen(false)}
+          >
             <button
-              onMouseEnter={() => setCategoryMenuOpen(true)}
-              onClick={() => setCategoryMenuOpen(o => !o)}
-              className="flex items-center px-3 py-1.5 rounded-md text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2 h-10 px-4 border-3 border-nb-black bg-white font-bold text-sm hover:bg-nb-yellow transition-colors"
+              style={{ borderWidth: '3px' }}
             >
+              <img src="/icon/kategori-icon.png" alt="" className="w-4 h-4 object-contain" />
               Kategori
+              <ChevronDown size={14} strokeWidth={3} />
             </button>
 
-            {/* Category Mega Menu */}
+            {/* Mega Menu */}
             {categoryMenuOpen && (
-              <div className="absolute left-0 top-full pt-2 z-[200]">
-                <div
-                  className="w-[680px] bg-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)] border border-gray-100 flex animate-slideDown origin-top-left"
-                  onMouseLeave={() => setCategoryMenuOpen(false)}
-                >
-                  {/* Left: Category List */}
-                <div className="w-56 bg-gray-50 py-2 border-r border-gray-100 overflow-y-auto max-h-[480px]">
-                  {CATEGORIES.map((cat) => {
-                    const Icon = cat.icon;
-                    return (
+              <div
+                className="absolute left-0 top-full pt-0 z-[200]"
+                style={{ animation: 'slideDown 150ms ease' }}
+              >
+                <div className="w-[660px] bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] flex mt-0">
+                  {/* Left: Category list */}
+                  <div className="w-52 border-r-3 border-nb-black overflow-y-auto max-h-[420px] bg-gray-50"
+                    style={{ borderRightWidth: '3px' }}>
+                    {CATEGORIES.filter(c => c.subs.length > 0).map((cat) => (
                       <button
                         key={cat.slug}
                         onMouseEnter={() => setHoveredCategory(cat)}
-                        onClick={() => { navigate(`/search?q=${cat.label}`); setCategoryMenuOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-left transition-colors ${
+                        onClick={() => { navigate(`/search?category=${cat.slug || ''}`); setCategoryMenuOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-left transition-colors border-b border-gray-200 ${
                           hoveredCategory.slug === cat.slug
-                            ? "bg-white text-green-600 font-semibold border-l-[3px] border-green-500"
-                            : "text-gray-700 hover:bg-white"
+                            ? "bg-nb-yellow font-bold border-l-4 border-l-nb-black"
+                            : "text-gray-700 hover:bg-gray-100"
                         }`}
                       >
-                        <Icon size={16} className={hoveredCategory.slug === cat.slug ? "text-green-500" : "text-gray-400"} />
-                        <span className="flex-1">{cat.label}</span>
-                        <ChevronRight size={14} className="text-gray-300" />
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Right: Sub-categories */}
-                <div className="flex-1 p-6">
-                  <div className="flex items-center gap-2 mb-4">
-                    <hoveredCategory.icon size={20} className="text-green-500"/>
-                    <h3 className="font-extrabold text-gray-800 text-base">{hoveredCategory.label}</h3>
-                  </div>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                    {hoveredCategory.subs.map((sub) => (
-                      <button
-                        key={sub}
-                        onClick={() => { navigate(`/search?q=${sub}`); setCategoryMenuOpen(false); }}
-                        className="text-left text-sm text-gray-600 hover:text-green-600 py-1.5 rounded-lg transition-colors"
-                      >
-                        {sub}
+                        <img src={cat.icon} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                        <span className="flex-1 font-semibold">{cat.label}</span>
+                        <ChevronRight size={12} className="text-gray-400" />
                       </button>
                     ))}
                   </div>
+
+                  {/* Right: Sub-categories */}
+                  <div className="flex-1 p-5">
+                    <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-nb-black">
+                      <img src={hoveredCategory.icon} alt="" className="w-6 h-6 object-contain" />
+                      <h3 className="font-extrabold text-base text-nb-black">{hoveredCategory.label}</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {hoveredCategory.subs.map((sub) => (
+                        <button
+                          key={sub}
+                          onClick={() => { navigate(`/search?q=${sub}`); setCategoryMenuOpen(false); }}
+                          className="text-left text-sm font-semibold text-gray-700 hover:text-nb-black py-2 px-3 hover:bg-nb-yellow transition-colors border border-transparent hover:border-nb-black"
+                        >
+                          {sub}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
               </div>
             )}
           </div>
 
           {/* Search */}
           <div className="flex-1 relative" ref={searchRef}>
-            <form onSubmit={handleSearch} className="relative z-[10]">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <form onSubmit={handleSearch} className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10" strokeWidth={2.5} />
               <input
                 type="search"
                 value={searchQuery}
                 onFocus={() => setIsSearchFocused(true)}
                 onChange={(e) => setSearchQuery((e.target as any).value)}
-                placeholder="Cari di SEAPEDIA"
-                className="w-full h-[40px] pl-10 pr-4 bg-white border border-gray-300 rounded-lg text-sm outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 placeholder:text-gray-400"
+                placeholder="Cari produk, toko, atau kategori..."
+                className="w-full h-11 pl-10 pr-4 bg-white border-3 border-nb-black text-sm font-medium outline-none focus:shadow-[3px_3px_0px_#FFE600] transition-shadow placeholder:text-gray-400 placeholder:font-normal"
+                style={{ borderWidth: '3px' }}
                 aria-label="Cari produk"
               />
             </form>
-            
+
             {/* Search Dropdown */}
             {isSearchFocused && (
-              <div className="absolute left-0 top-0 w-full pt-[50px] pb-4 bg-white border border-gray-200 rounded-b-xl shadow-lg z-[5]">
-                <div className="px-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-bold text-gray-800">Pencarian Populer</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {["MacBook Pro M3", "Sepatu Ventela", "Kipas Angin", "Poco X6 Pro"].map(term => (
-                      <button
-                        key={term}
-                        type="button"
-                        onClick={() => { setSearchQuery(term); setIsSearchFocused(false); navigate(`/search?q=${term}`); }}
-                        className="px-3 py-1.5 bg-gray-100 hover:bg-green-50 hover:text-green-600 rounded-full text-xs text-gray-600 transition-colors"
-                      >
-                        {term}
-                      </button>
-                    ))}
-                  </div>
+              <div className="absolute left-0 top-full w-full bg-white border-3 border-nb-black border-t-0 shadow-[4px_4px_0px_#0A0A0A] z-[5] p-4"
+                style={{ borderWidth: '3px' }}>
+                <p className="text-xs font-bold text-nb-black uppercase tracking-wide mb-2">Pencarian Populer</p>
+                <div className="flex flex-wrap gap-2">
+                  {["MacBook Pro", "Sepatu Ventela", "Kipas Angin", "Poco X6"].map(term => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => { setSearchQuery(term); setIsSearchFocused(false); navigate(`/search?q=${term}`); }}
+                      className="px-3 py-1.5 border-2 border-nb-black bg-white hover:bg-nb-yellow font-semibold text-xs transition-colors"
+                    >
+                      {term}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-4 shrink-0">
+          {/* Right Actions */}
+          <div className="flex items-center gap-2 shrink-0">
 
             {isAuthenticated ? (
               <>
-                <div className="flex items-center gap-2">
-                  {/* Cart Icon */}
-                  {user?.activeRole === "BUYER" && (
-                    <div 
-                      className="relative py-2 px-1"
-                      onMouseEnter={() => setIsCartHovered(true)}
-                      onMouseLeave={() => setIsCartHovered(false)}
-                    >
-                      <Link to="/cart" className="relative p-1.5 rounded-md hover:bg-gray-100 transition-colors block">
-                        <ShoppingCart size={22} className="text-gray-600" />
-                        {totalCartItems > 0 && (
-                          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full px-1">
-                            {totalCartItems > 99 ? "99+" : totalCartItems}
-                          </span>
-                        )}
-                      </Link>
-                      
-                      {/* Cart Dropdown */}
-                      {isCartHovered && (
-                        <div className="absolute right-0 top-full pt-2 z-[200]">
-                          <div className="w-[300px] bg-white border border-gray-200 shadow-xl rounded-lg animate-slideDown origin-top-right">
-                            <div className="p-4 flex flex-col items-center justify-center text-center">
-                            {totalCartItems === 0 ? (
-                              <>
-                                <ShoppingCart size={40} className="text-gray-300 mb-3" />
-                                <p className="text-sm font-bold text-gray-800">Wah, keranjang belanjamu kosong</p>
-                                <p className="text-xs text-gray-500 mt-1 mb-4">Yuk, isi dengan barang-barang impianmu!</p>
-                                <Link to="/search" className="btn-primary w-full py-2 text-xs font-bold rounded-md">
-                                  Mulai Belanja
-                                </Link>
-                              </>
-                            ) : (
-                              <>
-                                <p className="text-sm font-bold text-gray-800">Keranjang ({totalCartItems})</p>
-                                <Link to="/cart" className="mt-4 text-green-600 text-xs font-bold hover:underline">
-                                  Lihat Keranjang
-                                </Link>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Notification Icon */}
-                  <div 
-                    className="relative py-2 px-1"
-                    onMouseEnter={() => setIsNotifHovered(true)}
-                    onMouseLeave={() => setIsNotifHovered(false)}
+                {/* Cart */}
+                {user?.activeRole === "BUYER" && (
+                  <Link
+                    to="/cart"
+                    className="relative flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
+                    style={{ borderWidth: '3px' }}
+                    aria-label="Keranjang"
                   >
-                    <button className="relative p-1.5 rounded-md hover:bg-gray-100 transition-colors block">
-                      <Bell size={22} className="text-gray-600" />
-                    </button>
-
-                    {/* Notif Dropdown */}
-                    {isNotifHovered && (
-                      <div className="absolute right-0 top-full pt-2 z-[200]">
-                        <div className="w-[320px] bg-white border border-gray-200 shadow-xl rounded-lg animate-slideDown origin-top-right">
-                          <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                          <span className="font-bold text-sm text-gray-800">Notifikasi</span>
-                          <Settings size={14} className="text-gray-500 cursor-pointer hover:text-green-600" />
-                        </div>
-                        <div className="p-6 text-center text-gray-500 text-xs">
-                          Belum ada notifikasi baru.
-                        </div>
-                      </div>
-                      </div>
+                    <ShoppingCart size={20} strokeWidth={2.5} />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center bg-nb-red text-white text-xs font-bold border-2 border-nb-black px-1">
+                        {cartCount}
+                      </span>
                     )}
-                  </div>
+                  </Link>
+                )}
 
-                  {/* Messages Icon */}
-                  <div 
-                    className="relative py-2 px-1"
-                    onMouseEnter={() => setIsMailHovered(true)}
-                    onMouseLeave={() => setIsMailHovered(false)}
-                  >
-                    <button className="relative p-1.5 rounded-md hover:bg-gray-100 transition-colors block">
-                      <Mail size={22} className="text-gray-600" />
-                    </button>
+                {/* Notification */}
+                <button
+                  className="hidden md:flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
+                  style={{ borderWidth: '3px' }}
+                  aria-label="Notifikasi"
+                >
+                  <Bell size={20} strokeWidth={2.5} />
+                </button>
 
-                    {/* Mail Dropdown */}
-                    {isMailHovered && (
-                      <div className="absolute right-0 top-full pt-2 z-[200]">
-                        <div className="w-[320px] bg-white border border-gray-200 shadow-xl rounded-lg animate-slideDown origin-top-right">
-                          <div className="p-4 border-b border-gray-100">
-                          <span className="font-bold text-sm text-gray-800">Pesan</span>
-                        </div>
-                        <div className="p-6 text-center text-gray-500 text-xs">
-                          Belum ada pesan baru.
-                        </div>
-                      </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="h-6 w-px bg-gray-200 mx-2"></div>
-
-                {/* User Profile Section (Tokopedia Style Dual-Profile) */}
-                <div className="flex items-center gap-4 relative" ref={menuRef}>
-                  
-                  {/* Left: Toko (if seller) */}
-                  {user.roles.includes(RoleType.SELLER) && (
-                    <Link to="/seller" className="flex items-center gap-2 hover:bg-gray-50 p-1.5 rounded-md transition-colors">
-                      <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
-                        {storeInfo?.logoUrl ? (
-                          <img src={storeInfo.logoUrl} alt="Store" className="w-full h-full object-cover" />
-                        ) : (
-                          <Store size={14} className="text-gray-400" />
-                        )}
-                      </div>
-                      <span className="text-sm font-semibold text-gray-700 truncate max-w-[80px]">Toko</span>
-                    </Link>
-                  )}
-
-                  {/* Right: User Menu */}
+                {/* Account Menu */}
+                <div className="relative" ref={accountRef}>
                   <button
-                    onClick={() => setAccountMenuOpen(o => !o)}
-                    className="flex items-center gap-2 px-1.5 py-1.5 rounded-md hover:bg-gray-50 transition-colors"
+                    onClick={() => setAccountMenuOpen(!accountMenuOpen)}
+                    className="flex items-center gap-2 h-11 px-3 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
+                    style={{ borderWidth: '3px' }}
                   >
-                    <Avatar src={user.profilePictureUrl} name={user.fullName} size="sm" />
-                    <span className="text-sm font-semibold text-gray-700 max-w-[90px] truncate">{user.fullName.split(" ")[0]}</span>
+                    <Avatar name={user?.fullName} size="sm" />
+                    <ChevronDown size={14} strokeWidth={3} className="hidden md:block" />
                   </button>
 
-                  {/* Account Dropdown */}
                   {accountMenuOpen && (
-                    <div className="absolute right-0 top-full pt-2 z-[101]">
-                      <div className="w-64 bg-white border border-gray-100 rounded-xl shadow-[0_4px_16px_rgba(0,0,0,0.1)] py-2 animate-slideDown origin-top-right">
-                        <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
-                        <Avatar src={user.profilePictureUrl} name={user.fullName} size="md" />
-                        <div className="flex flex-col min-w-0">
-                          <p className="text-sm font-bold text-gray-800 truncate">{user.fullName}</p>
-                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                        </div>
+                    <div className="absolute right-0 top-full mt-1 w-64 bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] z-[200]"
+                      style={{ borderWidth: '3px' }}>
+                      {/* Header */}
+                      <div className="p-4 border-b-3 border-nb-black bg-nb-yellow"
+                        style={{ borderBottomWidth: '3px' }}>
+                        <p className="font-extrabold text-sm text-nb-black">{user?.fullName}</p>
+                        <p className="text-xs text-gray-700 font-medium">@{user?.username}</p>
+                        <span className="mt-1.5 inline-block px-2 py-0.5 border-2 border-nb-black bg-white text-xs font-bold">
+                          {roleLabels[user?.activeRole as RoleType]}
+                        </span>
                       </div>
 
-                      <div className="py-1">
-                        <Link to="/account" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                          Pengaturan Akun
-                        </Link>
-                        {user.roles.includes(RoleType.BUYER) && (
-                          <Link to="/orders" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            Pesanan Saya
-                          </Link>
-                        )}
-                        {user.roles.includes(RoleType.ADMIN) && (
-                          <Link to="/admin" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            Dashboard Admin
-                          </Link>
-                        )}
-                        {user.roles.includes(RoleType.DRIVER) && (
-                          <Link to="/driver" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            Dashboard Driver
-                          </Link>
-                        )}
-                        {user.roles.includes(RoleType.SELLER) && (
-                          <Link to="/seller" onClick={() => setAccountMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            Dashboard Penjual
-                          </Link>
-                        )}
-                      </div>
-
-                      <div className="border-t border-gray-100 pt-1">
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50"
+                      {/* Dashboard link */}
+                      {roleDashboardPath[user?.activeRole as RoleType] && (
+                        <Link
+                          to={roleDashboardPath[user?.activeRole as RoleType]!}
+                          onClick={() => setAccountMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-bold hover:bg-nb-yellow transition-colors"
                         >
-                          Keluar
-                        </button>
-                      </div>
-                    </div>
+                          <Settings size={16} strokeWidth={2.5} />
+                          Dashboard
+                        </Link>
+                      )}
+
+                      <Link
+                        to="/orders"
+                        onClick={() => setAccountMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-semibold hover:bg-gray-50 transition-colors"
+                      >
+                        <Package size={16} strokeWidth={2} />
+                        Pesanan Saya
+                      </Link>
+
+                      <Link
+                        to="/wallet"
+                        onClick={() => setAccountMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-semibold hover:bg-gray-50 transition-colors"
+                      >
+                        <Wallet size={16} strokeWidth={2} />
+                        Dompet
+                      </Link>
+
+                      <Link
+                        to="/account"
+                        onClick={() => setAccountMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-semibold hover:bg-gray-50 transition-colors"
+                      >
+                        <User size={16} strokeWidth={2} />
+                        Profil Saya
+                      </Link>
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-nb-red hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut size={16} strokeWidth={2.5} />
+                        Keluar
+                      </button>
                     </div>
                   )}
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link to="/auth/login" className="text-sm font-semibold text-green-600 px-4 h-9 border border-green-500 rounded-md flex items-center hover:bg-green-50 transition-colors">
+              <>
+                <Link
+                  to="auth/login"
+                  className="hidden md:flex items-center justify-center h-11 px-4 border-3 border-nb-black bg-white hover:bg-gray-50 font-bold text-sm transition-colors"
+                  style={{ borderWidth: '3px' }}
+                >
                   Masuk
                 </Link>
-                <Link to="/auth/register" className="text-sm font-semibold text-white px-4 h-9 bg-green-500 hover:bg-green-600 rounded-md flex items-center transition-colors">
+                <Link
+                  to="auth/register"
+                  className="flex items-center justify-center h-11 px-4 border-3 border-nb-black bg-nb-yellow hover:bg-[#FFD700] font-bold text-sm shadow-[3px_3px_0px_#0A0A0A] hover:shadow-[4px_4px_0px_#0A0A0A] hover:-translate-x-px hover:-translate-y-px transition-all"
+                  style={{ borderWidth: '3px' }}
+                >
                   Daftar
                 </Link>
-              </div>
+              </>
             )}
+
+            {/* Mobile menu toggle */}
+            <button
+              className="md:hidden flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white"
+              style={{ borderWidth: '3px' }}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menu"
+            >
+              {mobileMenuOpen ? <X size={20} strokeWidth={3} /> : <Menu size={20} strokeWidth={3} />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* ── Mobile Menu ── */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t-3 border-nb-black"
+          style={{ borderTopWidth: '3px' }}>
+          <div className="p-4 space-y-2">
+            {CATEGORIES.slice(0, 6).map((cat) => (
+              <button
+                key={cat.slug}
+                onClick={() => { navigate(`/search?category=${cat.slug}`); setMobileMenuOpen(false); }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 border-2 border-gray-200 bg-gray-50 text-sm font-semibold hover:bg-nb-yellow hover:border-nb-black transition-colors"
+              >
+                <img src={cat.icon} alt="" className="w-5 h-5 object-contain" />
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

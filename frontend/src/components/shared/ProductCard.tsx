@@ -21,70 +21,62 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link to={`/product/${product.slug}`} className="block outline-none group">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-200 h-full flex flex-col">
+      <div className="bg-white h-full flex flex-col border-3 border-nb-black shadow-[3px_3px_0px_#0A0A0A] hover:shadow-[5px_5px_0px_#0A0A0A] hover:-translate-x-px hover:-translate-y-px transition-all duration-150"
+        style={{ borderWidth: '3px' }}>
         {/* Image */}
-        <div className="relative aspect-square bg-gray-50 overflow-hidden">
+        <div className="relative aspect-square bg-gray-100 overflow-hidden border-b-3 border-nb-black"
+          style={{ borderBottomWidth: '3px' }}>
           <img
-            src={product.images?.[0] || "https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image"}
+            src={product.images?.[0] || "https://placehold.co/400x400/F7F5F0/0A0A0A?text=No+Image"}
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
+          {/* Discount badge */}
           {discountPercent > 0 && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-              {discountPercent}%
+            <div className="absolute top-0 left-0 bg-nb-red text-white text-xs font-extrabold px-2 py-1 border-r-2 border-b-2 border-nb-black">
+              -{discountPercent}%
             </div>
           )}
+          {/* Low stock */}
           {product.stock <= 3 && product.stock > 0 && (
-            <div className="absolute bottom-2 left-2 bg-amber-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+            <div className="absolute bottom-0 right-0 bg-nb-yellow text-nb-black text-xs font-extrabold px-2 py-1 border-l-2 border-t-2 border-nb-black">
               Sisa {product.stock}
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="p-2.5 flex flex-col flex-1">
-          <h3 className="text-xs text-gray-700 line-clamp-2 mb-1.5 leading-snug group-hover:text-green-600 transition-colors">
+        <div className="p-3 flex flex-col flex-1">
+          <p className="text-xs font-semibold text-gray-800 line-clamp-2 mb-2 leading-snug group-hover:text-nb-black transition-colors">
             {product.name}
-          </h3>
+          </p>
 
-          <div className="mt-auto space-y-1">
+          <div className="mt-auto space-y-1.5">
             {/* Price */}
-            <div className="font-semibold text-sm text-gray-900 leading-tight">
+            <div className="font-extrabold text-sm text-nb-black leading-tight">
               {formatCurrency(product.price)}
             </div>
 
+            {/* Compare price */}
             {discountPercent > 0 && (
-              <div className="flex items-center gap-1 flex-wrap">
-                <span className="text-xs font-bold text-red-500 bg-red-50 px-1 py-0.5 rounded">{discountPercent}%</span>
+              <div className="flex items-center gap-1.5">
                 <span className="text-xs text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
               </div>
             )}
 
-            {/* Promo badge */}
-            {discountPercent > 0 && (
-              <p className="text-xs text-orange-500 font-medium">Hemat s.d {discountPercent}% Pakai Bonus</p>
-            )}
-
             {/* Rating & sold */}
-            <div className="flex items-center gap-1.5 pt-1">
-              <Star size={11} className="text-amber-400 fill-amber-400" />
-              <span className="text-xs text-gray-500">{(product.rating ?? 0).toFixed(1)}</span>
-              <span className="text-gray-300 text-xs">•</span>
+            <div className="flex items-center gap-1.5 pt-1 border-t border-gray-100">
+              <Star size={10} className="text-amber-400 fill-amber-400" />
+              <span className="text-xs font-medium text-gray-600">{(product.rating ?? 0).toFixed(1)}</span>
+              <span className="text-gray-300 text-xs">·</span>
               <span className="text-xs text-gray-500">{formatSold(product.sold)} terjual</span>
             </div>
 
-            {/* Store & location */}
+            {/* Store */}
             <div className="flex items-center gap-1 pt-0.5">
-              <div className="w-3 h-3 rounded-sm bg-green-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-bold">✓</span>
-              </div>
-              <span className="text-xs text-gray-500 truncate">{product.storeName}</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <MapPin size={10} className="text-gray-300 flex-shrink-0" />
-              <span className="text-xs text-gray-400 truncate">Jakarta, Indonesia</span>
+              <img src="/icon/verify-icon.png" alt="verified" className="w-3 h-3 object-contain" />
+              <span className="text-xs text-gray-500 truncate font-medium">{product.storeName}</span>
             </div>
           </div>
         </div>

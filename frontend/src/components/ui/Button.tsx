@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { clsx } from "clsx";
 
-type Variant = "primary" | "secondary" | "link" | "ghost" | "danger";
+type Variant = "primary" | "yellow" | "secondary" | "link" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -14,22 +14,18 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-primary text-white font-bold text-xs hover:bg-primary-hover disabled:opacity-50",
-  secondary:
-    "bg-white text-secondary font-bold text-xs border border-border hover:bg-muted disabled:opacity-50",
-  ghost:
-    "bg-transparent text-on-surface font-semibold text-xs hover:bg-muted disabled:opacity-50",
-  link:
-    "bg-transparent text-on-surface font-semibold text-xs p-0 h-auto hover:text-primary underline-offset-2 hover:underline",
-  danger:
-    "bg-error text-white font-bold text-xs hover:bg-red-600 disabled:opacity-50",
+  primary:   "nb-btn nb-btn-primary",
+  yellow:    "nb-btn nb-btn-yellow",
+  secondary: "nb-btn nb-btn-white",
+  ghost:     "bg-transparent border-transparent shadow-none text-nb-black font-semibold text-sm hover:bg-gray-100 transition-colors",
+  link:      "bg-transparent text-nb-black font-semibold text-sm p-0 h-auto hover:text-nb-blue underline-offset-2 hover:underline",
+  danger:    "nb-btn nb-btn-danger",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "h-8 px-3 text-xs",
-  md: "h-10 px-4",
-  lg: "h-12 px-6 text-sm",
+  sm: "h-9 px-3 text-xs",
+  md: "", // height via --btn-height CSS var
+  lg: "h-12 px-6 text-base",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -48,16 +44,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
+    const isNbBtn = ["primary", "yellow", "secondary", "danger"].includes(variant);
     return (
       <button
         ref={ref}
         disabled={disabled || loading}
         className={clsx(
-          "inline-flex items-center justify-center gap-2 rounded-md transition-colors duration-150 cursor-pointer select-none",
           variantClasses[variant],
-          variant !== "link" && sizeClasses[size],
+          // For non-nb-btn variants add size manually
+          !isNbBtn && variant !== "link" && sizeClasses[size],
+          // For nb-btn, only sm/lg override
+          isNbBtn && size === "sm" && "h-9 px-3 text-xs",
+          isNbBtn && size === "lg" && "h-12 px-6 text-base",
           fullWidth && "w-full",
-          "disabled:cursor-not-allowed",
           className
         )}
         {...props}

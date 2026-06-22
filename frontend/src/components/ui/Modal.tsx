@@ -28,7 +28,6 @@ export function Modal({
   showClose = true,
   footer,
 }: ModalProps) {
-  // Prevent body scroll when open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -38,7 +37,6 @@ export function Modal({
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -51,59 +49,56 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-modal flex items-center justify-center p-4"
+      className="fixed inset-0 z-[300] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/60"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
         className={clsx(
-          "relative bg-surface rounded-lg w-full shadow-panel",
+          "relative bg-white w-full border-4 border-nb-black",
+          "shadow-[8px_8px_0px_#0A0A0A]",
           "animate-[fadeInScale_150ms_ease]",
           sizeClasses[size]
         )}
       >
+        {/* Yellow accent top bar */}
+        <div className="h-2 bg-nb-yellow w-full" />
+
         {/* Header */}
         {(title || showClose) && (
-          <div className="flex items-center justify-between p-4 border-b border-muted">
+          <div className="flex items-center justify-between px-5 py-4 border-b-3 border-nb-black">
             {title && (
-              <h3 className="text-lg font-semibold leading-[22px] text-on-surface">
+              <h3 className="text-lg font-extrabold text-nb-black tracking-tight">
                 {title}
               </h3>
             )}
             {showClose && (
               <button
                 onClick={onClose}
-                className="p-1 rounded-md text-tertiary hover:text-secondary hover:bg-muted transition-colors"
+                className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                 aria-label="Tutup modal"
               >
-                <X size={18} />
+                <X size={16} strokeWidth={3} />
               </button>
             )}
           </div>
         )}
 
         {/* Body */}
-        <div className="p-4">{children}</div>
+        <div className="p-5">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="px-4 pb-4 border-t border-muted pt-4">{footer}</div>
+          <div className="px-5 pb-5 pt-0 border-t-2 border-gray-200 pt-4">{footer}</div>
         )}
       </div>
-
-      <style>{`
-        @keyframes fadeInScale {
-          from { opacity: 0; transform: scale(0.96); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </div>
   );
 }

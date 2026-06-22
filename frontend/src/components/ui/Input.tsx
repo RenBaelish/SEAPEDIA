@@ -1,7 +1,7 @@
-import { InputHTMLAttributes, TextareaHTMLAttributes, forwardRef, ReactNode } from 'react';
+import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, forwardRef, ReactNode } from 'react';
 import { clsx } from "clsx";
 
-// ─── Text Input ────────────────────────────────────────────────────────────
+// ─── Text Input ─────────────────────────────────────────────────────────────
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -16,46 +16,43 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, hint, leftIcon, rightIcon, fullWidth, className, id, ...props }, ref) => {
     const inputId = id ?? `input-${Math.random().toString(36).slice(2, 7)}`;
     return (
-      <div className={clsx("flex flex-col gap-1", fullWidth && "w-full")}>
+      <div className={clsx("flex flex-col gap-1.5", fullWidth && "w-full")}>
         {label && (
-          <label htmlFor={inputId} className="text-xs font-semibold text-secondary">
+          <label htmlFor={inputId} className="text-xs font-bold text-nb-black uppercase tracking-wide">
             {label}
           </label>
         )}
         <div className="relative flex items-center">
           {leftIcon && (
-            <span className="absolute left-3 text-tertiary pointer-events-none">{leftIcon}</span>
+            <span className="absolute left-3 text-gray-500 pointer-events-none z-10">
+              {leftIcon}
+            </span>
           )}
           <input
             ref={ref}
             id={inputId}
             className={clsx(
-              "w-full bg-surface text-on-surface text-xs leading-[18px]",
-              "border border-border rounded-md outline-none",
-              "h-10 transition-[border-color,box-shadow] duration-150",
-              leftIcon ? "pl-9 pr-4" : "px-4",
-              rightIcon ? "pr-9" : "",
-              error
-                ? "border-error focus:border-error focus:shadow-[0_0_0_3px_rgba(229,72,77,0.15)]"
-                : "focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,170,91,0.15)]",
-              "placeholder:text-tertiary",
+              "nb-input",
+              leftIcon && "pl-10",
+              rightIcon && "pr-10",
+              error && "error",
               className
             )}
             {...props}
           />
           {rightIcon && (
-            <span className="absolute right-3 text-tertiary">{rightIcon}</span>
+            <span className="absolute right-3 text-gray-500">{rightIcon}</span>
           )}
         </div>
-        {error && <p className="text-xs text-error">{error}</p>}
-        {hint && !error && <p className="text-xs text-tertiary">{hint}</p>}
+        {error && <p className="text-xs font-semibold text-nb-red">{error}</p>}
+        {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
       </div>
     );
   }
 );
 Input.displayName = "Input";
 
-// ─── Textarea ─────────────────────────────────────────────────────────────
+// ─── Textarea ───────────────────────────────────────────────────────────────
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -67,9 +64,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, fullWidth, className, id, ...props }, ref) => {
     const inputId = id ?? `textarea-${Math.random().toString(36).slice(2, 7)}`;
     return (
-      <div className={clsx("flex flex-col gap-1", fullWidth && "w-full")}>
+      <div className={clsx("flex flex-col gap-1.5", fullWidth && "w-full")}>
         {label && (
-          <label htmlFor={inputId} className="text-xs font-semibold text-secondary">
+          <label htmlFor={inputId} className="text-xs font-bold text-nb-black uppercase tracking-wide">
             {label}
           </label>
         )}
@@ -77,21 +74,53 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={inputId}
           className={clsx(
-            "w-full bg-surface text-on-surface text-xs leading-[18px]",
-            "border border-border rounded-md outline-none resize-y p-3",
-            "transition-[border-color,box-shadow] duration-150",
-            error
-              ? "border-error focus:border-error"
-              : "focus:border-primary focus:shadow-[0_0_0_3px_rgba(0,170,91,0.15)]",
-            "placeholder:text-tertiary",
+            "nb-textarea",
+            error && "!border-nb-red",
             className
           )}
           rows={4}
           {...props}
         />
-        {error && <p className="text-xs text-error">{error}</p>}
+        {error && <p className="text-xs font-semibold text-nb-red">{error}</p>}
       </div>
     );
   }
 );
 Textarea.displayName = "Textarea";
+
+// ─── Select ─────────────────────────────────────────────────────────────────
+
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  label?: string;
+  error?: string;
+  fullWidth?: boolean;
+}
+
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  ({ label, error, fullWidth, className, id, children, ...props }, ref) => {
+    const inputId = id ?? `select-${Math.random().toString(36).slice(2, 7)}`;
+    return (
+      <div className={clsx("flex flex-col gap-1.5", fullWidth && "w-full")}>
+        {label && (
+          <label htmlFor={inputId} className="text-xs font-bold text-nb-black uppercase tracking-wide">
+            {label}
+          </label>
+        )}
+        <select
+          ref={ref}
+          id={inputId}
+          className={clsx(
+            "nb-input appearance-none cursor-pointer",
+            error && "!border-nb-red",
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </select>
+        {error && <p className="text-xs font-semibold text-nb-red">{error}</p>}
+      </div>
+    );
+  }
+);
+Select.displayName = "Select";

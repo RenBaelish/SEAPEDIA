@@ -1,53 +1,41 @@
-import { HTMLAttributes } from 'react';
 import { clsx } from "clsx";
 
-interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
-  width?: string;
-  height?: string;
-  rounded?: "sm" | "md" | "lg" | "full";
+// ─── Skeleton Box ──────────────────────────────────────────────────────────
+interface SkeletonProps {
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-export function Skeleton({ width, height, rounded = "md", className, style, ...props }: SkeletonProps) {
-  return (
-    <div
-      className={clsx(
-        "bg-muted ",
-        {
-          "rounded-sm": rounded === "sm",
-          "rounded-md": rounded === "md",
-          "rounded-lg": rounded === "lg",
-          "rounded-full": rounded === "full",
-        },
-        className
-      )}
-      style={{ width, height, ...style }}
-      {...props}
-    />
-  );
+export function Skeleton({ className, style }: SkeletonProps) {
+  return <div className={clsx("skeleton", className)} style={style} />;
 }
 
-// Pre-built skeleton composites for common use cases
+// ─── Product Card Skeleton ─────────────────────────────────────────────────
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col gap-2 p-3 bg-surface rounded-md border border-muted">
-      <Skeleton height="180px" />
-      <Skeleton height="14px" width="90%" />
-      <Skeleton height="14px" width="60%" />
-      <Skeleton height="20px" width="50%" />
+    <div className="bg-white border-3 border-nb-black" style={{ borderWidth: '3px', borderColor: '#0A0A0A' }}>
+      {/* Image */}
+      <div className="aspect-square skeleton" />
+      {/* Content */}
+      <div className="p-3 space-y-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-3/4" />
+        <Skeleton className="h-4 w-1/2 mt-2" />
+        <Skeleton className="h-3 w-2/3" />
+      </div>
     </div>
   );
 }
 
-export function TextSkeleton({ lines = 3, className }: { lines?: number; className?: string }) {
+// ─── Table Row Skeleton ────────────────────────────────────────────────────
+export function TableRowSkeleton({ cols = 4 }: { cols?: number }) {
   return (
-    <div className={clsx("flex flex-col gap-2", className)}>
-      {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          height="14px"
-          width={i === lines - 1 ? "70%" : "100%"}
-        />
+    <tr>
+      {Array.from({ length: cols }).map((_, i) => (
+        <td key={i} className="px-4 py-3 border-b border-gray-100">
+          <Skeleton className="h-4 w-full" />
+        </td>
       ))}
-    </div>
+    </tr>
   );
 }
