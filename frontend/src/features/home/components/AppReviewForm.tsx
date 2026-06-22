@@ -36,7 +36,7 @@ export function AppReviewForm({ onSuccess }: AppReviewFormProps) {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && (
-        <div className="bg-red-50 text-error p-3 rounded-md text-xs font-semibold">
+        <div className="border-2 border-nb-red bg-red-50 text-nb-red p-3 text-xs font-bold">
           {error}
         </div>
       )}
@@ -51,19 +51,19 @@ export function AppReviewForm({ onSuccess }: AppReviewFormProps) {
         maxLength={100}
       />
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-semibold text-secondary">Penilaian</label>
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-bold text-nb-black uppercase tracking-wide">Penilaian</label>
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <button
               key={star}
               type="button"
               onClick={() => setRating(star)}
-              className="p-1 -ml-1 focus:outline-none"
+              className="p-0.5 focus:outline-none hover:scale-110 transition-transform"
             >
               <Star
-                size={24}
-                className={star <= rating ? "text-amber-400 fill-amber-400" : "text-tertiary"}
+                size={28}
+                className={star <= rating ? "text-amber-400 fill-amber-400" : "text-gray-300"}
               />
             </button>
           ))}
@@ -80,7 +80,7 @@ export function AppReviewForm({ onSuccess }: AppReviewFormProps) {
         maxLength={1000}
       />
 
-      <Button type="submit" loading={loading} className="w-full">
+      <Button type="submit" loading={loading} className="w-full bg-nb-black text-white border-3 border-nb-black hover:bg-nb-black hover:text-nb-yellow font-bold py-3" style={{ borderWidth: '3px' }}>
         Kirim Ulasan
       </Button>
     </form>
