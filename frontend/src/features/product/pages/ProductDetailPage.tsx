@@ -128,43 +128,43 @@ export default function ProductDetailPage() {
     : ["https://placehold.co/800x800/f3f4f6/9ca3af?text=No+Image"];
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-16">
+    <div className="bg-[#F7F5F0] min-h-screen pb-16">
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="page-container py-2">
-          <div className="flex items-center gap-2 text-xs text-gray-500">
-            <Link to="/" className="hover:text-green-600 transition-colors">Beranda</Link>
-            <ChevronRight size={12} />
-            <Link to={`/search?q=${product.categoryName}`} className="hover:text-green-600 transition-colors">{product.categoryName}</Link>
-            <ChevronRight size={12} />
-            <span className="text-gray-800 line-clamp-1">{product.name}</span>
+      <div className="bg-white border-b-4 border-nb-black">
+        <div className="page-container py-2.5">
+          <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
+            <Link to="/" className="hover:text-nb-black transition-colors font-bold">Beranda</Link>
+            <ChevronRight size={12} strokeWidth={3} />
+            <Link to={`/search?q=${product.categoryName}`} className="hover:text-nb-black transition-colors">{product.categoryName}</Link>
+            <ChevronRight size={12} strokeWidth={3} />
+            <span className="text-nb-black font-bold line-clamp-1">{product.name}</span>
           </div>
         </div>
       </div>
 
       <div className="page-container py-4">
 
-        {/* ─── Main Product Panel ──────────────────────────────── */}
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        {/* ─── Main Product Panel ── */}
+        <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] overflow-hidden">
           <div className="grid md:grid-cols-[380px_1fr_300px] gap-0">
 
             {/* 1. Image Gallery */}
-            <div className="p-5 border-r border-gray-100">
+            <div className="p-5 border-r-3 border-nb-black" style={{ borderRightWidth: '3px' }}>
               {/* Main Image */}
-              <div className="relative group aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3 border border-gray-100">
+              <div className="relative group aspect-square bg-gray-50 overflow-hidden mb-3 border-2 border-nb-black">
                 <img
                   src={allImages[selectedImg]}
                   alt={product.name}
                   className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 />
                 {discountPercent > 0 && (
-                  <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                    {discountPercent}%
+                  <div className="absolute top-0 left-0 bg-nb-red text-white text-xs font-extrabold px-2 py-1 border-r-2 border-b-2 border-nb-black">
+                    -{discountPercent}%
                   </div>
                 )}
-                <button className="absolute top-3 right-3 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow">
-                  <ZoomIn size={16} className="text-gray-600" />
+                <button className="absolute top-3 right-3 w-8 h-8 bg-white border-2 border-nb-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn size={16} className="text-nb-black" />
                 </button>
                 {/* Nav arrows for multiple images */}
                 {allImages.length > 1 && (
@@ -185,7 +185,9 @@ export default function ProductDetailPage() {
                     <button
                       key={i}
                       onClick={() => setSelectedImg(i)}
-                      className={`flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors ${selectedImg === i ? "border-green-500" : "border-gray-200 hover:border-gray-400"}`}
+                      className={`flex-shrink-0 w-14 h-14 overflow-hidden border-2 transition-all ${
+                        selectedImg === i ? "border-nb-black shadow-[2px_2px_0px_#0A0A0A]" : "border-gray-200 hover:border-gray-400"
+                      }`}
                     >
                       <img src={img} alt="" className="w-full h-full object-cover" />
                     </button>
@@ -196,20 +198,22 @@ export default function ProductDetailPage() {
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => setWishlist(w => !w)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border-2 transition-colors flex-1 justify-center ${wishlist ? "border-red-300 text-red-500 bg-red-50" : "border-gray-200 text-gray-500 hover:border-gray-300"}`}
+                  className={`flex items-center gap-2 px-4 py-2 text-xs font-bold border-2 transition-colors flex-1 justify-center ${
+                    wishlist ? "border-nb-red text-nb-red bg-red-50" : "border-gray-300 text-gray-600 hover:border-nb-black"
+                  }`}
                 >
-                  <Heart size={14} className={wishlist ? "fill-red-500" : ""} />
+                  <Heart size={14} className={wishlist ? "fill-nb-red" : ""} />
                   Wishlist
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold border-2 border-gray-200 text-gray-500 hover:border-gray-300 flex-1 justify-center">
+                <button className="flex items-center gap-2 px-4 py-2 text-xs font-bold border-2 border-gray-300 text-gray-600 hover:border-nb-black transition-colors flex-1 justify-center">
                   <Share2 size={14} /> Bagikan
                 </button>
               </div>
             </div>
 
             {/* 2. Product Info */}
-            <div className="p-6 border-r border-gray-100">
-              <h1 className="text-lg font-semibold text-gray-800 leading-snug mb-3">
+            <div className="p-6 border-r-3 border-nb-black" style={{ borderRightWidth: '3px' }}>
+              <h1 className="text-lg font-extrabold text-nb-black leading-snug mb-3">
                 {product.name}
               </h1>
 
@@ -221,30 +225,30 @@ export default function ProductDetailPage() {
                       <Star key={i} size={14} className={i <= Math.round(product.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"} />
                     ))}
                   </div>
-                  <span className="text-sm font-bold text-gray-800">{(product.rating ?? 0).toFixed(1)}</span>
+                  <span className="text-sm font-extrabold text-nb-black">{(product.rating ?? 0).toFixed(1)}</span>
                   <span className="text-xs text-gray-400">Penilaian</span>
                 </div>
                 <div className="w-px h-4 bg-gray-200" />
                 <span className="text-sm text-gray-600"><b>{formatSold(product.sold)}</b> terjual</span>
                 <div className="w-px h-4 bg-gray-200" />
-                <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded">{product.categoryName}</span>
+                <span className="text-xs font-bold text-nb-black bg-nb-yellow px-2 py-0.5 border border-nb-black">{product.categoryName}</span>
               </div>
 
               {/* Price */}
-              <div className="bg-gray-50 rounded-xl p-4 mb-5">
+              <div className="bg-white border-2 border-nb-black p-4 mb-5 shadow-[4px_4px_0px_#0A0A0A]">
                 <div className="flex items-baseline gap-3 flex-wrap">
-                  <span className="text-3xl font-semibold text-gray-900 leading-none">
+                  <span className="text-3xl font-extrabold text-nb-black leading-none">
                     {formatCurrency(product.price)}
                   </span>
                   {discountPercent > 0 && (
                     <>
-                      <span className="text-sm text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
-                      <span className="text-sm font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded">{discountPercent}% OFF</span>
+                      <span className="text-sm text-gray-500 line-through">{formatCurrency(product.comparePrice!)}</span>
+                      <span className="text-sm font-extrabold text-nb-red bg-white px-2 py-0.5 border border-nb-red">{discountPercent}% OFF</span>
                     </>
                   )}
                 </div>
                 {discountPercent > 0 && (
-                  <p className="text-xs text-gray-400 mt-1">Hemat {formatCurrency(product.comparePrice! - product.price)}</p>
+                  <p className="text-xs text-gray-700 mt-1 font-bold">Hemat {formatCurrency(product.comparePrice! - product.price)}</p>
                 )}
               </div>
 
@@ -276,18 +280,18 @@ export default function ProductDetailPage() {
               <div className="border-t border-gray-100 my-4" />
 
               {/* Store card */}
-              <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 hover:border-green-200 transition-colors">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden border border-gray-200">
+              <div className="flex items-center gap-3 p-4 border-2 border-gray-200 hover:border-nb-black transition-colors">
+                <div className="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden border-2 border-nb-black bg-nb-yellow">
                   {product.storeLogoUrl ? (
                     <img src={product.storeLogoUrl} alt={product.storeName} className="w-full h-full object-cover" />
                   ) : (
-                    <Store className="text-green-500" size={20} />
+                    <span className="text-xl font-extrabold text-nb-black">{product.storeName?.charAt(0)}</span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <ShieldCheck size={14} className="text-green-500 flex-shrink-0" />
-                    <Link to={`/store/${product.storeSlug}`} className="text-sm font-bold text-gray-800 hover:text-green-600 transition-colors truncate">
+                    <img src="/icon/verify-icon.png" alt="verified" className="w-3.5 h-3.5 object-contain" />
+                    <Link to={`/store/${product.storeSlug}`} className="text-sm font-extrabold text-nb-black hover:text-nb-blue transition-colors truncate">
                       {product.storeName}
                     </Link>
                   </div>
@@ -296,7 +300,7 @@ export default function ProductDetailPage() {
                     <span>Jakarta, Indonesia</span>
                   </div>
                 </div>
-                <Link to={`/store/${product.storeSlug}`} className="flex-shrink-0 px-4 py-2 rounded-full border-2 border-green-500 text-green-600 text-xs font-semibold hover:bg-green-50 transition-colors">
+                <Link to={`/store/${product.storeSlug}`} className="flex-shrink-0 px-4 py-2 border-2 border-nb-black bg-white text-xs font-bold hover:bg-nb-yellow transition-colors">
                   Kunjungi
                 </Link>
               </div>
@@ -382,17 +386,19 @@ export default function ProductDetailPage() {
                   <button
                     onClick={() => handleAddToCart(false)}
                     disabled={addingToCart || product.stock === 0}
-                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border-2 border-green-500 text-green-600 font-bold text-sm hover:bg-green-50 transition-colors disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 h-11 border-3 border-nb-black bg-white text-nb-black font-extrabold text-sm hover:bg-nb-yellow transition-colors disabled:opacity-50"
+                    style={{ borderWidth: '3px' }}
                   >
-                    <ShoppingCart size={18} />
+                    <ShoppingCart size={18} strokeWidth={2.5} />
                     {product.stock === 0 ? "Stok Habis" : "+ Keranjang"}
                   </button>
                   <button
                     onClick={() => handleAddToCart(true)}
                     disabled={addingToCart || product.stock === 0}
-                    className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-green-500 hover:bg-green-600 text-white font-bold text-sm transition-colors disabled:opacity-50 shadow-sm"
+                    className="w-full flex items-center justify-center gap-2 h-11 border-3 border-nb-black bg-nb-black text-white font-extrabold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all disabled:opacity-50 disabled:shadow-none disabled:transform-none"
+                    style={{ borderWidth: '3px' }}
                   >
-                    <Zap size={18} />
+                    <Zap size={18} strokeWidth={2.5} />
                     Beli Langsung
                   </button>
                 </div>
@@ -421,13 +427,13 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* ─── Produk Terkait ──────────────────────────────────── */}
+        {/* ─── Produk Terkait ── */}
         {relatedProducts.length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm mt-4 p-6">
+          <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] mt-4 p-6" style={{ borderWidth: '3px' }}>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-bold text-gray-900">Pilihan Lainnya Untukmu</h2>
-              <Link to="/search" className="text-sm text-green-600 font-semibold flex items-center gap-1 hover:underline">
-                Lihat Semua <ChevronRight size={14} />
+              <h2 className="text-base font-extrabold text-nb-black nb-section-title">Produk Lainnya</h2>
+              <Link to="/search" className="flex items-center gap-1 text-xs font-bold text-nb-black border-2 border-nb-black px-3 py-1.5 hover:bg-nb-yellow transition-colors">
+                Lihat Semua <ChevronRight size={12} strokeWidth={3} />
               </Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
