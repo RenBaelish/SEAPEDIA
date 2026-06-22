@@ -24,99 +24,105 @@ export default function AdminStoresPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-end mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Daftar Toko</h1>
-          <p className="text-sm text-gray-500 mt-1">Pantau dan moderasi toko yang beroperasi di platform.</p>
+          <h1 className="text-xl font-extrabold text-nb-black">Daftar Toko</h1>
+          <p className="text-sm font-semibold text-gray-600 mt-1">Pantau dan moderasi toko yang beroperasi di platform.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-          <div className="relative w-72">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+      <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
+        <div className="p-4 border-b-2 border-nb-black flex items-center justify-between bg-[#F7F5F0]">
+          <div className="relative w-full md:w-80">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={3} />
             <input 
               type="text" 
               placeholder="Cari nama toko, domain..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full h-10 pl-10 pr-4 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-500 focus:bg-white transition-colors"
+              className="w-full h-10 pl-10 pr-4 text-sm font-bold text-nb-black bg-white border-2 border-nb-black outline-none focus:bg-nb-yellow transition-colors"
             />
           </div>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Memuat data toko...</div>
+          <div className="flex justify-center py-16">
+            <div className="w-10 h-10 border-4 border-nb-black border-t-transparent rounded-full animate-spin" />
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
+              <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
-                  <th className="px-6 py-4">Toko</th>
-                  <th className="px-6 py-4">Domain</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Bergabung</th>
-                  <th className="px-6 py-4 text-right">Aksi</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black w-[40%]">Toko</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Domain</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Status</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Bergabung</th>
+                  <th className="px-5 py-4 text-center">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y-2 divide-gray-100">
                 {filteredStores.length > 0 ? (
                   filteredStores.map((store) => (
-                    <tr key={store.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <img src={store.logoUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'} alt={store.name} className="w-10 h-10 rounded-lg object-cover bg-gray-100 border border-gray-200" />
+                    <tr key={store.id} className="hover:bg-[#F7F5F0] transition-colors border-b-2 border-nb-black last:border-b-0">
+                      <td className="px-5 py-4 border-r-2 border-nb-black">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 border-2 border-nb-black bg-white overflow-hidden shrink-0">
+                            <img src={store.logoUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'} alt={store.name} className="w-full h-full object-cover" />
+                          </div>
                           <div>
-                            <p className="font-bold text-gray-800">{store.name}</p>
-                            <p className="text-gray-500 text-xs line-clamp-1">{store.description || 'Tidak ada deskripsi'}</p>
+                            <p className="font-extrabold text-nb-black">{store.name}</p>
+                            <p className="text-xs font-bold text-gray-500 line-clamp-1 mt-0.5">{store.description || 'Tidak ada deskripsi'}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-blue-600">
+                      <td className="px-5 py-4 font-bold text-nb-blue border-r-2 border-nb-black">
                         <Link to={`/store/${store.domain}`} className="hover:underline flex items-center gap-1">
                           {store.domain}
                         </Link>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                          store.status === 'ACTIVE' ? 'bg-green-50 text-green-600 border border-green-200' :
-                          store.status === 'SUSPENDED' ? 'bg-red-50 text-red-600 border border-red-200' :
-                          'bg-gray-100 text-gray-600 border border-gray-200'
+                      <td className="px-5 py-4 border-r-2 border-nb-black">
+                        <span className={`px-2 py-0.5 text-xs font-black uppercase tracking-wide border-2 inline-block ${
+                          store.status === 'ACTIVE' ? 'bg-green-50 text-nb-green border-nb-green' :
+                          store.status === 'SUSPENDED' ? 'bg-red-50 text-nb-red border-nb-red' :
+                          'bg-gray-100 text-nb-black border-nb-black'
                         }`}>
                           {store.status === 'ACTIVE' ? 'Aktif' : store.status === 'SUSPENDED' ? 'Ditangguhkan' : 'Tutup'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-gray-500">
+                      <td className="px-5 py-4 font-bold text-gray-600 border-r-2 border-nb-black">
                         {new Date(store.createdAt).toLocaleDateString('id-ID', {
                           month: 'short', year: 'numeric'
                         })}
                       </td>
-                      <td className="px-6 py-4 text-right flex items-center justify-end gap-2">
-                        <Link to={`/store/${store.domain}`} className="inline-flex items-center justify-center p-2 text-gray-400 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">
-                          <ExternalLink size={18} />
-                        </Link>
-                        <button 
-                          onClick={async () => {
-                            try {
-                              const newStatus = store.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
-                              await api.put(`/admin/stores/${store.id}/status`, { status: newStatus });
-                              setStores(stores.map(s => s.id === store.id ? { ...s, status: newStatus } : s));
-                            } catch (e) {
-                              console.error(e);
-                            }
-                          }}
-                          className={`text-xs px-3 py-1.5 rounded font-bold transition-colors ${
-                            store.status === 'ACTIVE' 
-                              ? 'text-red-600 bg-red-50 hover:bg-red-100' 
-                              : 'text-green-600 bg-green-50 hover:bg-green-100'
-                          }`}
-                        >
-                          {store.status === 'ACTIVE' ? 'Suspend' : 'Aktifkan'}
-                        </button>
+                      <td className="px-5 py-4 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <Link to={`/store/${store.domain}`} className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors" title="Lihat Toko">
+                            <ExternalLink size={16} strokeWidth={2.5} />
+                          </Link>
+                          <button 
+                            onClick={async () => {
+                              try {
+                                const newStatus = store.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
+                                await api.put(`/admin/stores/${store.id}/status`, { status: newStatus });
+                                setStores(stores.map(s => s.id === store.id ? { ...s, status: newStatus } : s));
+                              } catch (e) {
+                                console.error(e);
+                              }
+                            }}
+                            className={`text-xs px-3 h-8 flex items-center font-black uppercase tracking-wide border-2 transition-colors ${
+                              store.status === 'ACTIVE' 
+                                ? 'text-nb-red bg-white border-nb-black hover:bg-nb-red hover:text-white' 
+                                : 'text-nb-green bg-white border-nb-black hover:bg-nb-green hover:text-white'
+                            }`}
+                          >
+                            {store.status === 'ACTIVE' ? 'Suspend' : 'Aktifkan'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={5} className="px-6 py-12 text-center text-sm font-bold text-gray-500">
                       Tidak ada toko ditemukan
                     </td>
                   </tr>
