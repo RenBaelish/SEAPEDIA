@@ -4,12 +4,8 @@ import { ArrowLeft, Upload, X } from "lucide-react";
 import { z } from "zod";
 import { api } from "../../../../lib/api";
 import { useAlert } from "../../../../contexts/AlertContext";
-import { Card } from "../../../../components/ui/Card";
-import { Input, Textarea } from "../../../../components/ui/Input";
-import { Button } from "../../../../components/ui/Button";
 
-// ─── Zod schema (mirrors backend) ────────────────────────────────────────────
-
+// ─── Zod schema (mirrors backend) ──
 const productSchema = z.object({
   name: z.string().min(3, "Min. 3 karakter").max(200),
   description: z.string().min(10, "Min. 10 karakter"),
@@ -27,8 +23,7 @@ type FieldErrors = Partial<Record<keyof ProductForm, string>>;
 
 interface Category { id: string; name: string; slug: string; }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
+// ─── Component ──
 export default function SellerProductFormPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
@@ -149,62 +144,68 @@ export default function SellerProductFormPage() {
       <div className="flex items-center gap-3">
         <Link
           to="/seller/products"
-          className="p-2 rounded-md text-tertiary hover:text-secondary hover:bg-muted transition-colors"
+          className="w-10 h-10 border-2 border-nb-black bg-white hover:bg-nb-yellow flex items-center justify-center transition-colors text-nb-black shadow-[2px_2px_0px_#0A0A0A]"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={18} strokeWidth={3} />
         </Link>
-        <h1 className="text-2xl font-bold text-secondary">
+        <h1 className="text-2xl font-extrabold text-nb-black">
           {isEdit ? "Edit Produk" : "Tambah Produk"}
         </h1>
       </div>
 
       {apiError && (
-        <div className="p-3 bg-red-50 text-error text-xs font-semibold rounded-md">{apiError}</div>
+        <div className="p-3 bg-red-50 text-nb-red text-sm font-bold border-2 border-nb-red">{apiError}</div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
-        <Card>
-          <h3 className="text-sm font-bold text-secondary mb-4">Informasi Produk</h3>
-          <div className="space-y-4">
-            <Input
-              label="Nama Produk *"
-              placeholder="cth: MacBook Pro M3 Max 14-inch"
-              value={form.name}
-              onChange={(e) => setField("name", (e.target as any).value)}
-              error={errors.name}
-            />
-            <Textarea
-              label="Deskripsi *"
-              placeholder="Jelaskan produk Anda secara detail..."
-              value={form.description}
-              onChange={(e) => setField("description", (e.target as any).value)}
-              error={errors.description}
-              className="min-h-[120px]"
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-secondary">Kategori *</label>
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
+          <h3 className="text-base font-extrabold text-nb-black mb-5 border-b-2 border-gray-100 pb-2">Informasi Produk</h3>
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Nama Produk *</label>
+              <input
+                type="text"
+                placeholder="cth: MacBook Pro M3 Max 14-inch"
+                value={form.name}
+                onChange={(e) => setField("name", (e.target as any).value)}
+                className={`nb-input w-full ${errors.name ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.name && <p className="text-nb-red font-bold text-xs mt-1">{errors.name}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Deskripsi *</label>
+              <textarea
+                placeholder="Jelaskan produk Anda secara detail..."
+                value={form.description}
+                onChange={(e) => setField("description", (e.target as any).value)}
+                className={`nb-input w-full min-h-[120px] py-3 ${errors.description ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.description && <p className="text-nb-red font-bold text-xs mt-1">{errors.description}</p>}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-extrabold text-nb-black uppercase tracking-wide">Kategori *</label>
                 <select
                   value={form.categoryId}
                   onChange={(e) => setField("categoryId", (e.target as any).value)}
-                  className={`w-full bg-surface text-on-surface text-xs border rounded-md outline-none h-10 px-3 transition-colors ${
-                    errors.categoryId ? "border-error" : "border-border focus:border-primary"
-                  }`}
+                  className={`nb-input h-11 w-full ${errors.categoryId ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
                 >
                   <option value="">-- Pilih Kategori --</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
-                {errors.categoryId && <p className="text-xs text-error">{errors.categoryId}</p>}
+                {errors.categoryId && <p className="text-nb-red font-bold text-xs mt-1">{errors.categoryId}</p>}
               </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-secondary">Status</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-extrabold text-nb-black uppercase tracking-wide">Status</label>
                 <select
                   value={form.status}
                   onChange={(e) => setField("status", (e.target as any).value as any)}
-                  className="w-full bg-surface text-on-surface text-xs border border-border rounded-md outline-none h-10 px-3 focus:border-primary transition-colors"
+                  className="nb-input h-11 w-full"
                 >
                   <option value="DRAFT">Draft (tidak tampil)</option>
                   <option value="ACTIVE">Aktif (tampil publik)</option>
@@ -213,66 +214,81 @@ export default function SellerProductFormPage() {
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Pricing & Stock */}
-        <Card>
-          <h3 className="text-sm font-bold text-secondary mb-4">Harga & Stok</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Harga (IDR) *"
-              type="number"
-              placeholder="0"
-              value={form.price || ""}
-              onChange={(e) => setField("price", Number((e.target as any).value))}
-              error={errors.price}
-            />
-            <Input
-              label="Harga Coret (IDR)"
-              type="number"
-              placeholder="Opsional"
-              value={form.comparePrice || ""}
-              onChange={(e) => setField("comparePrice", (e.target as any).value ? Number((e.target as any).value) : "")}
-              error={errors.comparePrice}
-            />
-            <Input
-              label="Stok *"
-              type="number"
-              placeholder="0"
-              value={form.stock || ""}
-              onChange={(e) => setField("stock", Number((e.target as any).value))}
-              error={errors.stock}
-            />
-            <Input
-              label="Berat (gram) *"
-              type="number"
-              placeholder="500"
-              value={form.weight || ""}
-              onChange={(e) => setField("weight", Number((e.target as any).value))}
-              error={errors.weight}
-            />
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
+          <h3 className="text-base font-extrabold text-nb-black mb-5 border-b-2 border-gray-100 pb-2">Harga & Stok</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Harga (IDR) *</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={form.price || ""}
+                onChange={(e) => setField("price", Number((e.target as any).value))}
+                className={`nb-input w-full ${errors.price ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.price && <p className="text-nb-red font-bold text-xs mt-1">{errors.price}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Harga Coret (IDR)</label>
+              <input
+                type="number"
+                placeholder="Opsional"
+                value={form.comparePrice || ""}
+                onChange={(e) => setField("comparePrice", (e.target as any).value ? Number((e.target as any).value) : "")}
+                className={`nb-input w-full ${errors.comparePrice ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.comparePrice && <p className="text-nb-red font-bold text-xs mt-1">{errors.comparePrice}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Stok *</label>
+              <input
+                type="number"
+                placeholder="0"
+                value={form.stock || ""}
+                onChange={(e) => setField("stock", Number((e.target as any).value))}
+                className={`nb-input w-full ${errors.stock ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.stock && <p className="text-nb-red font-bold text-xs mt-1">{errors.stock}</p>}
+            </div>
+
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Berat (gram) *</label>
+              <input
+                type="number"
+                placeholder="500"
+                value={form.weight || ""}
+                onChange={(e) => setField("weight", Number((e.target as any).value))}
+                className={`nb-input w-full ${errors.weight ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`}
+              />
+              {errors.weight && <p className="text-nb-red font-bold text-xs mt-1">{errors.weight}</p>}
+            </div>
           </div>
-        </Card>
+        </div>
 
         {/* Images */}
-        <Card>
-          <h3 className="text-sm font-bold text-secondary mb-2">Gambar Produk</h3>
-          <p className="text-xs text-tertiary mb-4">
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
+          <h3 className="text-base font-extrabold text-nb-black mb-2 border-b-2 border-gray-100 pb-2">Gambar Produk</h3>
+          <p className="text-xs font-semibold text-gray-500 mb-5">
             Tambahkan URL gambar (maks. 8). Pastikan URL dapat diakses publik.
           </p>
 
           {/* Existing images */}
           {(form.images ?? []).length > 0 && (
-            <div className="grid grid-cols-4 gap-2 mb-4">
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-5">
               {(form.images ?? []).map((url, i) => (
-                <div key={i} className="relative aspect-square rounded-md overflow-hidden border border-muted group">
+                <div key={i} className="relative aspect-square border-2 border-nb-black overflow-hidden group bg-gray-100">
                   <img src={url} alt={`Image ${i + 1}`} className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
-                    className="absolute top-1 right-1 p-1 bg-white/80 rounded-full text-error opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 p-1 bg-white border-2 border-nb-black text-nb-red opacity-0 group-hover:opacity-100 transition-opacity hover:bg-nb-yellow"
                   >
-                    <X size={12} />
+                    <X size={14} strokeWidth={3} />
                   </button>
                 </div>
               ))}
@@ -281,33 +297,33 @@ export default function SellerProductFormPage() {
 
           {/* Add new image URL */}
           {(form.images ?? []).length < 8 && (
-            <div className="flex gap-2">
-              <Input
+            <div className="flex gap-3">
+              <input
+                type="text"
                 placeholder="https://example.com/image.jpg"
                 value={newImageUrl}
                 onChange={(e) => setNewImageUrl((e.target as any).value)}
-                className="flex-1"
+                className="nb-input w-full h-11"
               />
-              <Button
+              <button
                 type="button"
-                variant="secondary"
                 onClick={addImage}
-                leftIcon={<Upload size={14} />}
+                className="btn-secondary px-5 h-11 flex items-center gap-2 shrink-0"
               >
-                Tambah
-              </Button>
+                <Upload size={16} strokeWidth={2.5} /> Tambah
+              </button>
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Submit */}
-        <div className="flex gap-3">
-          <Link to="/seller/products" className="btn-secondary h-10 px-4 inline-flex items-center rounded-md text-xs font-bold">
+        <div className="flex gap-4">
+          <Link to="/seller/products" className="btn-secondary px-6 py-3">
             Batal
           </Link>
-          <Button type="submit" loading={loading}>
-            {isEdit ? "Simpan Perubahan" : "Buat Produk"}
-          </Button>
+          <button type="submit" disabled={loading} className="btn-primary flex-1 py-3 disabled:opacity-50">
+            {loading ? "Menyimpan..." : (isEdit ? "Simpan Perubahan" : "Buat Produk")}
+          </button>
         </div>
       </form>
     </div>
