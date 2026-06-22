@@ -10,29 +10,6 @@ import {
   Mail, Lock, ShieldCheck, Wallet, AlertCircle, X
 } from "lucide-react";
 
-const SIDEBAR_MENU = [
-  {
-    group: "Kotak Masuk",
-    items: [
-      { id: "notif", label: "Notifikasi", icon: "" },
-    ],
-  },
-  {
-    group: "Pembelian",
-    items: [
-      { id: "orders", label: "Pesanan Saya", icon: "", href: "/orders" },
-      { id: "wallet", label: "Dompet SEAPAY", icon: "", href: "/wallet" },
-    ],
-  },
-  {
-    group: "Profil Saya",
-    items: [
-      { id: "wishlist", label: "Wishlist", icon: "️" },
-      { id: "settings", label: "Pengaturan", icon: "️" },
-    ],
-  },
-];
-
 const TABS = [
   { id: "profile", label: "Biodata Diri" },
   { id: "address", label: "Daftar Alamat" },
@@ -135,7 +112,7 @@ export default function AccountPage() {
   const field = (name: keyof typeof formData) => ({
     value: formData[name] as string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, [name]: (e.target as any).value }),
-    className: `w-full h-10 px-3 rounded-lg border text-sm outline-none transition-colors ${fieldErrors[name] ? "border-red-400 focus:border-red-500 bg-red-50" : "border-gray-200 focus:border-green-500 bg-white"}`,
+    className: `nb-input ${fieldErrors[name] ? "border-nb-red focus:border-nb-red bg-red-50" : ""}`,
   });
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -144,7 +121,7 @@ export default function AccountPage() {
     setFormError("");
     try {
       const payload: any = { ...profileForm };
-      if (!payload.password) delete payload.password; // only send if changing
+      if (!payload.password) delete payload.password;
 
       const res = await api.put("/auth/profile", payload);
       const updatedUser = { 
@@ -171,317 +148,325 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="flex-1 w-full bg-white rounded-xl shadow-sm border border-gray-100 p-6 min-h-[600px]">
-      <h1 className="text-xl font-bold text-gray-800 mb-6">Pengaturan Akun</h1>
-            <div className="mb-6">
-              <div className="flex overflow-x-auto hide-scrollbar border-b border-gray-200">
-                {TABS.map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`px-5 py-4 text-sm font-semibold whitespace-nowrap transition-colors relative ${activeTab === tab.id ? "text-green-600" : "text-gray-500 hover:text-green-600"}`}
-                  >
-                    {tab.label}
-                    {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-green-500 rounded-t" />}
-                  </button>
-                ))}
+    <div className="flex-1 w-full bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6 min-h-[600px]">
+      <h1 className="text-xl font-extrabold text-nb-black mb-6 nb-section-title">Pengaturan Akun</h1>
+      <div className="mb-6">
+        <div className="flex overflow-x-auto hide-scrollbar border-b-4 border-nb-black">
+          {TABS.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-5 py-4 text-sm font-extrabold whitespace-nowrap transition-colors relative ${activeTab === tab.id ? "text-nb-black bg-[#EBF5FF]" : "text-gray-500 hover:text-nb-black"}`}
+            >
+              {tab.label}
+              {activeTab === tab.id && <div className="absolute bottom-0 left-0 w-full h-1.5 bg-nb-blue" />}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Tab: Biodata Diri ── */}
+      {activeTab === "profile" && (
+        <div className="p-2">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-base font-extrabold text-nb-black">Biodata Diri</h2>
+            <button onClick={() => setShowProfileModal(true)} className="btn-secondary h-9 px-4 text-xs font-bold">
+              Edit Profil
+            </button>
+          </div>
+          
+          <div className="flex flex-col md:flex-row gap-10">
+            <div className="flex flex-col items-center gap-4 shrink-0 md:w-1/3">
+              <div className="w-28 h-28 border-4 border-nb-black overflow-hidden bg-nb-yellow flex items-center justify-center text-nb-black font-black text-5xl shadow-[4px_4px_0px_#0A0A0A]">
+                {user?.profilePictureUrl && user.profilePictureUrl !== "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg" ? (
+                  <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  user?.fullName?.charAt(0)?.toUpperCase() ?? "?"
+                )}
               </div>
+              <p className="text-xs font-bold text-gray-600 text-center leading-relaxed px-4">
+                Foto profil Anda membantu pengguna lain mengenali Anda. Klik <b className="text-nb-black">Edit Profil</b> untuk mengubah foto.
+              </p>
             </div>
 
-            {/* ── Tab: Biodata Diri ── */}
-            {activeTab === "profile" && (
-              <div className="p-2">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-base font-bold text-gray-800">Biodata Diri</h2>
-                  <button onClick={() => setShowProfileModal(true)} className="px-4 h-9 rounded-lg bg-green-50 text-green-600 font-semibold text-sm hover:bg-green-100 transition-colors">
-                    Edit Profil
-                  </button>
-                </div>
-                
-                <div className="flex flex-col md:flex-row gap-10">
-                  <div className="flex flex-col items-center gap-4 shrink-0 md:w-1/3">
-                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white font-bold text-4xl shadow">
-                      {user?.profilePictureUrl && user.profilePictureUrl !== "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg" ? (
-                        <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        user?.fullName?.charAt(0)?.toUpperCase() ?? "?"
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 text-center leading-relaxed px-4">
-                      Foto profil Anda membantu pengguna lain mengenali Anda. Klik <b>Edit Profil</b> untuk mengubah foto.
-                    </p>
+            {/* Form area */}
+            <div className="flex-1 space-y-6">
+              <div>
+                <h3 className="text-sm font-extrabold text-nb-black mb-1">Ubah Biodata Diri</h3>
+                <div className="space-y-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b-2 border-gray-100 gap-2 sm:gap-4">
+                    <span className="text-sm font-bold text-gray-500 w-32 shrink-0">Nama</span>
+                    <span className="text-sm text-nb-black font-extrabold flex-1">{user?.fullName}</span>
                   </div>
-
-                  {/* Form area */}
-                  <div className="flex-1 space-y-6">
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-700 mb-3">Ubah Biodata Diri</h3>
-                      <div className="space-y-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
-                          <span className="text-sm text-gray-500 w-32 shrink-0">Nama</span>
-                          <span className="text-sm text-gray-800 font-medium flex-1">{user?.fullName}</span>
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
-                          <span className="text-sm text-gray-500 w-32 shrink-0">Tanggal Lahir</span>
-                          {user?.birthDate ? (
-                            <span className="text-sm text-gray-800 font-medium flex-1">{user.birthDate}</span>
-                          ) : (
-                            <span className="text-sm text-gray-400 font-medium flex-1 italic">Belum diatur</span>
-                          )}
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
-                          <span className="text-sm text-gray-500 w-32 shrink-0">Jenis Kelamin</span>
-                          {user?.gender ? (
-                            <span className="text-sm text-gray-800 font-medium flex-1">{user.gender}</span>
-                          ) : (
-                            <span className="text-sm text-gray-400 font-medium flex-1 italic">Belum diatur</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-sm font-bold text-gray-800 mb-1">Kontak</h3>
-                      <div className="space-y-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
-                          <div className="flex items-center gap-2 w-32 shrink-0">
-                            <Mail size={14} className="text-gray-500" />
-                            <span className="text-sm text-gray-500">Email</span>
-                          </div>
-                          <span className="text-sm text-gray-800 font-medium flex-1 truncate">{user?.email}</span>
-                          <span className="flex items-center gap-1 text-xs bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-full font-semibold">
-                            <CheckCircle size={10} /> Terverifikasi
-                          </span>
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b border-gray-100 gap-2 sm:gap-4">
-                          <div className="flex items-center gap-2 w-32 shrink-0">
-                            <Phone size={14} className="text-gray-500" />
-                            <span className="text-sm text-gray-500">Nomor HP</span>
-                          </div>
-                          {user?.phoneNumber ? (
-                            <span className="text-sm text-gray-800 font-medium flex-1">{user.phoneNumber}</span>
-                          ) : (
-                            <span className="text-sm text-gray-400 font-medium flex-1 italic">Belum diatur</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b-2 border-gray-100 gap-2 sm:gap-4">
+                    <span className="text-sm font-bold text-gray-500 w-32 shrink-0">Tanggal Lahir</span>
+                    {user?.birthDate ? (
+                      <span className="text-sm text-nb-black font-extrabold flex-1">{user.birthDate}</span>
+                    ) : (
+                      <span className="text-sm text-gray-400 font-bold flex-1 italic">Belum diatur</span>
+                    )}
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b-2 border-gray-100 gap-2 sm:gap-4">
+                    <span className="text-sm font-bold text-gray-500 w-32 shrink-0">Jenis Kelamin</span>
+                    {user?.gender ? (
+                      <span className="text-sm text-nb-black font-extrabold flex-1">{user.gender}</span>
+                    ) : (
+                      <span className="text-sm text-gray-400 font-bold flex-1 italic">Belum diatur</span>
+                    )}
                   </div>
                 </div>
               </div>
-            )}
 
-            {/* ── Tab: Daftar Alamat ── */}
-            {activeTab === "address" && (
-              <div className="p-2">
-                <div className="p-5 border-b border-gray-100 flex items-center gap-3">
-                  <div className="relative flex-1 max-w-sm">
-                    <MapPin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
-                    <input
-                      type="text"
-                      placeholder="Tulis Nama Alamat / Kota / Kecamatan tujuan pengiriman"
-                      className="w-full h-9 pl-9 pr-3 border border-gray-200 rounded-lg text-xs outline-none focus:border-green-500 bg-gray-50"
-                    />
+              <div>
+                <h3 className="text-sm font-extrabold text-nb-black mb-1">Kontak</h3>
+                <div className="space-y-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b-2 border-gray-100 gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2 w-32 shrink-0">
+                      <Mail size={16} className="text-nb-black" strokeWidth={2.5} />
+                      <span className="text-sm font-bold text-gray-500">Email</span>
+                    </div>
+                    <span className="text-sm text-nb-black font-extrabold flex-1 truncate">{user?.email}</span>
+                    <span className="flex items-center gap-1 text-xs border-2 border-nb-green bg-green-50 text-nb-green px-2 py-0.5 font-bold">
+                      <CheckCircle size={12} strokeWidth={3} /> Terverifikasi
+                    </span>
                   </div>
-                  <button
-                    onClick={() => { setShowAddForm(true); setFormError(""); setFieldErrors({}); }}
-                    className="flex items-center gap-2 px-4 h-9 rounded-lg bg-green-500 hover:bg-green-600 text-white text-sm font-bold transition-colors shrink-0"
-                  >
-                    <Plus size={16} /> Tambah Alamat Baru
+                  <div className="flex flex-col sm:flex-row sm:items-center py-4 border-b-2 border-gray-100 gap-2 sm:gap-4">
+                    <div className="flex items-center gap-2 w-32 shrink-0">
+                      <Phone size={16} className="text-nb-black" strokeWidth={2.5} />
+                      <span className="text-sm font-bold text-gray-500">Nomor HP</span>
+                    </div>
+                    {user?.phoneNumber ? (
+                      <span className="text-sm text-nb-black font-extrabold flex-1">{user.phoneNumber}</span>
+                    ) : (
+                      <span className="text-sm text-gray-400 font-bold flex-1 italic">Belum diatur</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Tab: Daftar Alamat ── */}
+      {activeTab === "address" && (
+        <div className="p-2">
+          <div className="pb-5 mb-5 border-b-2 border-gray-100 flex items-center gap-3">
+            <div className="relative flex-1 max-w-sm">
+              <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
+              <input
+                type="text"
+                placeholder="Cari alamat..."
+                className="nb-input pl-10 h-11 text-sm font-semibold"
+              />
+            </div>
+            <button
+              onClick={() => { setShowAddForm(true); setFormError(""); setFieldErrors({}); }}
+              className="btn-primary h-11 px-5 flex items-center gap-2"
+            >
+              <Plus size={18} strokeWidth={3} /> Tambah Alamat
+            </button>
+          </div>
+
+          {/* Add form modal */}
+          {showAddForm && (
+            <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+              <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[520px]">
+                <div className="flex items-center justify-between px-6 py-4 border-b-4 border-nb-black">
+                  <h3 className="text-base font-extrabold text-nb-black">Tambah Alamat Baru</h3>
+                  <button onClick={() => setShowAddForm(false)} className="w-8 h-8 flex items-center justify-center text-nb-black hover:bg-nb-yellow border-2 border-transparent hover:border-nb-black transition-colors">
+                    <X size={20} strokeWidth={3} />
                   </button>
                 </div>
-
-                {/* Add form modal */}
-                {showAddForm && (
-                  <div className="fixed inset-0 bg-black/40 z-[200] flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-[520px] shadow-2xl">
-                      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                        <h3 className="text-base font-bold text-gray-800">Tambah Alamat Baru</h3>
-                        <button onClick={() => setShowAddForm(false)} className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400">
-                          <X size={18} />
-                        </button>
-                      </div>
-                      <form onSubmit={handleAddAddress} className="p-6 space-y-4">
-                        {formError && (
-                          <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-600">
-                            <AlertCircle size={14} className="mt-0.5 shrink-0" />
-                            {formError}
-                          </div>
-                        )}
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Label Alamat</label>
-                            <input {...field("label")} placeholder="Contoh: Rumah" required />
-                            {fieldErrors.label && <p className="text-red-500 text-xs mt-1">{fieldErrors.label[0]}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Nama Penerima</label>
-                            <input {...field("recipientName")} placeholder="Nama lengkap penerima" required />
-                            {fieldErrors.recipientName && <p className="text-red-500 text-xs mt-1">{fieldErrors.recipientName[0]}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">No HP</label>
-                            <input {...field("phone")} placeholder="08xxxxxxxxxx (min. 8 digit)" required />
-                            {fieldErrors.phone && <p className="text-red-500 text-xs mt-1">{fieldErrors.phone[0]}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Kode Pos</label>
-                            <input {...field("postalCode")} placeholder="Contoh: 10220" required />
-                            {fieldErrors.postalCode && <p className="text-red-500 text-xs mt-1">{fieldErrors.postalCode[0]}</p>}
-                          </div>
-                          <div className="col-span-2">
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Jalan / Gedung / No. Rumah</label>
-                            <input {...field("street")} placeholder="Contoh: Jl. Sudirman No. 1, RT 01/RW 02" required />
-                            {fieldErrors.street && <p className="text-red-500 text-xs mt-1">{fieldErrors.street[0]}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Kota / Kabupaten</label>
-                            <input {...field("city")} placeholder="Contoh: Jakarta Pusat" required />
-                            {fieldErrors.city && <p className="text-red-500 text-xs mt-1">{fieldErrors.city[0]}</p>}
-                          </div>
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1">Provinsi</label>
-                            <input {...field("province")} placeholder="Contoh: DKI Jakarta" required />
-                            {fieldErrors.province && <p className="text-red-500 text-xs mt-1">{fieldErrors.province[0]}</p>}
-                          </div>
-                        </div>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={formData.isDefault}
-                            onChange={(e) => setFormData({ ...formData, isDefault: (e.target as any).checked })}
-                            className="w-4 h-4 rounded text-green-500 focus:ring-green-500"
-                          />
-                          <span className="text-sm text-gray-700">Jadikan sebagai alamat utama</span>
-                        </label>
-                        <div className="flex gap-3 justify-end pt-2">
-                          <button
-                            type="button"
-                            onClick={() => setShowAddForm(false)}
-                            className="px-5 h-10 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
-                          >
-                            Batal
-                          </button>
-                          <button
-                            type="submit"
-                            disabled={savingAddress}
-                            className="px-6 h-10 rounded-xl bg-green-500 hover:bg-green-600 text-white text-sm font-bold transition-colors disabled:opacity-60"
-                          >
-                            {savingAddress ? "Menyimpan..." : "Simpan Alamat"}
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                )}
-
-                <div className="p-5">
-                  {loadingAddresses ? (
-                    <div className="space-y-3">
-                      {[1, 2].map(i => <div key={i} className="h-24 bg-gray-100 rounded-xl " />)}
-                    </div>
-                  ) : addresses.length === 0 ? (
-                    <div className="py-16 text-center">
-                      <div className="text-5xl mb-3"></div>
-                      <p className="text-sm font-semibold text-gray-700 mb-1">Belum ada alamat</p>
-                      <p className="text-xs text-gray-400 mb-5">Tambahkan alamat pengirimanmu sekarang</p>
-                      <button
-                        onClick={() => setShowAddForm(true)}
-                        className="inline-flex items-center gap-2 px-5 h-10 rounded-xl border-2 border-green-500 text-green-600 font-bold text-sm hover:bg-green-50 transition-colors"
-                      >
-                        <Plus size={16} /> Tambah Alamat
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {addresses.map(addr => (
-                        <div
-                          key={addr.id}
-                          className={`relative rounded-xl border-2 p-4 transition-colors ${addr.isDefault ? "border-green-500 bg-green-50/30" : "border-gray-100 hover:border-gray-200"}`}
-                        >
-                          {addr.isDefault && (
-                            <div className="absolute top-4 right-4">
-                              <CheckCircle size={20} className="text-green-500" />
-                            </div>
-                          )}
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-bold bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full">{addr.label}</span>
-                            {addr.isDefault && (
-                              <span className="text-xs font-bold bg-green-100 text-green-700 px-2.5 py-1 rounded-full">Utama</span>
-                            )}
-                          </div>
-                          <p className="text-sm font-bold text-gray-800">{addr.recipientName}</p>
-                          <p className="text-sm text-gray-600">{addr.phone}</p>
-                          <p className="text-sm text-gray-500 mt-1">{addr.street}, {addr.city}, {addr.province} {addr.postalCode}</p>
-                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-100">
-                            <div className="flex items-center gap-1 text-green-500 text-xs font-semibold">
-                              <MapPin size={13} /> Sudah Pinpoint
-                            </div>
-                            <div className="flex items-center gap-3 ml-auto">
-                              {!addr.isDefault && (
-                                <button
-                                  onClick={() => handleSetDefault(addr.id)}
-                                  className="text-xs text-green-600 font-semibold hover:underline"
-                                >
-                                  Jadikan Utama
-                                </button>
-                              )}
-                              <button
-                                onClick={() => handleDeleteAddress(addr.id)}
-                                className="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1"
-                              >
-                                <Trash2 size={13} /> Hapus
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                <form onSubmit={handleAddAddress} className="p-6 space-y-4">
+                  {formError && (
+                    <div className="flex items-start gap-2 p-3 bg-red-50 border-2 border-nb-red font-bold text-xs text-nb-red">
+                      <AlertCircle size={16} className="mt-0.5 shrink-0" strokeWidth={2.5} />
+                      {formError}
                     </div>
                   )}
-                </div>
-              </div>
-            )}
-
-            {/* ── Tab: Keamanan ── */}
-            {activeTab === "security" && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
-                <h3 className="text-base font-bold text-gray-800">Keamanan Akun</h3>
-                {[
-                  { icon: Lock, label: "Buat Kata Sandi", desc: "Lindungi akun dengan kata sandi yang kuat", action: "Ubah" },
-                  { icon: ShieldCheck, label: "PIN SEAPEDIA", desc: "Gunakan PIN untuk transaksi yang lebih aman", action: "Aktifkan" },
-                  { icon: CheckCircle, label: "Verifikasi Instan", desc: "Aktifkan verifikasi dua langkah", action: "Aktifkan" },
-                ].map((item, i) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:border-green-200 hover:bg-green-50/30 transition-colors cursor-pointer">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                        <Icon size={20} className="text-gray-500" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-gray-800">{item.label}</p>
-                        <p className="text-xs text-gray-400">{item.desc}</p>
-                      </div>
-                      <ChevronRight size={18} className="text-gray-300" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Label Alamat</label>
+                      <input {...field("label")} placeholder="Contoh: Rumah" required />
+                      {fieldErrors.label && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.label[0]}</p>}
                     </div>
-                  );
-                })}
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Nama Penerima</label>
+                      <input {...field("recipientName")} placeholder="Nama lengkap penerima" required />
+                      {fieldErrors.recipientName && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.recipientName[0]}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">No HP</label>
+                      <input {...field("phone")} placeholder="08xxxxxxxxxx" required />
+                      {fieldErrors.phone && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.phone[0]}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Kode Pos</label>
+                      <input {...field("postalCode")} placeholder="Contoh: 10220" required />
+                      {fieldErrors.postalCode && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.postalCode[0]}</p>}
+                    </div>
+                    <div className="col-span-2">
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Jalan / Gedung / No. Rumah</label>
+                      <input {...field("street")} placeholder="Contoh: Jl. Sudirman No. 1, RT 01/RW 02" required />
+                      {fieldErrors.street && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.street[0]}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Kota / Kabupaten</label>
+                      <input {...field("city")} placeholder="Contoh: Jakarta Pusat" required />
+                      {fieldErrors.city && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.city[0]}</p>}
+                    </div>
+                    <div>
+                      <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1">Provinsi</label>
+                      <input {...field("province")} placeholder="Contoh: DKI Jakarta" required />
+                      {fieldErrors.province && <p className="text-nb-red font-bold text-xs mt-1">{fieldErrors.province[0]}</p>}
+                    </div>
+                  </div>
+                  <label className="flex items-center gap-2 cursor-pointer mt-2 bg-gray-50 p-3 border-2 border-gray-200 hover:border-nb-black transition-colors">
+                    <input
+                      type="checkbox"
+                      checked={formData.isDefault}
+                      onChange={(e) => setFormData({ ...formData, isDefault: (e.target as any).checked })}
+                      className="w-5 h-5 accent-nb-black"
+                    />
+                    <span className="text-sm font-extrabold text-nb-black">Jadikan sebagai alamat utama</span>
+                  </label>
+                  <div className="flex gap-3 justify-end pt-4 border-t-2 border-gray-100">
+                    <button
+                      type="button"
+                      onClick={() => setShowAddForm(false)}
+                      className="btn-secondary px-6"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={savingAddress}
+                      className="btn-primary px-6 disabled:opacity-50"
+                    >
+                      {savingAddress ? "Menyimpan..." : "Simpan Alamat"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <div>
+            {loadingAddresses ? (
+              <div className="space-y-4">
+                {[1, 2].map(i => <div key={i} className="h-32 skeleton border-3 border-nb-black" style={{ borderWidth: '3px' }} />)}
+              </div>
+            ) : addresses.length === 0 ? (
+              <div className="py-16 border-4 border-nb-black bg-[#F7F5F0] text-center shadow-[4px_4px_0px_#0A0A0A]">
+                <div className="inline-flex w-16 h-16 border-3 border-nb-black bg-white mb-3 rotate-3 flex-items-center justify-center" style={{ borderWidth: '3px' }}>
+                  <MapPin size={28} className="text-nb-black mt-3.5" strokeWidth={2.5} />
+                </div>
+                <p className="text-base font-extrabold text-nb-black mb-1">Belum ada alamat</p>
+                <p className="text-sm font-semibold text-gray-600 mb-5">Tambahkan alamat pengirimanmu sekarang</p>
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  <Plus size={16} strokeWidth={3} /> Tambah Alamat
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {addresses.map(addr => (
+                  <div
+                    key={addr.id}
+                    className={`relative border-3 p-5 transition-all ${addr.isDefault ? "border-nb-black bg-[#EBF5FF] shadow-[4px_4px_0px_#0A0A0A]" : "border-gray-200 hover:border-nb-black bg-white"}`}
+                    style={{ borderWidth: '3px' }}
+                  >
+                    {addr.isDefault && (
+                      <div className="absolute top-4 right-4">
+                        <CheckCircle size={24} className="text-nb-blue" strokeWidth={2.5} />
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs font-extrabold border-2 border-nb-black bg-white text-nb-black px-2 py-0.5">{addr.label}</span>
+                      {addr.isDefault && (
+                        <span className="text-xs font-extrabold border-2 border-nb-black bg-nb-blue text-white px-2 py-0.5">Utama</span>
+                      )}
+                    </div>
+                    <p className="text-base font-black text-nb-black mb-1">{addr.recipientName}</p>
+                    <p className="text-sm font-bold text-gray-700">{addr.phone}</p>
+                    <p className="text-sm font-medium text-gray-600 mt-1 mb-4">{addr.street}, {addr.city}, {addr.province} {addr.postalCode}</p>
+                    
+                    <div className="flex items-center gap-3 pt-4 border-t-2 border-gray-200">
+                      <div className="flex items-center gap-1.5 border-2 border-nb-green bg-green-50 text-nb-green px-2 py-1 text-xs font-extrabold">
+                        <MapPin size={14} strokeWidth={3} /> Sudah Pinpoint
+                      </div>
+                      <div className="flex items-center gap-3 ml-auto">
+                        {!addr.isDefault && (
+                          <button
+                            onClick={() => handleSetDefault(addr.id)}
+                            className="text-xs text-nb-blue font-extrabold border-b-2 border-transparent hover:border-nb-blue pb-0.5 transition-colors"
+                          >
+                            Jadikan Utama
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteAddress(addr.id)}
+                          className="text-xs text-nb-red font-extrabold border-2 border-nb-red bg-white hover:bg-nb-red hover:text-white px-3 py-1.5 transition-colors flex items-center gap-1.5"
+                        >
+                          <Trash2 size={14} strokeWidth={2.5} /> Hapus
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ── Tab: Keamanan ── */}
+      {activeTab === "security" && (
+        <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6 space-y-4" style={{ borderWidth: '3px' }}>
+          <h3 className="text-base font-extrabold text-nb-black mb-2">Keamanan Akun</h3>
+          {[
+            { icon: Lock, label: "Buat Kata Sandi", desc: "Lindungi akun dengan kata sandi yang kuat", action: "Ubah" },
+            { icon: ShieldCheck, label: "PIN SEAPEDIA", desc: "Gunakan PIN untuk transaksi yang lebih aman", action: "Aktifkan" },
+            { icon: CheckCircle, label: "Verifikasi Instan", desc: "Aktifkan verifikasi dua langkah", action: "Aktifkan" },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={i} className="flex items-center gap-4 p-4 border-3 border-nb-black bg-white hover:bg-[#EBF5FF] transition-colors shadow-[2px_2px_0px_#0A0A0A] cursor-pointer" style={{ borderWidth: '3px' }}>
+                <div className="w-12 h-12 bg-nb-yellow border-2 border-nb-black flex items-center justify-center flex-shrink-0">
+                  <Icon size={20} className="text-nb-black" strokeWidth={2.5} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-extrabold text-nb-black">{item.label}</p>
+                  <p className="text-xs font-bold text-gray-600 mt-0.5">{item.desc}</p>
+                </div>
+                <div className="border-2 border-nb-black bg-white px-3 py-1 text-xs font-bold text-nb-black hidden md:block">
+                  {item.action}
+                </div>
+                <ChevronRight size={18} className="text-nb-black md:hidden" strokeWidth={3} />
+              </div>
+            );
+          })}
+        </div>
+      )}
+
       {/* Profile Edit Modal */}
       {showProfileModal && (
-        <div className="fixed inset-0 bg-black/40 z-[200] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-[400px] shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h3 className="text-base font-bold text-gray-800">Edit Profil</h3>
-              <button onClick={() => setShowProfileModal(false)} className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400">
-                <X size={18} />
+        <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+          <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[440px]">
+            <div className="flex items-center justify-between px-6 py-4 border-b-4 border-nb-black">
+              <h3 className="text-base font-extrabold text-nb-black">Edit Profil</h3>
+              <button onClick={() => setShowProfileModal(false)} className="w-8 h-8 flex items-center justify-center text-nb-black hover:bg-nb-yellow border-2 border-transparent hover:border-nb-black transition-colors">
+                <X size={20} strokeWidth={3} />
               </button>
             </div>
             
             <form onSubmit={handleUpdateProfile} className="p-6 space-y-4">
               {formError && (
-                <div className="p-3 bg-red-50 text-red-600 rounded-xl text-sm flex items-start gap-2">
-                  <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                <div className="p-3 bg-red-50 border-2 border-nb-red font-bold text-xs text-nb-red flex items-start gap-2">
+                  <AlertCircle size={16} className="mt-0.5 shrink-0" strokeWidth={2.5} />
                   <span>{formError}</span>
                 </div>
               )}
@@ -515,11 +500,11 @@ export default function AccountPage() {
                   />
                 </div>
                 <div className="flex-1 flex flex-col gap-1.5">
-                  <label className="text-sm font-semibold text-gray-700">Jenis Kelamin</label>
+                  <label className="text-xs font-extrabold text-nb-black uppercase tracking-wide">Jenis Kelamin</label>
                   <select 
                     value={profileForm.gender} 
                     onChange={e => setProfileForm({...profileForm, gender: e.target.value})}
-                    className="w-full h-[40px] px-3 rounded-lg border border-gray-200 text-sm outline-none focus:border-green-500 bg-white"
+                    className="nb-input h-11"
                   >
                     <option value="">Pilih</option>
                     <option value="Laki-laki">Laki-laki</option>
@@ -537,23 +522,23 @@ export default function AccountPage() {
               <Input
                 label="Ubah Password (Opsional)"
                 type="password"
-                placeholder="Biarkan kosong jika tidak ingin mengubah"
+                placeholder="Kosongkan jika tidak ubah"
                 value={profileForm.password}
                 onChange={e => setProfileForm({...profileForm, password: e.target.value})}
               />
 
-              <div className="flex justify-end gap-2 pt-4">
+              <div className="flex justify-end gap-3 pt-5 border-t-2 border-gray-100">
                 <button
                   type="button"
                   onClick={() => setShowProfileModal(false)}
-                  className="px-4 h-9 rounded-lg font-semibold text-sm text-gray-600 hover:bg-gray-50"
+                  className="btn-secondary px-6"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={savingProfile}
-                  className="px-5 h-9 rounded-lg font-semibold text-sm text-white bg-green-500 hover:bg-green-600 disabled:opacity-50"
+                  className="btn-primary px-8 disabled:opacity-50"
                 >
                   {savingProfile ? "Menyimpan..." : "Simpan"}
                 </button>
