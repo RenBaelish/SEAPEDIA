@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
 import { stores, products, orders } from '../db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { eq, sql, or } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -171,15 +171,36 @@ storeRouter.get('/', async (c) => {
   return c.json({ data: allStores });
 });
 
-// Get Store by ID (Public)
-storeRouter.get('/:id', async (c) => {
+// Get Store by ID or Slug (Public)
+storeRouter.get('/:idOrSlug', async (c) => {
   const db = drizzle(c.env.DB);
-  const storeId = c.req.param('id');
-  const store = await db.select().from(stores).where(eq(stores.id, storeId)).get();
+  const idOrSlug = c.req.param('idOrSlug');
+  const store = await db.select().from(stores).where(or(eq(stores.id, idOrSlug), eq(stores.slug, idOrSlug))).get();
 
   if (!store) {
     return c.json({ message: 'Store not found' }, 404);
   }
 
   return c.json({ data: store });
+});
+
+// Get Store Products (Public)
+storeRouter.get('/:idOrSlug/products', async (c) => {
+  const db = drizzle(c.env.DB);
+  const idOrSlug = c.req.param('idOrSlug');
+  const store = await db.select().from(stores).where(or(eq(stores.id, idOrSlug), eq(stores.slug, idOrSlug))).get();
+
+  if (!store) {
+    return c.json({ message: 'Store not found' }, 404);
+  }
+
+  const storeProducts = await db.select().from(products).where(eq(products.storeId, store.id)).all();
+  
+  const mappedProducts = storeProducts.map(p => ({
+    ...p,
+    storeName: store.name,
+    images: typeof p.images === 'string' ? JSON.parse(p.images || '[]') : p.images
+  }));
+
+  return c.json({ data: mappedProducts });
 });
