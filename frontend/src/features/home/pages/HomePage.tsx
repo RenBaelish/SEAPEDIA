@@ -94,7 +94,7 @@ export default function HomePage() {
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-6"
           style={{ borderWidth: '3px' }}>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-base font-extrabold text-nb-black nb-section-title">Kategori Populer</h2>
+            <h2 className="text-2xl font-extrabold text-nb-black nb-section-title">Kategori Populer</h2>
             <Link
               to="/search"
               className="flex items-center gap-1 text-xs font-bold text-nb-black border-2 border-nb-black px-3 py-1.5 hover:bg-nb-yellow transition-colors"
@@ -132,7 +132,7 @@ export default function HomePage() {
           style={{ borderWidth: '3px' }}>
           <div className="flex items-center gap-3 mb-4">
             <img src="/icon/topup-icon.png" alt="topup" className="w-6 h-6 object-contain" />
-            <h2 className="text-base font-extrabold text-nb-yellow">Top Up & Tagihan</h2>
+            <h2 className="text-xl font-extrabold text-nb-yellow">Top Up & Tagihan</h2>
             <Link to="/search?q=tagihan" className="ml-auto text-xs font-bold text-gray-400 hover:text-nb-yellow transition-colors">
               Lihat Semua
             </Link>
@@ -164,7 +164,7 @@ export default function HomePage() {
             style={{ borderWidth: '3px' }}
           >
             <div className="flex-1">
-              <p className="font-extrabold text-white text-base tracking-wide">{b.label}</p>
+              <p className="font-extrabold text-white text-xl tracking-wide">{b.label}</p>
               <p className="text-xs text-white/80 font-medium mt-0.5">{b.sub}</p>
             </div>
             <ArrowRight size={20} className="text-white" strokeWidth={3} />
@@ -177,7 +177,7 @@ export default function HomePage() {
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-6"
           style={{ borderWidth: '3px' }}>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-base font-extrabold text-nb-black nb-section-title">Produk Untukmu</h2>
+            <h2 className="text-xl font-extrabold text-nb-black nb-section-title">Produk Untukmu</h2>
             <Link
               to="/search"
               className="flex items-center gap-1 text-xs font-bold text-nb-black border-2 border-nb-black px-3 py-1.5 hover:bg-nb-yellow transition-colors"
