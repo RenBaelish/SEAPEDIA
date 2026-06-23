@@ -147,10 +147,10 @@ export default function ProductDetailPage() {
 
         {/* ─── Main Product Panel ── */}
         <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] overflow-hidden">
-          <div className="grid md:grid-cols-[380px_1fr_300px] gap-0">
+          <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr_280px] xl:grid-cols-[380px_1fr_300px] gap-0">
 
             {/* 1. Image Gallery */}
-            <div className="p-5 border-r-3 border-nb-black" style={{ borderRightWidth: '3px' }}>
+            <div className="p-5 border-b-2 lg:border-b-0 lg:border-r-2 border-nb-black">
               {/* Main Image */}
               <div className="relative group aspect-square bg-gray-50 overflow-hidden mb-3 border-2 border-nb-black">
                 <img
@@ -212,8 +212,8 @@ export default function ProductDetailPage() {
             </div>
 
             {/* 2. Product Info */}
-            <div className="p-6 border-r-3 border-nb-black" style={{ borderRightWidth: '3px' }}>
-              <h1 className="text-lg font-extrabold text-nb-black leading-snug mb-3">
+            <div className="p-5 lg:p-6 border-b-2 lg:border-b-0 lg:border-r-2 border-nb-black overflow-hidden">
+              <h1 className="text-lg font-extrabold text-nb-black leading-snug mb-3 break-words">
                 {product.name}
               </h1>
 
@@ -316,9 +316,9 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Product details table */}
-              <div className="mt-5">
+              <div className="mt-5 overflow-hidden">
                 <h3 className="text-base font-bold text-gray-800 mb-3">Detail Produk</h3>
-                <div className="grid grid-cols-2 gap-y-2 text-sm">
+                <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-sm break-words">
                   {[
                     { label: "Kondisi", value: "Baru" },
                     { label: "Berat Satuan", value: `${product.weight}g` },
@@ -376,9 +376,9 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Subtotal */}
-                <div className="flex items-center justify-between bg-gray-50 rounded-xl p-3">
-                  <span className="text-xs text-gray-500">Subtotal</span>
-                  <span className="text-base font-semibold text-gray-900">{formatCurrency(product.price * qty)}</span>
+                <div className="flex items-center justify-between bg-white border-2 border-nb-black p-3 mb-4 shadow-[2px_2px_0px_#0A0A0A]">
+                  <span className="text-xs font-bold text-nb-black uppercase">Subtotal</span>
+                  <span className="text-base font-black text-nb-black truncate max-w-[140px] text-right">{formatCurrency(product.price * qty)}</span>
                 </div>
 
                 {/* CTA Buttons */}
@@ -404,8 +404,12 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Chat seller */}
-                <button className="w-full flex items-center justify-center gap-2 h-10 rounded-xl border-2 border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">
-                  <MessageCircle size={16} />
+                <button 
+                  onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur Chat Penjual belum tersedia pada versi ini.', confirmText: 'Tutup' })}
+                  className="w-full mt-3 flex items-center justify-center gap-2 h-11 border-3 border-nb-black bg-white text-nb-black font-extrabold text-sm hover:bg-nb-yellow transition-colors"
+                  style={{ borderWidth: '3px' }}
+                >
+                  <MessageCircle size={18} strokeWidth={2.5} />
                   Chat Penjual
                 </button>
 
