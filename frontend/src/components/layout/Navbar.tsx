@@ -113,7 +113,7 @@ export function Navbar() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center shrink-0 mr-2" aria-label="SEAPEDIA Beranda">
-            <img src="/logo-name.png" alt="SEAPEDIA" className="h-9 w-auto object-contain" />
+            <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-12 w-auto object-contain" />
           </Link>
 
           {/* Category Button (desktop) */}
