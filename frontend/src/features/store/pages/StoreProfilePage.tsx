@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from "react-router-dom";
 import { Store, Star, Package, CheckCircle, MapPin, Search, Share2, Info, MessageCircle, MoreHorizontal } from "lucide-react";
 import { api } from "../../../lib/api";
 import { ProductCard } from "../../../components/shared/ProductCard";
 import { ProductSummary } from '@/types';
+import { useConfirm } from "../../../contexts/ConfirmContext";
 
 interface StoreDetail {
   id: string;
@@ -20,10 +21,38 @@ interface StoreDetail {
 
 export default function StoreProfilePage() {
   const { slug } = useParams();
+  const { showConfirm } = useConfirm();
   const [store, setStore] = useState<StoreDetail | null>(null);
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("beranda");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"terbaru" | "terlaris" | "harga-asc" | "harga-desc">("terbaru");
+
+  const filteredProducts = useMemo(() => {
+    let result = products;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p => p.name.toLowerCase().includes(q));
+    }
+    
+    result = [...result].sort((a, b) => {
+      if (sortBy === "terlaris") return b.sold - a.sold;
+      if (sortBy === "harga-asc") return a.price - b.price;
+      if (sortBy === "harga-desc") return b.price - a.price;
+      return 0; // terbaru
+    });
+
+    return result;
+  }, [products, searchQuery, sortBy]);
+
+  const handleNotAvailable = () => {
+    showConfirm({
+      title: 'Fitur Belum Tersedia',
+      message: 'Fitur ini belum tersedia pada versi ini.',
+      confirmText: 'Tutup'
+    });
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -125,16 +154,16 @@ export default function StoreProfilePage() {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <button className="flex-1 md:flex-none btn-primary h-10 px-6 text-sm">
+            <button onClick={handleNotAvailable} className="flex-1 md:flex-none btn-primary h-10 px-6 text-sm">
               Follow
             </button>
-            <button className="flex items-center justify-center gap-2 px-4 py-2 border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow font-extrabold text-sm transition-colors" style={{ borderWidth: '3px' }}>
+            <button onClick={handleNotAvailable} className="flex items-center justify-center gap-2 px-4 py-2 border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow font-extrabold text-sm transition-colors" style={{ borderWidth: '3px' }}>
               <MessageCircle size={18} strokeWidth={2.5} /> Chat
             </button>
-            <button className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
+            <button onClick={handleNotAvailable} className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
               <Share2 size={18} strokeWidth={2.5} />
             </button>
-            <button className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
+            <button onClick={handleNotAvailable} className="w-10 h-10 flex items-center justify-center border-3 border-nb-black bg-white text-nb-black hover:bg-nb-yellow transition-colors" style={{ borderWidth: '3px' }}>
               <Info size={18} strokeWidth={2.5} />
             </button>
           </div>
@@ -165,19 +194,34 @@ export default function StoreProfilePage() {
 
           {/* Filter Bar (Only in Produk tab) */}
           {activeTab === "produk" && (
-            <div className="p-4 flex items-center gap-3">
-              <div className="relative flex-1 max-w-[300px]">
+            <div className="p-4 flex flex-col md:flex-row items-start md:items-center gap-3 border-b-2 border-nb-black">
+              <div className="relative w-full md:flex-1 md:max-w-[300px]">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
                 <input 
                   type="text" 
                   placeholder="Cari di toko ini..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-9 pr-4 h-10 border-2 border-nb-black bg-white text-sm font-semibold outline-none focus:bg-nb-yellow transition-colors"
                 />
               </div>
-              <div className="h-6 w-[3px] bg-nb-black mx-2" />
-              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black">Terbaru</button>
-              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black ml-4">Terlaris</button>
-              <button className="text-sm font-extrabold text-gray-700 hover:text-nb-black ml-4 flex items-center gap-1">Harga <MoreHorizontal size={14} /></button>
+              <div className="hidden md:block h-6 w-[3px] bg-nb-black mx-2" />
+              <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto hide-scrollbar pb-2 md:pb-0">
+                <button 
+                  onClick={() => setSortBy("terbaru")}
+                  className={`text-sm font-extrabold px-3 py-1.5 border-2 transition-colors whitespace-nowrap ${sortBy === "terbaru" ? "border-nb-black bg-nb-yellow text-nb-black" : "border-transparent text-gray-600 hover:text-nb-black hover:border-gray-200"}`}
+                >Terbaru</button>
+                <button 
+                  onClick={() => setSortBy("terlaris")}
+                  className={`text-sm font-extrabold px-3 py-1.5 border-2 transition-colors whitespace-nowrap ${sortBy === "terlaris" ? "border-nb-black bg-nb-yellow text-nb-black" : "border-transparent text-gray-600 hover:text-nb-black hover:border-gray-200"}`}
+                >Terlaris</button>
+                <button 
+                  onClick={() => setSortBy(sortBy === "harga-desc" ? "harga-asc" : "harga-desc")}
+                  className={`flex items-center gap-1 text-sm font-extrabold px-3 py-1.5 border-2 transition-colors whitespace-nowrap ${sortBy.startsWith("harga") ? "border-nb-black bg-nb-yellow text-nb-black" : "border-transparent text-gray-600 hover:text-nb-black hover:border-gray-200"}`}
+                >
+                  Harga {sortBy === "harga-desc" ? "↓" : sortBy === "harga-asc" ? "↑" : <MoreHorizontal size={14} />}
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -218,17 +262,17 @@ export default function StoreProfilePage() {
 
         {activeTab === "produk" && (
           <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6">
-            <h2 className="text-base font-extrabold text-nb-black mb-5">Semua Produk ({products.length})</h2>
-            {products.length === 0 ? (
+            <h2 className="text-base font-extrabold text-nb-black mb-5">Semua Produk ({filteredProducts.length})</h2>
+            {filteredProducts.length === 0 ? (
               <div className="py-20 text-center">
                 <div className="inline-flex items-center justify-center w-20 h-20 border-3 border-nb-black bg-nb-yellow mb-4 rotate-3" style={{ borderWidth: '3px' }}>
                   <Package size={32} className="text-nb-black" strokeWidth={2.5} />
                 </div>
-                <p className="text-nb-black font-extrabold">Toko ini belum memiliki produk.</p>
+                <p className="text-nb-black font-extrabold">{searchQuery ? "Tidak ada produk yang cocok dengan pencarian." : "Toko ini belum memiliki produk."}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {products.map((product) => <ProductCard key={product.id} product={product} />)}
+                {filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)}
               </div>
             )}
           </div>
