@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet, ScrollRestoration } from "react-router-dom";
 import { lazy, Suspense } from 'react';
 import { GuestRoute, ProtectedRoute } from "./guards";
 import { RoleType } from '@/types';
@@ -71,7 +71,15 @@ const S = ({ children }: { children: React.ReactNode }) => (
 // ─── Router Definition ─────────────────────────────────────────────────────
 export const router = createBrowserRouter([
   {
-    path: "/",
+    element: (
+      <>
+        <ScrollRestoration />
+        <Outlet />
+      </>
+    ),
+    children: [
+      {
+        path: "/",
     element: <RootLayout />,
     errorElement: <GlobalErrorPage />,
     children: [
@@ -188,6 +196,8 @@ export const router = createBrowserRouter([
       { path: "analytics", element: <S><AdminAnalyticsPage /></S> },
     ],
   },
+    ]
+  }
 ]);
 
 export function AppRouter() {
