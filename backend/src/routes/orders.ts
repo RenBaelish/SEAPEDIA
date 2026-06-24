@@ -24,6 +24,26 @@ const authMiddleware = async (c: any, next: any) => {
 
 orderRouter.use('*', authMiddleware);
 
+// Validate Voucher
+orderRouter.post('/checkout/validate-voucher', async (c) => {
+  const db = drizzle(c.env.DB);
+  const user = c.get('user') as any;
+  const body = await c.req.json().catch(() => ({}));
+  const code = body.code;
+
+  if (!code) return c.json({ message: 'Kode voucher tidak boleh kosong' }, 400);
+
+  const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
+  if (!cart || !cart.storeId) return c.json({ message: 'Keranjang kosong' }, 400);
+
+  const promo = await db.select().from(promos).where(and(eq(promos.code, code), eq(promos.storeId, cart.storeId))).get();
+  
+  if (!promo) return c.json({ message: 'Voucher tidak ditemukan atau tidak berlaku untuk toko ini' }, 404);
+  if (promo.quota <= 0) return c.json({ message: 'Kuota voucher sudah habis' }, 400);
+
+  return c.json({ data: { discount: promo.discountAmount, type: promo.type } });
+});
+
 // Checkout
 orderRouter.post('/checkout', async (c) => {
   const db = drizzle(c.env.DB);

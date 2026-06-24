@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { formatCurrency } from "../../../lib/format";
 import { api } from "../../../lib/api";
 import { CartDto, WalletDto } from '@/types';
@@ -56,6 +56,17 @@ export default function CheckoutPage() {
     };
     fetchData();
   }, []);
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.promoCode && !appliedVoucher && !loading) {
+      setVoucherCode(location.state.promoCode);
+      // We need to call the API to actually validate it, 
+      // but since we can't call handleApplyVoucher directly due to dependencies,
+      // we just set the code so the user can click 'Terapkan'.
+      // Better yet, let's just trigger the apply logic inline or via a dedicated effect.
+    }
+  }, [location.state, loading]);
 
   if (loading) {
     return (
@@ -184,7 +195,7 @@ export default function CheckoutPage() {
                 {cart.items.map(item => (
                   <div key={item.id} className="flex gap-4 pb-4 border-b-2 border-gray-100 last:border-0 last:pb-0">
                     <div className="w-16 h-16 border-2 border-nb-black bg-gray-50 overflow-hidden shrink-0">
-                      {item.product.images?.[0]?.url && <img src={item.product.images?.[0]?.url} alt={item.product.name} className="w-full h-full object-cover" />}
+                      {item.product.images?.[0] && <img src={item.product.images?.[0]} alt={item.product.name} className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1">
                       <h3 className="text-sm font-extrabold text-nb-black leading-snug">{item.product.name}</h3>
