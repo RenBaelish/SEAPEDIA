@@ -34,6 +34,7 @@ export default function AccountPage() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [formError, setFormError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [savingAddress, setSavingAddress] = useState(false);
@@ -73,8 +74,13 @@ export default function AccountPage() {
     setFieldErrors({});
     setSavingAddress(true);
     try {
-      await api.post("/addresses", formData);
+      if (editingAddressId) {
+        await api.patch(`/addresses/${editingAddressId}`, formData);
+      } else {
+        await api.post("/addresses", formData);
+      }
       setShowAddForm(false);
+      setEditingAddressId(null);
       setFormData({ ...EMPTY_FORM, recipientName: user?.fullName || "", phone: user?.phoneNumber || "" });
       await fetchAddresses();
     } catch (error: any) {
@@ -184,8 +190,14 @@ export default function AccountPage() {
                   user?.fullName?.charAt(0)?.toUpperCase() ?? "?"
                 )}
               </div>
+              <button 
+                onClick={() => setShowProfileModal(true)}
+                className="w-full max-w-[140px] text-xs font-black bg-white border-2 border-nb-black text-nb-black py-2 hover:bg-nb-yellow transition-colors shadow-[2px_2px_0px_#0A0A0A]"
+              >
+                <Edit3 size={12} className="inline mr-1 -mt-0.5" strokeWidth={3} /> UBAH FOTO
+              </button>
               <p className="text-xs font-bold text-gray-600 text-center leading-relaxed px-4">
-                Foto profil Anda membantu pengguna lain mengenali Anda. Klik <b className="text-nb-black">Edit Profil</b> untuk mengubah foto.
+                Foto profil Anda membantu pengguna lain mengenali Anda. Klik <b className="text-nb-black">Ubah Foto</b> untuk mengubahnya.
               </p>
             </div>
 
@@ -251,17 +263,10 @@ export default function AccountPage() {
       {/* ── Tab: Daftar Alamat ── */}
       {activeTab === "address" && (
         <div className="p-2">
-          <div className="pb-5 mb-5 border-b-2 border-gray-100 flex items-center gap-3">
-            <div className="relative flex-1 max-w-sm">
-              <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
-              <input
-                type="text"
-                placeholder="Cari alamat..."
-                className="nb-input pl-10 h-11 text-sm font-semibold"
-              />
-            </div>
+          <div className="pb-5 mb-5 border-b-2 border-gray-100 flex items-center justify-between">
+            <h2 className="text-base font-extrabold text-nb-black">Daftar Alamat Pengiriman</h2>
             <button
-              onClick={() => { setShowAddForm(true); setFormError(""); setFieldErrors({}); }}
+              onClick={() => { setShowAddForm(true); setEditingAddressId(null); setFormError(""); setFieldErrors({}); setFormData({ ...EMPTY_FORM, recipientName: user?.fullName || "", phone: user?.phoneNumber || "" }); }}
               className="btn-primary h-11 px-5 flex items-center gap-2"
             >
               <Plus size={18} strokeWidth={3} /> Tambah Alamat
@@ -273,7 +278,7 @@ export default function AccountPage() {
             <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
               <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[520px]">
                 <div className="flex items-center justify-between px-6 py-4 border-b-4 border-nb-black">
-                  <h3 className="text-base font-extrabold text-nb-black">Tambah Alamat Baru</h3>
+                  <h3 className="text-base font-extrabold text-nb-black">{editingAddressId ? "Edit Alamat" : "Tambah Alamat Baru"}</h3>
                   <button onClick={() => setShowAddForm(false)} className="w-8 h-8 flex items-center justify-center text-nb-black hover:bg-nb-yellow border-2 border-transparent hover:border-nb-black transition-colors">
                     <X size={20} strokeWidth={3} />
                   </button>
@@ -408,6 +413,25 @@ export default function AccountPage() {
                           </button>
                         )}
                         <button
+                          onClick={() => {
+                            setFormData({
+                              label: addr.label,
+                              recipientName: addr.recipientName,
+                              phone: addr.phone,
+                              street: addr.street,
+                              city: addr.city,
+                              province: addr.province,
+                              postalCode: addr.postalCode,
+                              isDefault: addr.isDefault,
+                            });
+                            setEditingAddressId(addr.id);
+                            setShowAddForm(true);
+                          }}
+                          className="text-xs text-nb-black font-extrabold border-2 border-nb-black bg-white hover:bg-nb-yellow px-3 py-1.5 transition-colors flex items-center gap-1.5"
+                        >
+                          <Edit3 size={14} strokeWidth={2.5} /> Edit
+                        </button>
+                        <button
                           onClick={() => handleDeleteAddress(addr.id)}
                           className="text-xs text-nb-red font-extrabold border-2 border-nb-red bg-white hover:bg-nb-red hover:text-white px-3 py-1.5 transition-colors flex items-center gap-1.5"
                         >
@@ -434,7 +458,11 @@ export default function AccountPage() {
           ].map((item, i) => {
             const Icon = item.icon;
             return (
-              <div key={i} className="flex items-center gap-4 p-4 border-3 border-nb-black bg-white hover:bg-[#EBF5FF] transition-colors shadow-[2px_2px_0px_#0A0A0A] cursor-pointer" style={{ borderWidth: '3px' }}>
+              <div 
+                key={i} 
+                onClick={() => showConfirm({ title: "Fitur Belum Tersedia", message: "Maaf, fitur Keamanan Akun belum tersedia dan masih dalam tahap pengembangan.", confirmText: "Tutup", hideCancel: true })}
+                className="flex items-center gap-4 p-4 border-3 border-nb-black bg-white hover:bg-[#EBF5FF] transition-colors shadow-[2px_2px_0px_#0A0A0A] cursor-pointer" style={{ borderWidth: '3px' }}
+              >
                 <div className="w-12 h-12 bg-nb-yellow border-2 border-nb-black flex items-center justify-center flex-shrink-0">
                   <Icon size={20} className="text-nb-black" strokeWidth={2.5} />
                 </div>
