@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { formatCurrency } from "../../../lib/format";
 import { api } from "../../../lib/api";
 import { WalletDto, WalletTransactionDto } from '@/types';
+import { useConfirm } from "../../../contexts/ConfirmContext";
 import { Settings, PlusCircle, CreditCard, Coins, Calendar, ChevronDown, CheckCircle, Info, X, Wallet as WalletIcon } from "lucide-react";
 
 export default function WalletPage() {
@@ -10,6 +11,16 @@ export default function WalletPage() {
   const [topupAmount, setTopupAmount] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [isTopupModalOpen, setIsTopupModalOpen] = useState(false);
+  const { showConfirm } = useConfirm();
+
+  const handleNotAvailable = () => {
+    showConfirm({ 
+      title: "Fitur Belum Tersedia", 
+      message: "Maaf, fitur ini sedang dalam tahap pengembangan.", 
+      confirmText: "Tutup", 
+      hideCancel: true 
+    });
+  };
 
   const fetchWallet = async () => {
     try {
@@ -81,7 +92,7 @@ export default function WalletPage() {
                   <span className="font-black tracking-widest text-sm uppercase">SEAPAY <span className="text-nb-yellow">PLUS</span></span>
                   <Info size={14} className="ml-1 opacity-90" strokeWidth={3} />
                 </div>
-                <button className="text-white hover:text-nb-yellow transition-colors">
+                <button onClick={handleNotAvailable} className="text-white hover:text-nb-yellow transition-colors">
                   <Settings size={20} strokeWidth={2.5} />
                 </button>
               </div>
@@ -101,14 +112,14 @@ export default function WalletPage() {
 
               {/* Quick Links */}
               <div className="flex gap-3 mt-5 pt-5 border-t-3 border-black/20" style={{ borderTopWidth: '3px' }}>
-                <div className="flex-1 cursor-pointer group">
+                <div onClick={handleNotAvailable} className="flex-1 cursor-pointer group">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <CreditCard size={14} className="text-blue-100 group-hover:text-nb-yellow transition-colors" strokeWidth={2.5} />
                     <span className="text-sm font-black text-white uppercase">Pay<span className="text-nb-yellow font-bold">later</span></span>
                   </div>
                   <p className="text-xs font-bold text-nb-yellow">Daftar Sekarang</p>
                 </div>
-                <div className="flex-1 cursor-pointer group">
+                <div onClick={handleNotAvailable} className="flex-1 cursor-pointer group">
                   <div className="flex items-center gap-1.5 mb-1.5">
                     <Coins size={14} className="text-blue-100 group-hover:text-nb-yellow transition-colors" strokeWidth={2.5} />
                     <span className="text-sm font-black text-white uppercase">SEAPAY<span className="text-nb-yellow font-bold">coins</span></span>
@@ -135,7 +146,7 @@ export default function WalletPage() {
               <p className="text-sm font-bold text-gray-800 leading-relaxed mb-3 relative z-10">
                 Dapatkan <span className="font-black text-nb-black">3x bonus cashback</span> bulanan dengan minimal top-up Rp500.000!
               </p>
-              <button className="text-sm font-black text-nb-blue border-b-2 border-nb-blue hover:text-nb-black hover:border-nb-black relative z-10 transition-colors">
+              <button onClick={handleNotAvailable} className="text-sm font-black text-nb-blue border-b-2 border-nb-blue hover:text-nb-black hover:border-nb-black relative z-10 transition-colors">
                 Pelajari Lebih Lanjut
               </button>
             </div>
@@ -206,7 +217,7 @@ export default function WalletPage() {
             )}
 
             {Object.keys(groupedTransactions).length > 0 && (
-              <button className="btn-secondary w-full justify-center">
+              <button onClick={handleNotAvailable} className="btn-secondary w-full justify-center">
                 Lihat Transaksi Sebelumnya
               </button>
             )}
