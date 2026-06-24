@@ -4,7 +4,7 @@ import { formatCurrency } from "../../../lib/format";
 import { api } from "../../../lib/api";
 import { CartDto, ProductSummary } from '@/types';
 import { useConfirm } from "../../../contexts/ConfirmContext";
-import { Trash2, Minus, Plus, ShoppingBag, ShieldCheck, MapPin, Ticket, ChevronRight, ArrowRight } from "lucide-react";
+import { Trash2, Minus, Plus, ShoppingBag, ShieldCheck, MapPin, Ticket, ChevronRight, ArrowRight, X } from "lucide-react";
 import { ProductCard } from "../../../components/shared/ProductCard";
 
 export default function CartPage() {
@@ -13,11 +13,22 @@ export default function CartPage() {
   const [cart, setCart] = useState<CartDto | null>(null);
   const [recommendations, setRecommendations] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Cart Task State
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [promoCode, setPromoCode] = useState("");
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+  const [promoInput, setPromoInput] = useState("");
 
   const fetchCart = async () => {
     try {
       const res = await api.get("/cart");
       setCart(res.data.data);
+      // Auto-select all items on fetch
+      if (res.data.data.items) {
+        setSelectedItems(res.data.data.items.map((i: any) => i.id));
+      }
     } catch (error) {
       console.error("Failed to fetch cart", error);
     } finally {
@@ -65,6 +76,33 @@ export default function CartPage() {
       await fetchCart();
     } catch (error) {
       console.error("Failed to clear cart", error);
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked && cart) {
+      setSelectedItems(cart.items.map(i => i.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  const handleSelectItem = (id: string, checked: boolean) => {
+    if (checked) {
+      setSelectedItems(prev => [...prev, id]);
+    } else {
+      setSelectedItems(prev => prev.filter(i => i !== id));
+    }
+  };
+
+  const handleApplyPromo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (promoInput.toUpperCase() === "SEAPEDIA10") {
+      setPromoCode("SEAPEDIA10");
+      setDiscountPercent(10);
+      setIsPromoModalOpen(false);
+    } else {
+      showConfirm({ title: "Promo Tidak Valid", message: "Kode promo yang Anda masukkan tidak valid. Coba 'SEAPEDIA10'.", confirmText: "Tutup", hideCancel: true });
     }
   };
 
@@ -118,7 +156,10 @@ export default function CartPage() {
     );
   }
 
-  const subtotal = cart.items.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
+  const selectedCartItems = cart.items.filter(item => selectedItems.includes(item.id));
+  const subtotal = selectedCartItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
+  const discountAmount = Math.floor(subtotal * (discountPercent / 100));
+  const total = subtotal - discountAmount;
 
   return (
     <div className="bg-[#F7F5F0] min-h-screen pt-6 pb-16">
@@ -134,7 +175,12 @@ export default function CartPage() {
             <div className="bg-white border-3 border-nb-black p-3 flex items-center justify-between"
               style={{ borderWidth: '3px' }}>
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 cursor-pointer accent-nb-black" checked readOnly />
+                <input 
+                  type="checkbox" 
+                  className="w-4 h-4 cursor-pointer accent-nb-black" 
+                  checked={cart.items.length > 0 && selectedItems.length === cart.items.length} 
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
                 <span className="text-sm font-bold text-nb-black">Pilih Semua</span>
               </label>
               <button
@@ -151,7 +197,12 @@ export default function CartPage() {
 
               {cart.store && (
                 <div className="flex items-center gap-3 pb-4 mb-4 border-b-2 border-gray-100">
-                  <input type="checkbox" className="w-4 h-4 cursor-pointer accent-nb-black" checked readOnly />
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 cursor-pointer accent-nb-black" 
+                    checked={cart.items.length > 0 && selectedItems.length === cart.items.length} 
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                  />
                   <img src="/icon/kategori-toko-verify-icon.png" alt="verified" className="w-5 h-5 object-contain" />
                   <Link to={`/store/${(cart.store as any).slug}`} className="text-sm font-extrabold text-nb-black hover:text-nb-blue transition-colors">
                     {cart.store.name}
@@ -173,10 +224,15 @@ export default function CartPage() {
                     <div key={item.id}>
                       {index > 0 && <div className="border-t-2 border-gray-100 mb-5" />}
                       <div className="flex gap-4">
-                        <input type="checkbox" className="w-4 h-4 mt-2 cursor-pointer accent-nb-black flex-shrink-0" checked readOnly />
+                        <input 
+                          type="checkbox" 
+                          className="w-4 h-4 mt-2 cursor-pointer accent-nb-black flex-shrink-0" 
+                          checked={selectedItems.includes(item.id)} 
+                          onChange={(e) => handleSelectItem(item.id, e.target.checked)}
+                        />
 
                         <div className="w-20 h-20 border-2 border-nb-black overflow-hidden shrink-0">
-                          <img src={p.images?.[0]?.url || "https://placehold.co/80"} alt={p.name} className="w-full h-full object-cover" />
+                          <img src={p.images?.[0] || "https://placehold.co/80"} alt={p.name} className="w-full h-full object-cover" />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -234,14 +290,51 @@ export default function CartPage() {
           <div className="w-full md:w-[300px] shrink-0 sticky top-24 space-y-3">
 
             {/* Promo */}
-            <div className="bg-white border-3 border-nb-black p-4 flex items-center justify-between cursor-pointer hover:bg-nb-yellow transition-colors"
+            <div 
+              onClick={() => setIsPromoModalOpen(true)}
+              className="bg-white border-3 border-nb-black p-4 flex items-center justify-between cursor-pointer hover:bg-nb-yellow transition-colors"
               style={{ borderWidth: '3px' }}>
               <div className="flex items-center gap-3">
-                <Ticket size={18} strokeWidth={2.5} />
-                <span className="text-sm font-bold text-nb-black">Gunakan Promo</span>
+                <Ticket size={18} strokeWidth={2.5} className={promoCode ? "text-nb-green" : "text-nb-black"} />
+                <span className={`text-sm font-bold ${promoCode ? "text-nb-green" : "text-nb-black"}`}>
+                  {promoCode ? `Promo Terpakai: ${promoCode}` : "Gunakan Promo"}
+                </span>
               </div>
-              <ChevronRight size={16} strokeWidth={3} />
+              <ChevronRight size={16} strokeWidth={3} className={promoCode ? "text-nb-green" : "text-nb-black"} />
             </div>
+
+            {/* Promo Modal */}
+            {isPromoModalOpen && (
+              <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+                <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[400px]">
+                  <div className="flex items-center justify-between p-4 border-b-4 border-nb-black">
+                    <h3 className="font-extrabold text-nb-black uppercase tracking-wide">Punya Kode Promo?</h3>
+                    <button onClick={() => setIsPromoModalOpen(false)} className="w-8 h-8 flex items-center justify-center hover:bg-nb-yellow border-2 border-transparent hover:border-nb-black transition-colors text-nb-black">
+                      <X size={20} strokeWidth={3} />
+                    </button>
+                  </div>
+                  <form onSubmit={handleApplyPromo} className="p-6">
+                    <div className="mb-6">
+                      <input 
+                        type="text"
+                        value={promoInput}
+                        onChange={(e) => setPromoInput((e.target as any).value.toUpperCase())}
+                        placeholder="Masukkan kode promo (Coba: SEAPEDIA10)"
+                        className="w-full h-12 px-4 border-3 border-nb-black bg-white outline-none focus:bg-nb-yellow text-sm font-bold text-nb-black uppercase transition-colors"
+                        style={{ borderWidth: '3px' }}
+                      />
+                    </div>
+                    <button 
+                      type="submit" 
+                      disabled={!promoInput.trim()}
+                      className="btn-primary w-full justify-center disabled:opacity-50"
+                    >
+                      Terapkan Promo
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Summary card */}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
@@ -250,24 +343,31 @@ export default function CartPage() {
 
               <div className="space-y-2 mb-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Total ({cart.items.length} barang)</span>
+                  <span className="text-gray-600">Total ({selectedCartItems.length} barang)</span>
                   <span className="font-semibold text-nb-black">{formatCurrency(subtotal)}</span>
                 </div>
+                {discountAmount > 0 && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-nb-green font-bold">Diskon ({discountPercent}%)</span>
+                    <span className="font-bold text-nb-green">-{formatCurrency(discountAmount)}</span>
+                  </div>
+                )}
               </div>
 
               <div className="border-t-2 border-nb-black pt-4 mb-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-extrabold text-nb-black">Total Belanja</span>
-                  <span className="text-lg font-extrabold text-nb-black">{formatCurrency(subtotal)}</span>
+                  <span className="text-lg font-extrabold text-nb-black">{formatCurrency(total)}</span>
                 </div>
               </div>
 
               <button
-                onClick={() => navigate("/checkout")}
-                className="w-full flex items-center justify-center gap-2 py-3 border-3 border-nb-black bg-nb-black text-white font-extrabold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all"
+                disabled={selectedCartItems.length === 0}
+                onClick={() => navigate("/checkout", { state: { promoCode } })}
+                className="w-full flex items-center justify-center gap-2 py-3 border-3 border-nb-black bg-nb-black text-white font-extrabold text-sm shadow-[4px_4px_0px_#FFE600] hover:shadow-[5px_5px_0px_#FFE600] hover:-translate-x-px hover:-translate-y-px transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ borderWidth: '3px' }}
               >
-                Beli ({cart.items.reduce((sum, item) => sum + item.quantity, 0)}) <ArrowRight size={16} strokeWidth={3} />
+                Beli ({selectedCartItems.reduce((sum, item) => sum + item.quantity, 0)}) <ArrowRight size={16} strokeWidth={3} />
               </button>
             </div>
 

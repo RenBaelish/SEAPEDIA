@@ -38,7 +38,7 @@ cartRouter.get('/', async (c) => {
     cart = { id: cartId, userId: user.id as string, storeId: null };
   }
 
-  const items = await db
+  const rawItems = await db
     .select({
       id: cartItems.id,
       quantity: cartItems.quantity,
@@ -46,12 +46,23 @@ cartRouter.get('/', async (c) => {
         id: products.id,
         name: products.name,
         price: products.price,
-        stock: products.stock
+        stock: products.stock,
+        images: products.images,
+        slug: products.slug,
+        comparePrice: products.comparePrice
       }
     })
     .from(cartItems)
     .innerJoin(products, eq(cartItems.productId, products.id))
     .where(eq(cartItems.cartId, cart.id));
+
+  const items = rawItems.map(item => ({
+    ...item,
+    product: {
+      ...item.product,
+      images: item.product.images ? JSON.parse(item.product.images as string) : []
+    }
+  }));
 
   let store = null;
   if (cart.storeId) {
