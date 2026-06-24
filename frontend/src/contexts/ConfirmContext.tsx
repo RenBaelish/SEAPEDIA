@@ -8,6 +8,7 @@ interface ConfirmOptions {
   confirmText?: string;
   cancelText?: string;
   danger?: boolean;
+  hideCancel?: boolean;
 }
 
 interface ConfirmContextType {
@@ -57,9 +58,11 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
         size="sm"
         footer={
           <div className="flex justify-end gap-3 w-full">
-            <Button variant="secondary" onClick={handleCancel}>
-              {options.cancelText || "Batal"}
-            </Button>
+            {!options.hideCancel && (
+              <Button variant="secondary" onClick={handleCancel}>
+                {options.cancelText || "Batal"}
+              </Button>
+            )}
             <Button 
               onClick={handleConfirm} 
               className={options.danger ? "bg-red-500 hover:bg-red-600 focus:ring-red-500" : ""}
