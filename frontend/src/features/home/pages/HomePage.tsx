@@ -12,6 +12,7 @@ import { PromoSlider } from "../components/PromoSlider";
 interface AppReview {
   id: string;
   guestName: string;
+  profilePictureUrl?: string;
   rating: number;
   comment: string;
   createdAt: string;
@@ -271,7 +272,7 @@ export default function HomePage() {
                     key={review.id}
                     className="flex gap-4 p-4 border-2 border-gray-200 bg-gray-50 hover:border-nb-black transition-colors"
                   >
-                    <Avatar name={review.guestName} size="sm" />
+                    <Avatar name={review.guestName} src={review.profilePictureUrl} size="sm" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <span className="text-xs font-extrabold text-nb-black">{review.guestName}</span>

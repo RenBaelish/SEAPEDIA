@@ -2,24 +2,9 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const slides = [
-  {
-    id: 1,
-    imageUrl: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop",
-    title: "Diskon Gadget s.d 70%",
-    subtitle: "Dapatkan smartphone terbaru dengan harga miring!"
-  },
-  {
-    id: 2,
-    imageUrl: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop",
-    title: "Fashion Pria & Wanita",
-    subtitle: "Tampil gaya tanpa bikin kantong jebol."
-  },
-  {
-    id: 3,
-    imageUrl: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop",
-    title: "Kebutuhan Rumah Tangga",
-    subtitle: "Beli grosir lebih murah. Bebas ongkir!"
-  }
+  { id: 1, imageUrl: "/hero-1.png" },
+  { id: 2, imageUrl: "/hero-2.png" },
+  { id: 3, imageUrl: "/hero-3.png" }
 ];
 
 export function PromoSlider() {
@@ -36,7 +21,7 @@ export function PromoSlider() {
   const nextSlide = () => setCurrentIndex(i => i === slides.length - 1 ? 0 : i + 1);
 
   return (
-    <div className="relative w-full h-[180px] md:h-[320px] rounded-2xl overflow-hidden group">
+    <div className="relative w-full h-[180px] md:h-[320px] lg:h-[400px] border-3 border-nb-black shadow-[6px_6px_0px_#0A0A0A] overflow-hidden group bg-nb-yellow" style={{ borderWidth: '3px' }}>
       {slides.map((slide, index) => (
         <div
           key={slide.id}
@@ -44,16 +29,11 @@ export function PromoSlider() {
             index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
-          <div className="absolute inset-0 bg-black/40 z-10" />
           <img
             src={slide.imageUrl}
-            alt={slide.title}
+            alt={`Promo ${slide.id}`}
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 z-20 flex flex-col justify-center items-start p-8 md:p-16 text-white">
-            <h2 className="text-2xl md:text-5xl font-extrabold mb-2 md:mb-4 drop-shadow-md">{slide.title}</h2>
-            <p className="text-sm md:text-xl font-medium drop-shadow-md">{slide.subtitle}</p>
-          </div>
         </div>
       ))}
 

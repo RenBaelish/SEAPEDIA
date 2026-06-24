@@ -86,7 +86,8 @@ reviewRouter.get('/app', async (c) => {
       user: {
         id: users.id,
         fullName: users.fullName,
-        username: users.username
+        username: users.username,
+        profilePictureUrl: users.profilePictureUrl
       }
     })
     .from(reviews)
@@ -97,6 +98,7 @@ reviewRouter.get('/app', async (c) => {
   const formattedReviews = appReviews.map(r => ({
     id: r.id,
     guestName: r.guestName || r.user?.fullName || 'Anonymous',
+    profilePictureUrl: r.user?.profilePictureUrl || null,
     rating: r.rating,
     comment: r.comment,
     createdAt: r.createdAt
