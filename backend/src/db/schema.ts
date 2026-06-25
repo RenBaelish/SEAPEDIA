@@ -139,6 +139,7 @@ export const promos = sqliteTable('promos', {
   discountAmount: integer('discount_amount').notNull(),
   type: text('type').notNull(), // 'SHIPPING' or 'DISCOUNT'
   quota: integer('quota').notNull(),
+  usedCount: integer('used_count').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),

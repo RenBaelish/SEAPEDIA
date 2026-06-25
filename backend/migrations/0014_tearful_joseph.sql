@@ -1,0 +1,1 @@
+ALTER TABLE `promos` ADD `used_count` integer DEFAULT 0 NOT NULL;

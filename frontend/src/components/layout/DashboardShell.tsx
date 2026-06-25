@@ -88,21 +88,21 @@ export function DashboardShell({ role }: DashboardShellProps) {
         className={clsx(
           "fixed top-0 left-0 h-full bg-white z-[50]",
           "flex flex-col transition-all duration-200",
-          "border-r-2 border-gray-200",
+          "border-r-4 border-nb-black shadow-[4px_0px_0px_#0A0A0A]",
           sidebarOpen ? "w-56" : "w-14"
         )}
       >
         {/* Sidebar top accent */}
-        <div className={clsx("h-1 w-full shrink-0", roleColors[role])} />
+        <div className={clsx("h-2 w-full shrink-0 border-b-4 border-nb-black", roleColors[role])} />
 
         {/* Header */}
-        <div className="h-14 flex items-center justify-between px-3 border-b-2 border-gray-100 shrink-0">
+        <div className="h-14 flex items-center justify-between px-3 border-b-4 border-nb-black shrink-0 bg-[#F7F5F0]">
           {sidebarOpen && (
-            <img src="/logo-name.png" alt="SEAPEDIA" className="h-7 w-auto ml-1" />
+            <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-10 w-auto ml-1" />
           )}
           <button
             onClick={() => setSidebarOpen((o) => !o)}
-            className="p-1.5 text-gray-500 hover:text-nb-black hover:bg-gray-100 transition-colors ml-auto rounded"
+            className="p-1.5 text-nb-black border-2 border-transparent hover:border-nb-black hover:bg-nb-yellow transition-colors ml-auto"
             aria-label={sidebarOpen ? "Tutup sidebar" : "Buka sidebar"}
           >
             {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
@@ -118,10 +118,10 @@ export function DashboardShell({ role }: DashboardShellProps) {
               end={item.path === `/${role.toLowerCase()}`}
               className={({ isActive }) =>
                 clsx(
-                  "flex items-center gap-3 mx-2 mb-0.5 px-2.5 py-2.5 text-sm font-semibold transition-colors",
+                  "flex items-center gap-3 mx-2 mb-1 px-2.5 py-2.5 text-sm font-extrabold transition-all border-2",
                   isActive
-                    ? `border-l-4 border-nb-black bg-gray-50 text-nb-black ${sidebarOpen ? 'pl-2' : ''}`
-                    : "text-gray-600 hover:bg-gray-50 hover:text-nb-black border-l-4 border-transparent"
+                    ? `border-nb-black bg-nb-yellow text-nb-black shadow-[2px_2px_0px_#0A0A0A] ${sidebarOpen ? 'pl-2' : ''}`
+                    : "border-transparent text-gray-600 hover:bg-[#F7F5F0] hover:border-nb-black hover:text-nb-black hover:shadow-[2px_2px_0px_#0A0A0A]"
                 )
               }
               title={!sidebarOpen ? item.label : undefined}
@@ -134,7 +134,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
         </nav>
 
         {/* Footer */}
-        <div className="p-3 border-t-2 border-gray-100 shrink-0">
+        <div className="p-3 border-t-4 border-nb-black shrink-0 bg-[#F7F5F0]">
           {sidebarOpen ? (
             <div className="flex items-center gap-2">
               <Avatar
@@ -149,17 +149,17 @@ export function DashboardShell({ role }: DashboardShellProps) {
               <div className="flex gap-1 shrink-0">
                 <button
                   onClick={() => navigate("/")}
-                  className="p-1.5 text-gray-400 hover:text-nb-black hover:bg-gray-100 transition-colors rounded"
+                  className="p-1.5 text-nb-black border-2 border-transparent hover:border-nb-black hover:bg-white transition-colors"
                   title="Kembali ke Beranda"
                 >
-                  <Home size={14} />
+                  <Home size={14} strokeWidth={3} />
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="p-1.5 text-gray-400 hover:text-nb-red hover:bg-red-50 transition-colors rounded"
+                  className="p-1.5 text-nb-red border-2 border-transparent hover:border-nb-red hover:bg-white transition-colors"
                   title="Keluar"
                 >
-                  <LogOut size={14} />
+                  <LogOut size={14} strokeWidth={3} />
                 </button>
               </div>
             </div>
@@ -167,17 +167,17 @@ export function DashboardShell({ role }: DashboardShellProps) {
             <div className="flex flex-col items-center gap-2">
               <button
                 onClick={() => navigate("/")}
-                className="w-full flex justify-center p-1.5 text-gray-400 hover:text-nb-black hover:bg-gray-100 transition-colors rounded"
+                className="w-full flex justify-center p-1.5 text-nb-black border-2 border-transparent hover:border-nb-black hover:bg-white transition-colors"
                 title="Beranda"
               >
-                <Home size={16} />
+                <Home size={16} strokeWidth={3} />
               </button>
               <button
                 onClick={handleLogout}
-                className="w-full flex justify-center p-1.5 text-gray-400 hover:text-nb-red hover:bg-red-50 transition-colors rounded"
+                className="w-full flex justify-center p-1.5 text-nb-red border-2 border-transparent hover:border-nb-red hover:bg-white transition-colors"
                 title="Keluar"
               >
-                <LogOut size={16} />
+                <LogOut size={16} strokeWidth={3} />
               </button>
             </div>
           )}
@@ -192,9 +192,9 @@ export function DashboardShell({ role }: DashboardShellProps) {
         )}
       >
         {/* Topbar */}
-        <div className="h-14 bg-white border-b-2 border-gray-200 flex items-center px-6 sticky top-0 z-40">
+        <div className="h-14 bg-white border-b-4 border-nb-black flex items-center px-6 sticky top-0 z-40">
           <div className="flex items-center gap-3">
-            <div className={clsx("w-1 h-6 shrink-0", roleColors[role].split(' ')[0])} />
+            <div className={clsx("w-2 h-6 border-2 border-nb-black shrink-0", roleColors[role].split(' ')[0])} />
             <h1 className="text-base font-extrabold text-nb-black">{roleTitles[role]}</h1>
           </div>
         </div>
