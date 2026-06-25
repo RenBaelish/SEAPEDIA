@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
 import { products, stores, categories } from '../db/schema';
-import { eq, and, like, or, desc } from 'drizzle-orm';
+import { eq, and, like, or, desc, asc } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -280,7 +280,10 @@ productRouter.get('/', async (c) => {
     .leftJoin(categories, eq(products.categoryId, categories.id))
     .$dynamic();
 
-  const conditions = [];
+  const conditions = [
+    eq(products.status, 'ACTIVE'),
+    eq(stores.status, 'ACTIVE')
+  ];
   
   if (q) {
     conditions.push(
@@ -300,7 +303,20 @@ productRouter.get('/', async (c) => {
     query = query.where(and(...conditions));
   }
 
-  const allProducts = await query.limit(limit).orderBy(desc(products.createdAt));
+  const sort = c.req.query('sort');
+  let orderByClause: any = desc(products.createdAt);
+  
+  if (sort === 'price-asc') {
+    orderByClause = asc(products.price);
+  } else if (sort === 'price-desc') {
+    orderByClause = desc(products.price);
+  } else if (sort === 'sold-desc') {
+    orderByClause = desc(products.sold);
+  } else if (sort === 'newest') {
+    orderByClause = desc(products.createdAt);
+  }
+
+  const allProducts = await query.limit(limit).orderBy(orderByClause);
 
   const mappedProducts = allProducts.map(p => ({
     ...p,
