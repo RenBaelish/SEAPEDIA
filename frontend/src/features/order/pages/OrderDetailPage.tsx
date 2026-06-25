@@ -6,6 +6,16 @@ import { useConfirm } from "../../../contexts/ConfirmContext";
 import { useAlert } from "../../../contexts/AlertContext";
 import { Package, MapPin, ArrowLeft } from "lucide-react";
 
+const ORDER_STATUS_LABELS: Record<string, string> = {
+  SEDANG_DIKEMAS: "Sedang Dikemas",
+  MENUNGGU_PENGIRIM: "Menunggu Kurir",
+  SEDANG_DIKIRIM: "Sedang Dikirim",
+  PESANAN_SELESAI: "Pesanan Selesai",
+  DIKEMBALIKAN: "Dikembalikan",
+  PENDING: "Menunggu Pembayaran",
+  PAID: "Sudah Dibayar",
+};
+
 export default function OrderDetailPage() {
   const { id } = useParams();
   const { showConfirm } = useConfirm();
@@ -30,7 +40,7 @@ export default function OrderDetailPage() {
   const handleComplete = async () => {
     if (!await showConfirm({ title: "Selesaikan Pesanan", message: "Apakah Anda yakin telah menerima pesanan dengan baik dan ingin menyelesaikannya?" })) return;
     try {
-      await api.post(`/orders/${id}/complete`);
+      await api.put(`/orders/${id}/status`, { status: "PESANAN_SELESAI" });
       await showAlert({ title: "Berhasil", message: "Pesanan berhasil diselesaikan!" });
       window.location.reload();
     } catch (e: any) {
@@ -56,7 +66,7 @@ export default function OrderDetailPage() {
         </div>
         <div className="flex flex-col items-start md:items-end">
           <span className="px-3 py-1 bg-nb-yellow border-2 border-nb-black text-nb-black font-extrabold text-sm uppercase tracking-wide">
-            STATUS: {order.status}
+            STATUS: {ORDER_STATUS_LABELS[order.status] || order.status}
           </span>
           <p className="text-xs font-bold text-gray-600 mt-2">{new Date(order.createdAt).toLocaleString('id-ID')}</p>
         </div>
@@ -124,7 +134,7 @@ export default function OrderDetailPage() {
               {order.statusHistory?.map((hist: any, i: number) => (
                 <div key={hist.id} className="relative pl-5 border-l-3 border-nb-black ml-1" style={{ borderLeftWidth: '3px' }}>
                   <div className="absolute w-3.5 h-3.5 bg-nb-blue border-2 border-nb-black rounded-none -left-[8.5px] top-1"></div>
-                  <p className="text-sm font-extrabold text-nb-black leading-none">{hist.status}</p>
+                  <p className="text-sm font-extrabold text-nb-black leading-none">{ORDER_STATUS_LABELS[hist.status] || hist.status}</p>
                   <p className="text-xs font-bold text-gray-500 mb-1 mt-1">{new Date(hist.createdAt).toLocaleString('id-ID')}</p>
                   <p className="text-xs font-medium text-gray-700">{hist.note}</p>
                 </div>
@@ -132,7 +142,7 @@ export default function OrderDetailPage() {
             </div>
           </div>
 
-          {order.status === "DELIVERED" && (
+          {order.status === "SEDANG_DIKIRIM" && (
             <div className="bg-nb-yellow p-5 border-3 border-nb-black text-center shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
               <p className="text-sm font-extrabold text-nb-black mb-3">Pesanan Anda telah tiba!</p>
               <button onClick={handleComplete} className="btn-primary w-full justify-center">

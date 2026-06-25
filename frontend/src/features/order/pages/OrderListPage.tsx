@@ -9,13 +9,14 @@ import {
 } from "lucide-react";
 
 const ORDER_STATUS_LABELS: Record<string, { label: string, color: string, bg: string }> = {
+  SEDANG_DIKEMAS: { label: "Sedang Dikemas", color: "text-white", bg: "bg-nb-blue" },
+  MENUNGGU_PENGIRIM: { label: "Menunggu Kurir", color: "text-white", bg: "bg-[#9C27B0]" },
+  SEDANG_DIKIRIM: { label: "Sedang Dikirim", color: "text-white", bg: "bg-[#00BCD4]" },
+  PESANAN_SELESAI: { label: "Pesanan Selesai", color: "text-white", bg: "bg-nb-green" },
+  DIKEMBALIKAN: { label: "Dikembalikan", color: "text-white", bg: "bg-nb-red" },
+  // Fallbacks
   PENDING: { label: "Menunggu Pembayaran", color: "text-nb-black", bg: "bg-nb-yellow" },
   PAID: { label: "Sudah Dibayar", color: "text-white", bg: "bg-nb-blue" },
-  PROCESSING: { label: "Diproses", color: "text-white", bg: "bg-nb-blue" },
-  READY_FOR_PICKUP: { label: "Menunggu Kurir", color: "text-white", bg: "bg-[#9C27B0]" },
-  IN_DELIVERY: { label: "Sedang Dikirim", color: "text-white", bg: "bg-[#00BCD4]" },
-  DELIVERED: { label: "Pesanan Selesai", color: "text-white", bg: "bg-nb-green" },
-  CANCELED: { label: "Dibatalkan", color: "text-white", bg: "bg-nb-red" },
 };
 
 export default function OrderListPage() {
@@ -29,7 +30,7 @@ export default function OrderListPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await api.get("/orders");
+        const res = await api.get("/orders/me");
         setOrders(res.data.data);
       } catch (err) {
         console.error(err);
@@ -43,11 +44,11 @@ export default function OrderListPage() {
   const filteredOrders = orders.filter((order) => {
     let matchStatus = true;
     if (activeFilter === "Berlangsung") {
-      matchStatus = ["PENDING", "PAID", "PROCESSING", "READY_FOR_PICKUP", "IN_DELIVERY"].includes(order.status);
+      matchStatus = ["SEDANG_DIKEMAS", "MENUNGGU_PENGIRIM", "SEDANG_DIKIRIM", "PENDING", "PAID"].includes(order.status);
     } else if (activeFilter === "Berhasil") {
-      matchStatus = order.status === "DELIVERED";
+      matchStatus = order.status === "PESANAN_SELESAI" || order.status === "DELIVERED";
     } else if (activeFilter === "Tidak Berhasil") {
-      matchStatus = order.status === "CANCELED";
+      matchStatus = order.status === "DIKEMBALIKAN" || order.status === "CANCELED";
     }
 
     let matchSearch = true;
@@ -70,8 +71,8 @@ export default function OrderListPage() {
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
           <input
             type="text"
-            placeholder="Cari transaksimu di sini"
-            className="w-full h-11 pl-10 pr-4 border-3 border-nb-black bg-white font-semibold text-sm outline-none focus:bg-nb-yellow transition-colors"
+            placeholder="Cari transaksi..."
+            className="w-full h-11 pl-10 pr-4 border-3 border-nb-black bg-white font-semibold text-sm outline-none focus:bg-nb-yellow transition-colors text-ellipsis overflow-hidden whitespace-nowrap"
             value={searchQuery}
             onChange={(e) => setSearchQuery((e.target as any).value)}
             style={{ borderWidth: '3px' }}

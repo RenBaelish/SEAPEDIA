@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores } from '../db/schema';
+import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores, addresses } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
@@ -143,7 +143,42 @@ orderRouter.post('/checkout', async (c) => {
 orderRouter.get('/me', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
-  const myOrders = await db.select().from(orders).where(eq(orders.buyerId, user.id as string)).orderBy(desc(orders.createdAt)).all();
+  const rawOrders = await db.select().from(orders).where(eq(orders.buyerId, user.id as string)).orderBy(desc(orders.createdAt)).all();
+  
+  const myOrders = [];
+  for (const o of rawOrders) {
+    const store = await db.select().from(stores).where(eq(stores.id, o.storeId)).get();
+    const items = await db.select({
+      id: orderItems.id,
+      quantity: orderItems.quantity,
+      price: orderItems.priceAtPurchase,
+      productName: products.name,
+      productImage: products.images
+    })
+    .from(orderItems)
+    .innerJoin(products, eq(orderItems.productId, products.id))
+    .where(eq(orderItems.orderId, o.id))
+    .all();
+
+    const mappedItems = items.map(item => {
+      let parsedImages = [];
+      try {
+        parsedImages = typeof item.productImage === 'string' ? JSON.parse(item.productImage) : item.productImage;
+      } catch(e) {}
+      return {
+        ...item,
+        productImage: parsedImages?.[0] || null
+      };
+    });
+
+    myOrders.push({
+      ...o,
+      total: o.totalAmount,
+      store: { name: store?.name },
+      items: mappedItems
+    });
+  }
+
   return c.json({ data: myOrders });
 });
 
@@ -167,10 +202,12 @@ orderRouter.get('/:id', async (c) => {
   const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (!order) return c.json({ message: 'Order not found' }, 404);
 
+  const store = await db.select().from(stores).where(eq(stores.id, order.storeId)).get();
+
   const items = await db.select({
     id: orderItems.id,
     quantity: orderItems.quantity,
-    priceAtPurchase: orderItems.priceAtPurchase,
+    price: orderItems.priceAtPurchase,
     productName: products.name
   })
   .from(orderItems)
@@ -178,7 +215,28 @@ orderRouter.get('/:id', async (c) => {
   .where(eq(orderItems.orderId, order.id))
   .all();
 
-  return c.json({ data: { ...order, items } });
+  const mappedItems = items.map(item => ({
+    ...item,
+    subtotal: item.price * item.quantity
+  }));
+
+  const address = await db.select().from(addresses).where(eq(addresses.userId, order.buyerId)).get();
+
+  return c.json({ 
+    data: { 
+      ...order, 
+      total: order.totalAmount,
+      subtotal: order.totalAmount - order.deliveryFee,
+      shippingFee: order.deliveryFee,
+      discount: 0,
+      store: { name: store?.name },
+      address: address,
+      items: mappedItems,
+      statusHistory: [
+        { id: '1', status: order.status, createdAt: order.createdAt, note: 'Sistem' }
+      ]
+    } 
+  });
 });
 
 // Update Status
