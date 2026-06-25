@@ -166,10 +166,10 @@ export default function WalletPage() {
           
           {/* Filter Bar */}
           <div className="flex flex-wrap gap-3 mb-6 border-b-3 border-nb-black pb-6" style={{ borderBottomWidth: '3px' }}>
-            <button className="flex items-center gap-2 px-4 h-10 border-2 border-nb-black bg-white text-sm font-extrabold hover:bg-nb-yellow transition-colors">
+            <button onClick={handleNotAvailable} className="flex items-center gap-2 px-4 h-10 border-2 border-nb-black bg-white text-sm font-extrabold hover:bg-nb-yellow transition-colors">
               Semua Tanggal <Calendar size={16} className="ml-2" strokeWidth={2.5} />
             </button>
-            <button className="flex items-center gap-2 px-4 h-10 border-2 border-nb-black bg-white text-sm font-extrabold hover:bg-nb-yellow transition-colors">
+            <button onClick={handleNotAvailable} className="flex items-center gap-2 px-4 h-10 border-2 border-nb-black bg-white text-sm font-extrabold hover:bg-nb-yellow transition-colors">
               Semua Metode <ChevronDown size={16} className="ml-2" strokeWidth={2.5} />
             </button>
           </div>
