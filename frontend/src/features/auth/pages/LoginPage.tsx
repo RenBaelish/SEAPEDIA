@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { api } from "../../../lib/api";
 import { useAuthStore } from "../../../store/auth.store";
+import { useConfirm } from "../../../contexts/ConfirmContext";
 import { Input } from "../../../components/ui/Input";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 
@@ -14,6 +15,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
+  const { showConfirm } = useConfirm();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -56,22 +58,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col justify-center py-12 px-4">
       <div className="mx-auto w-full max-w-[420px]">
-
-        {/* Logo */}
-        <div className="text-center mb-6">
-          <Link to="/">
-            <img src="/logo-name.png" alt="SEAPEDIA" className="h-10 w-auto mx-auto" />
-          </Link>
-        </div>
-
         {/* Card */}
         <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A]">
           {/* Yellow header bar */}
-          <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5">
-            <h2 className="text-2xl font-extrabold text-nb-black tracking-tight">Masuk</h2>
+          <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5 flex flex-col items-center text-center">
+            <Link to="/" className="mb-3 inline-block bg-white px-3 py-1.5 border-2 border-nb-black shadow-[3px_3px_0px_#0A0A0A]">
+              <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-8 w-auto object-contain" />
+            </Link>
+            <h2 className="text-xl font-extrabold text-nb-black tracking-tight">Masuk ke Akun Anda</h2>
             <p className="text-sm font-medium text-gray-700 mt-1">
               Belum punya akun?{" "}
-              <Link to="/auth/register" className="font-extrabold text-nb-black underline hover:no-underline">
+              <Link to="/auth/register" className="font-extrabold text-nb-black underline hover:no-underline hover:text-nb-blue transition-colors">
                 Daftar di sini
               </Link>
             </p>
@@ -96,17 +93,23 @@ export default function LoginPage() {
               />
 
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-nb-black uppercase tracking-wide">Password</label>
-                  <a href="#" className="text-xs font-bold text-nb-blue hover:underline">Lupa Kata Sandi?</a>
-                </div>
                 <Input
+                  label="Password"
                   type="password"
                   placeholder="Masukkan password Anda"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: (e.target as any).value })}
                   error={errors.password}
                 />
+                <div className="flex justify-end pt-1">
+                  <button 
+                    type="button" 
+                    onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur pemulihan kata sandi belum tersedia pada versi ini.', confirmText: 'Tutup', hideCancel: true })}
+                    className="text-xs font-bold text-nb-blue hover:underline hover:text-nb-black transition-colors"
+                  >
+                    Lupa Kata Sandi?
+                  </button>
+                </div>
               </div>
 
               <button
@@ -123,9 +126,9 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-6 pt-5 border-t-2 border-gray-200 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-              <ShieldCheck size={14} className="text-green-500" />
-              Terlindungi oleh kebijakan privasi SEAPEDIA
+            <div className="mt-6 p-3 border-3 border-nb-black bg-[#EBF5FF] flex items-center justify-center gap-2 text-[10px] sm:text-xs font-black text-nb-black uppercase tracking-wide shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
+              <ShieldCheck size={16} className="text-nb-blue fill-white" strokeWidth={2.5} />
+              Terlindungi Kebijakan Privasi
             </div>
           </div>
         </div>

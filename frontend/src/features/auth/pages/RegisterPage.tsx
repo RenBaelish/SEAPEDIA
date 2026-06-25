@@ -54,22 +54,17 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col justify-center py-12 px-4">
       <div className="mx-auto w-full max-w-[420px]">
-
-        {/* Logo */}
-        <div className="text-center mb-6">
-          <Link to="/">
-            <img src="/logo-name.png" alt="SEAPEDIA" className="h-10 w-auto mx-auto" />
-          </Link>
-        </div>
-
         {/* Card */}
         <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A]">
           {/* Yellow header bar */}
-          <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5">
-            <h2 className="text-2xl font-extrabold text-nb-black tracking-tight">Daftar Sekarang</h2>
+          <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5 flex flex-col items-center text-center">
+            <Link to="/" className="mb-3 inline-block bg-white px-3 py-1.5 border-2 border-nb-black shadow-[3px_3px_0px_#0A0A0A]">
+              <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-8 w-auto object-contain" />
+            </Link>
+            <h2 className="text-xl font-extrabold text-nb-black tracking-tight">Daftar Akun Baru</h2>
             <p className="text-sm font-medium text-gray-700 mt-1">
               Sudah punya akun?{" "}
-              <Link to="/auth/login" className="font-extrabold text-nb-black underline hover:no-underline">
+              <Link to="/auth/login" className="font-extrabold text-nb-black underline hover:no-underline hover:text-nb-blue transition-colors">
                 Masuk di sini
               </Link>
             </p>
@@ -142,9 +137,9 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <div className="mt-5 pt-5 border-t-2 border-gray-200 flex items-center justify-center gap-1.5 text-xs text-gray-400">
-              <ShieldCheck size={14} className="text-green-500" />
-              Terlindungi oleh kebijakan privasi SEAPEDIA
+            <div className="mt-5 p-3 border-3 border-nb-black bg-[#EBF5FF] flex items-center justify-center gap-2 text-[10px] sm:text-xs font-black text-nb-black uppercase tracking-wide shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
+              <ShieldCheck size={16} className="text-nb-blue fill-white" strokeWidth={2.5} />
+              Terlindungi Kebijakan Privasi
             </div>
           </div>
         </div>

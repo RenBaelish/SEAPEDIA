@@ -110,6 +110,10 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
     return c.json({ message: 'Invalid credentials' }, 401);
   }
 
+  if (user.status === 'BANNED') {
+    return c.json({ message: 'Akun Anda telah diblokir. Silakan hubungi dukungan pelanggan.' }, 403);
+  }
+
   // Get roles
   const userRolesList = await db
     .select({ name: roles.name })
