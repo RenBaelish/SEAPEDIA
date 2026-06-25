@@ -17,7 +17,7 @@ export default function AdminStoresPage() {
 
   const filteredStores = stores.filter(store => 
     store.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    store.domain.toLowerCase().includes(searchTerm.toLowerCase())
+    (store.slug && store.slug.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -49,11 +49,11 @@ export default function AdminStoresPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[800px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
                   <th className="px-5 py-4 border-r-2 border-nb-black w-[40%]">Toko</th>
-                  <th className="px-5 py-4 border-r-2 border-nb-black">Domain</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Slug / Link</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Status</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Bergabung</th>
                   <th className="px-5 py-4 text-center">Aksi</th>
@@ -75,8 +75,8 @@ export default function AdminStoresPage() {
                         </div>
                       </td>
                       <td className="px-5 py-4 font-bold text-nb-blue border-r-2 border-nb-black">
-                        <Link to={`/store/${store.domain}`} className="hover:underline flex items-center gap-1">
-                          {store.domain}
+                        <Link to={`/store/${store.slug}`} className="hover:underline flex items-center gap-1">
+                          {store.slug}
                         </Link>
                       </td>
                       <td className="px-5 py-4 border-r-2 border-nb-black">
@@ -95,7 +95,7 @@ export default function AdminStoresPage() {
                       </td>
                       <td className="px-5 py-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <Link to={`/store/${store.domain}`} className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors" title="Lihat Toko">
+                          <Link to={`/store/${store.slug}`} className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors" title="Lihat Toko">
                             <ExternalLink size={16} strokeWidth={2.5} />
                           </Link>
                           <button 

@@ -157,6 +157,14 @@ adminRouter.post('/promos', async (c) => {
   return c.json({ message: 'Promo platform berhasil dibuat' });
 });
 
+adminRouter.delete('/promos/:id', async (c) => {
+  const db = drizzle(c.env.DB);
+  const promoId = c.req.param('id');
+  
+  await db.delete(promos).where(eq(promos.id, promoId));
+  return c.json({ message: 'Promo berhasil dihapus' });
+});
+
 adminRouter.get('/analytics', async (c) => {
   const db = drizzle(c.env.DB);
   
@@ -164,7 +172,7 @@ adminRouter.get('/analytics', async (c) => {
   const topStores = await db.select({
     id: stores.id,
     name: stores.name,
-    domain: stores.domain,
+    slug: stores.slug,
     orderCount: sql<number>`count(${orders.id})`
   })
   .from(stores)
@@ -174,17 +182,32 @@ adminRouter.get('/analytics', async (c) => {
   .limit(5)
   .all();
 
-  const topProducts = await db.select({
+  const topProductsRaw = await db.select({
     id: products.id,
     name: products.name,
     sold: products.sold,
     price: products.price,
-    thumbnailUrl: products.thumbnailUrl
+    images: products.images
   })
   .from(products)
   .orderBy(desc(products.sold))
   .limit(5)
   .all();
+
+  const topProducts = topProductsRaw.map(p => {
+    let firstImage = 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg';
+    try {
+      const imgs = JSON.parse(p.images as string || '[]');
+      if (imgs.length > 0) firstImage = imgs[0];
+    } catch(e) {}
+    return {
+      id: p.id,
+      name: p.name,
+      sold: p.sold,
+      price: p.price,
+      thumbnailUrl: firstImage
+    };
+  });
 
   return c.json({
     data: {

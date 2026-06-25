@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { api } from "../../../../lib/api";
-import { Megaphone, Plus, Search, Loader2 } from "lucide-react";
+import { Megaphone, Plus, Search, Loader2, Trash2 } from "lucide-react";
+import { useConfirm } from "../../../../contexts/ConfirmContext";
 
 export default function AdminPromosPage() {
   const [promos, setPromos] = useState<any[]>([]);
@@ -16,6 +17,7 @@ export default function AdminPromosPage() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+  const { showConfirm } = useConfirm();
 
   const fetchPromos = () => {
     setLoading(true);
@@ -55,6 +57,22 @@ export default function AdminPromosPage() {
   const filteredPromos = promos.filter(p => 
     p.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleDelete = async (id: string) => {
+    if (await showConfirm({
+      title: "Hapus Promo",
+      message: "Apakah Anda yakin ingin menghapus promo ini secara permanen?"
+    })) {
+      try {
+        await api.delete(`/admin/promos/${id}`);
+        setPromos(promos.filter(p => p.id !== id));
+        setMessage({ text: "Promo berhasil dihapus", type: "success" });
+      } catch (err) {
+        console.error(err);
+        setMessage({ text: "Gagal menghapus promo", type: "error" });
+      }
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -164,14 +182,15 @@ export default function AdminPromosPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[800px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Kode Promo</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Tipe</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Potongan</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Sisa Kuota</th>
-                  <th className="px-5 py-4">Dibuat</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Dibuat</th>
+                  <th className="px-5 py-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y-2 divide-gray-100">
@@ -189,15 +208,26 @@ export default function AdminPromosPage() {
                       <td className="px-5 py-4 font-black text-nb-red border-r-2 border-nb-black">
                         -Rp {promo.discountAmount.toLocaleString('id-ID')}
                       </td>
-                      <td className="px-5 py-4 font-bold text-gray-700 border-r-2 border-nb-black">{promo.quota}x pemakaian</td>
-                      <td className="px-5 py-4 font-bold text-gray-600">
+                      <td className="px-5 py-4 font-bold text-gray-700 border-r-2 border-nb-black">
+                        {promo.quota - (promo.usedCount || 0)} dari {promo.quota}
+                      </td>
+                      <td className="px-5 py-4 font-bold text-gray-600 border-r-2 border-nb-black">
                         {new Date(promo.createdAt).toLocaleDateString('id-ID')}
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <button
+                          onClick={() => handleDelete(promo.id)}
+                          className="w-8 h-8 inline-flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-red hover:text-white transition-colors"
+                          title="Hapus Promo"
+                        >
+                          <Trash2 size={16} strokeWidth={2.5} />
+                        </button>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-sm font-bold text-gray-500">
+                    <td colSpan={6} className="px-6 py-12 text-center text-sm font-bold text-gray-500">
                       Tidak ada promo platform ditemukan
                     </td>
                   </tr>
