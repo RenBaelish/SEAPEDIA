@@ -50,7 +50,8 @@ export default function StoreProfilePage() {
     showConfirm({
       title: 'Fitur Belum Tersedia',
       message: 'Fitur ini belum tersedia pada versi ini.',
-      confirmText: 'Tutup'
+      confirmText: 'Tutup',
+      hideCancel: true
     });
   };
 
@@ -105,11 +106,13 @@ export default function StoreProfilePage() {
     <div className="bg-[#F7F5F0] min-h-screen pb-16">
       
       {/* ─── Cover / Banner ── */}
-      <div className="h-[120px] md:h-[240px] bg-nb-black w-full relative border-b-4 border-nb-black">
+      <div className="h-[120px] md:h-[240px] bg-nb-black w-full relative border-b-4 border-nb-black overflow-hidden flex items-center justify-center">
         {store.bannerUrl ? (
           <img src={store.bannerUrl} alt="Banner" className="w-full h-full object-cover opacity-90" />
         ) : (
-          <div className="absolute inset-0 bg-[url('https://placehold.co/1200x240/1A1A1A/FFFFFF?text=Seapedia+Store')] bg-cover opacity-50" />
+          <div className="bg-white px-5 py-2 border-3 border-nb-black shadow-[4px_4px_0px_#FFE600] rotate-2">
+            <img src="/logo-seapedia.png" alt="Seapedia" className="h-12 md:h-16 object-contain" />
+          </div>
         )}
       </div>
 
@@ -236,7 +239,7 @@ export default function StoreProfilePage() {
                 <h3 className="text-base font-extrabold text-nb-black mb-1">Promo Cashback 10%</h3>
                 <p className="text-xs font-bold text-gray-800">Min. Pembelian Rp100.000. S&K Berlaku.</p>
               </div>
-              <button className="bg-white border-2 border-nb-black px-5 py-2 text-sm font-extrabold hover:bg-nb-black hover:text-white transition-colors">
+              <button onClick={handleNotAvailable} className="bg-white border-2 border-nb-black px-5 py-2 text-sm font-extrabold hover:bg-nb-black hover:text-white transition-colors">
                 Klaim
               </button>
             </div>

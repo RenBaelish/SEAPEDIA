@@ -11,6 +11,7 @@ import { ProductDetail, ProductSummary } from '@/types';
 import { Button } from "../../../components/ui/Button";
 import { useAuthStore } from "../../../store/auth.store";
 import { useConfirm } from "../../../contexts/ConfirmContext";
+import { useAlert } from "../../../contexts/AlertContext";
 import { ProductCard } from "../../../components/shared/ProductCard";
 
 function formatSold(n: number): string {
@@ -24,13 +25,13 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const { showConfirm } = useConfirm();
+  const { showAlert } = useAlert();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [qty, setQty] = useState(1);
   const [selectedImg, setSelectedImg] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [cartMsg, setCartMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<ProductSummary[]>([]);
   const [wishlist, setWishlist] = useState(false);
 
@@ -38,7 +39,6 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     setLoading(true);
-    setCartMsg(null);
     api.get(`/products/${slug}`)
       .then((res) => {
         setProduct(res.data.data);
@@ -55,17 +55,16 @@ export default function ProductDetailPage() {
   const handleAddToCart = async (directBuy = false) => {
     if (!isAuthenticated) return navigate("/auth/login");
     if (user?.activeRole !== "BUYER") {
-      setCartMsg({ type: "error", text: "Ubah peran Anda ke Pembeli terlebih dahulu." });
+      showAlert({ title: "Akses Ditolak", message: "Ubah peran Anda ke Pembeli terlebih dahulu." });
       return;
     }
     setAddingToCart(true);
-    setCartMsg(null);
     try {
       await api.post("/cart/items", { productId: product!.id, quantity: qty });
       if (directBuy) {
         navigate("/cart");
       } else {
-        setCartMsg({ type: "success", text: "Berhasil ditambahkan ke keranjang!" });
+        showAlert({ title: "Berhasil", message: "Berhasil ditambahkan ke keranjang!" });
       }
     } catch (err: any) {
       if (err.response?.status === 409) {
@@ -78,10 +77,10 @@ export default function ProductDetailPage() {
           await api.delete("/cart");
           await api.post("/cart/items", { productId: product!.id, quantity: qty });
           if (directBuy) navigate("/cart");
-          else setCartMsg({ type: "success", text: "Berhasil ditambahkan ke keranjang!" });
+          else showAlert({ title: "Berhasil", message: "Berhasil ditambahkan ke keranjang!" });
         }
       } else {
-        setCartMsg({ type: "error", text: err.response?.data?.message || "Gagal menambahkan ke keranjang." });
+        showAlert({ title: "Gagal", message: err.response?.data?.message || "Gagal menambahkan ke keranjang." });
       }
     } finally {
       setAddingToCart(false);
@@ -337,14 +336,6 @@ export default function ProductDetailPage() {
             {/* 3. CTA Panel */}
             <div className="p-5">
               <div className="sticky top-20 space-y-4">
-                {/* Cart message banner */}
-                {cartMsg && (
-                  <div className={`flex items-center gap-2 p-3 rounded-xl text-xs font-semibold ${cartMsg.type === "success" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
-                    {cartMsg.type === "success" ? <CheckCircle size={16} /> : <AlertTriangle size={16} />}
-                    {cartMsg.text}
-                  </div>
-                )}
-
                 {/* Quantity selector */}
                 <div>
                   <p className="text-sm font-semibold text-gray-700 mb-2">Atur jumlah</p>
@@ -405,7 +396,7 @@ export default function ProductDetailPage() {
 
                 {/* Chat seller */}
                 <button 
-                  onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur Chat Penjual belum tersedia pada versi ini.', confirmText: 'Tutup' })}
+                  onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur Chat Penjual belum tersedia pada versi ini.', confirmText: 'Tutup', hideCancel: true })}
                   className="w-full mt-3 flex items-center justify-center gap-2 h-11 border-3 border-nb-black bg-white text-nb-black font-extrabold text-sm hover:bg-nb-yellow transition-colors"
                   style={{ borderWidth: '3px' }}
                 >
