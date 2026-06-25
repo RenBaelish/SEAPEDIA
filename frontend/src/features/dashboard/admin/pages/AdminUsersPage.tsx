@@ -49,11 +49,11 @@ export default function AdminUsersPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[800px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
-                  <th className="px-5 py-4 border-r-2 border-nb-black w-[35%]">Pengguna</th>
-                  <th className="px-5 py-4 border-r-2 border-nb-black">Username</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black w-[40%]">Pengguna</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black">Kontak</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Status</th>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Bergabung</th>
                   <th className="px-5 py-4 text-center">Aksi</th>

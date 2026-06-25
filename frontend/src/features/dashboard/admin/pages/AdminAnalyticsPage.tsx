@@ -116,8 +116,8 @@ export default function AdminAnalyticsPage() {
 
       {/* Detail Tables as fallbacks below charts */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
-        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
-           <table className="w-full text-sm text-left">
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-x-auto">
+           <table className="w-full min-w-[400px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Nama Toko</th>
@@ -146,8 +146,8 @@ export default function AdminAnalyticsPage() {
             </table>
         </div>
 
-        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
-           <table className="w-full text-sm text-left">
+        <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-x-auto">
+           <table className="w-full min-w-[400px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
                   <th className="px-5 py-4 border-r-2 border-nb-black">Produk Terlaris</th>

@@ -135,10 +135,10 @@ export default function AdminCategoriesPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[700px] text-sm text-left">
               <thead className="bg-nb-yellow text-nb-black font-black uppercase tracking-wide border-b-2 border-nb-black">
                 <tr>
-                  <th className="px-5 py-4 border-r-2 border-nb-black w-[50%]">Nama Kategori</th>
+                  <th className="px-5 py-4 border-r-2 border-nb-black w-[50%]">Kategori</th>
                   <th className="px-5 py-4">Slug</th>
                 </tr>
               </thead>
