@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
-import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores, addresses } from '../db/schema';
+import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores, addresses, deliveryJobs } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
@@ -191,7 +191,43 @@ orderRouter.get('/store/incoming', async (c) => {
   if (!store) return c.json({ message: 'Forbidden' }, 403);
 
   const incomingOrders = await db.select().from(orders).where(eq(orders.storeId, store.id)).orderBy(desc(orders.createdAt)).all();
-  return c.json({ data: incomingOrders });
+  
+  const mappedIncomingOrders = await Promise.all(incomingOrders.map(async (o) => {
+    const { users } = await import('../db/schema');
+    const buyer = await db.select().from(users).where(eq(users.id, o.buyerId)).get();
+    
+    const items = await db.select({
+      id: orderItems.id,
+      quantity: orderItems.quantity,
+      price: orderItems.priceAtPurchase,
+      productName: products.name,
+      productImage: products.images
+    })
+    .from(orderItems)
+    .innerJoin(products, eq(orderItems.productId, products.id))
+    .where(eq(orderItems.orderId, o.id))
+    .all();
+
+    const mappedItems = items.map(item => {
+      let parsedImages = [];
+      try {
+        parsedImages = typeof item.productImage === 'string' ? JSON.parse(item.productImage) : item.productImage;
+      } catch(e) {}
+      return {
+        ...item,
+        productImg: parsedImages?.[0] || null
+      };
+    });
+
+    return {
+      ...o,
+      subtotal: o.totalAmount,
+      buyer: { fullName: buyer?.fullName || 'User' },
+      items: mappedItems
+    };
+  }));
+
+  return c.json({ data: mappedIncomingOrders });
 });
 
 // Get Order Details
@@ -222,6 +258,28 @@ orderRouter.get('/:id', async (c) => {
 
   const address = await db.select().from(addresses).where(eq(addresses.userId, order.buyerId)).get();
 
+  const job = await db.select().from(deliveryJobs).where(eq(deliveryJobs.orderId, order.id)).get();
+
+  const history = [
+    { id: '1', status: 'SEDANG_DIKEMAS', createdAt: order.createdAt, note: 'Pesanan dibuat dan sedang disiapkan penjual' }
+  ];
+
+  if (order.status !== 'SEDANG_DIKEMAS' && job) {
+    history.push({ id: '2', status: 'MENUNGGU_PENGIRIM', createdAt: new Date(new Date(order.createdAt).getTime() + 10 * 60000), note: 'Menunggu kurir mengambil pesanan' });
+    
+    if (['SEDANG_DIKIRIM', 'TERKIRIM', 'PESANAN_SELESAI'].includes(order.status)) {
+      history.push({ id: '3', status: 'SEDANG_DIKIRIM', createdAt: job.createdAt, note: 'Kurir sedang mengantar pesanan' });
+    }
+  }
+
+  if (['TERKIRIM', 'PESANAN_SELESAI'].includes(order.status)) {
+    history.push({ id: '4', status: 'TERKIRIM', createdAt: job?.completedAt || new Date(new Date(order.createdAt).getTime() + 60 * 60000), note: 'Pesanan telah sampai di tujuan' });
+  }
+
+  if (order.status === 'PESANAN_SELESAI') {
+    history.push({ id: '5', status: 'PESANAN_SELESAI', createdAt: new Date(new Date(job?.completedAt || order.createdAt).getTime() + 5 * 60000), note: 'Pesanan telah diselesaikan pembeli' });
+  }
+
   return c.json({ 
     data: { 
       ...order, 
@@ -232,9 +290,7 @@ orderRouter.get('/:id', async (c) => {
       store: { name: store?.name },
       address: address,
       items: mappedItems,
-      statusHistory: [
-        { id: '1', status: order.status, createdAt: order.createdAt, note: 'Sistem' }
-      ]
+      statusHistory: history.reverse()
     } 
   });
 });
@@ -256,11 +312,15 @@ orderRouter.put('/:id/status', async (c) => {
     if (store) {
       let sellerWallet = await db.select().from(wallets).where(eq(wallets.userId, store.ownerId)).get();
       let sellerWalletId = sellerWallet?.id;
+      
+      const sellerGross = order.totalAmount - order.deliveryFee;
+      const netIncome = Math.floor(sellerGross * 0.95);
+
       if (sellerWallet) {
-        await db.update(wallets).set({ balance: sellerWallet.balance + order.totalAmount }).where(eq(wallets.id, sellerWallet.id));
+        await db.update(wallets).set({ balance: sellerWallet.balance + netIncome }).where(eq(wallets.id, sellerWallet.id));
       } else {
         sellerWalletId = crypto.randomUUID();
-        await db.insert(wallets).values({ id: sellerWalletId, userId: store.ownerId, balance: order.totalAmount });
+        await db.insert(wallets).values({ id: sellerWalletId, userId: store.ownerId, balance: netIncome });
       }
 
       const items = await db.select({ productName: products.name })
@@ -273,9 +333,9 @@ orderRouter.put('/:id/status', async (c) => {
       await db.insert(walletMutations).values({
         id: crypto.randomUUID(),
         walletId: sellerWalletId as string,
-        amount: order.totalAmount,
+        amount: netIncome,
         type: 'INCOME',
-        description: `Penjualan: ${productNames}`
+        description: `Penjualan: ${productNames} (Dipotong Komisi 5%)`
       });
     }
   }

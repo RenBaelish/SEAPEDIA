@@ -123,18 +123,18 @@ export default function OrderListPage() {
             return (
               <div key={order.id} className="border-4 border-nb-black p-4 bg-white hover:bg-[#F7F5F0] transition-colors shadow-[4px_4px_0px_#0A0A0A]">
                 {/* Card Header */}
-                <div className="flex items-center justify-between pb-3 border-b-3 border-nb-black mb-3" style={{ borderBottomWidth: '3px' }}>
-                  <div className="flex items-center gap-3">
-                    <ShoppingBag size={18} className="text-nb-black" strokeWidth={2.5} />
-                    <span className="text-xs font-extrabold text-nb-black uppercase tracking-wide">Belanja</span>
-                    <span className="text-nb-black font-black">•</span>
-                    <span className="text-xs font-bold text-gray-600">{new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    <span className="text-nb-black font-black">•</span>
-                    <span className={`text-xs font-extrabold px-2 py-1 border-2 border-nb-black ${statusInfo.bg} ${statusInfo.color}`}>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b-3 border-nb-black mb-3 gap-2" style={{ borderBottomWidth: '3px' }}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <ShoppingBag size={16} className="text-nb-black hidden sm:block" strokeWidth={2.5} />
+                    <span className="text-[10px] sm:text-xs font-extrabold text-nb-black uppercase tracking-wide">Belanja</span>
+                    <span className="text-nb-black font-black hidden sm:inline">•</span>
+                    <span className="text-[10px] sm:text-xs font-bold text-gray-600">{new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    <span className="text-nb-black font-black hidden sm:inline">•</span>
+                    <span className={`text-[10px] sm:text-xs font-extrabold px-2 py-0.5 sm:py-1 border-2 border-nb-black ${statusInfo.bg} ${statusInfo.color}`}>
                       {statusInfo.label}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-gray-500 hidden md:block">INV/{order.id.substring(0, 8).toUpperCase()}</span>
+                  <span className="text-[10px] sm:text-xs font-bold text-gray-500">INV/{order.id.substring(0, 8).toUpperCase()}</span>
                 </div>
 
                 {/* Store Name */}

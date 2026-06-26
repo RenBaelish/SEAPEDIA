@@ -131,18 +131,36 @@ export default function OrderDetailPage() {
           <div className="bg-white p-6 border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
             <h2 className="font-extrabold text-base text-nb-black mb-4 pb-3 border-b-2 border-gray-100">Riwayat Status</h2>
             <div className="space-y-4">
-              {order.statusHistory?.map((hist: any, i: number) => (
-                <div key={hist.id} className="relative pl-5 border-l-3 border-nb-black ml-1" style={{ borderLeftWidth: '3px' }}>
-                  <div className="absolute w-3.5 h-3.5 bg-nb-blue border-2 border-nb-black rounded-none -left-[8.5px] top-1"></div>
-                  <p className="text-sm font-extrabold text-nb-black leading-none">{ORDER_STATUS_LABELS[hist.status] || hist.status}</p>
-                  <p className="text-xs font-bold text-gray-500 mb-1 mt-1">{new Date(hist.createdAt).toLocaleString('id-ID')}</p>
-                  <p className="text-xs font-medium text-gray-700">{hist.note}</p>
-                </div>
-              ))}
+              {order.statusHistory?.map((hist: any, i: number) => {
+                const statusColorMap: Record<string, string> = {
+                  'MENUNGGU_PEMBAYARAN': 'bg-nb-yellow',
+                  'MENUNGGU_KONFIRMASI': 'bg-blue-300',
+                  'SEDANG_DIKEMAS': 'bg-nb-blue',
+                  'MENUNGGU_PENGIRIM': 'bg-indigo-400',
+                  'SEDANG_DIKIRIM': 'bg-orange-500',
+                  'TERKIRIM': 'bg-teal-400',
+                  'PESANAN_SELESAI': 'bg-nb-green',
+                  'DIBATALKAN': 'bg-nb-red',
+                  'DIKEMBALIKAN': 'bg-nb-red'
+                };
+                const bgColor = statusColorMap[hist.status] || 'bg-gray-400';
+                const histDate = new Date(hist.createdAt);
+                
+                return (
+                  <div key={hist.id} className="relative pl-6 border-l-3 border-nb-black ml-2 pb-6 last:border-l-0 last:pb-0" style={{ borderLeftWidth: '3px' }}>
+                    <div className={`absolute w-5 h-5 ${bgColor} border-3 border-nb-black rounded-full -left-[11px] top-0 shadow-[2px_2px_0px_#0A0A0A]`} style={{ borderWidth: '3px' }}></div>
+                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 -mt-1 mb-1">
+                      <p className="text-sm font-extrabold text-nb-black uppercase tracking-wide">{ORDER_STATUS_LABELS[hist.status] || hist.status}</p>
+                      <p className="text-xs font-bold text-gray-500 bg-gray-100 px-2 py-0.5 border border-gray-300 w-fit">{histDate.toLocaleDateString('id-ID')} {histDate.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</p>
+                    </div>
+                    <p className="text-sm font-semibold text-gray-600">{hist.note}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {order.status === "SEDANG_DIKIRIM" && (
+          {order.status === "TERKIRIM" && (
             <div className="bg-nb-yellow p-5 border-3 border-nb-black text-center shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
               <p className="text-sm font-extrabold text-nb-black mb-3">Pesanan Anda telah tiba!</p>
               <button onClick={handleComplete} className="btn-primary w-full justify-center">
