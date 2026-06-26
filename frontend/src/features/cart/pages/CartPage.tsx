@@ -232,7 +232,7 @@ export default function CartPage() {
                         />
 
                         <div className="w-20 h-20 border-2 border-nb-black overflow-hidden shrink-0">
-                          <img src={p.images?.[0] || "https://placehold.co/80"} alt={p.name} className="w-full h-full object-cover" />
+                          <img src={typeof p.images?.[0] === 'string' ? p.images[0] : p.images?.[0]?.url || "https://placehold.co/80"} alt={p.name} className="w-full h-full object-cover" />
                         </div>
 
                         <div className="flex-1 min-w-0">

@@ -195,7 +195,7 @@ export default function CheckoutPage() {
                 {cart.items.map(item => (
                   <div key={item.id} className="flex gap-4 pb-4 border-b-2 border-gray-100 last:border-0 last:pb-0">
                     <div className="w-16 h-16 border-2 border-nb-black bg-gray-50 overflow-hidden shrink-0">
-                      {item.product.images?.[0] && <img src={item.product.images?.[0]} alt={item.product.name} className="w-full h-full object-cover" />}
+                      {item.product.images?.[0] && <img src={typeof item.product.images[0] === 'string' ? item.product.images[0] : item.product.images[0]?.url} alt={item.product.name} className="w-full h-full object-cover" />}
                     </div>
                     <div className="flex-1">
                       <h3 className="text-sm font-extrabold text-nb-black leading-snug">{item.product.name}</h3>
