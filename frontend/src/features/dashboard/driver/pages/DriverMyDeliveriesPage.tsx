@@ -77,8 +77,8 @@ export default function DriverMyDeliveriesPage() {
               <div key={job.id} className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
                 <div className="flex justify-between items-start mb-5 pb-4 border-b-2 border-gray-100">
                   <div className="flex items-center gap-4">
-                    <DeliveryStatusBadge status={job.status} className="border-2 border-nb-black shadow-[2px_2px_0px_#0A0A0A]" />
-                    <span className="text-base font-black text-nb-green">{formatCurrency(Number(job.fee) * 0.8)}</span>
+                    <DeliveryStatusBadge status={job.status} />
+                    <span className="text-base font-black text-nb-green">{formatCurrency(Math.floor(Number(job.deliveryFee || 0) * 0.9))}</span>
                   </div>
                   <span className="text-xs font-black text-nb-black bg-nb-yellow border-2 border-nb-black px-2 py-0.5 uppercase tracking-wide">Order #{job.orderId.slice(-6).toUpperCase()}</span>
                 </div>
@@ -133,14 +133,33 @@ export default function DriverMyDeliveriesPage() {
             </div>
             Riwayat Terakhir
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-5">
             {completedDeliveries.slice(0, 4).map((job) => (
-              <div key={job.id} className="bg-white border-2 border-nb-black p-4 flex justify-between items-center opacity-80 hover:opacity-100 transition-opacity">
-                <div>
-                  <p className="text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Tujuan: <span className="font-bold text-gray-600 normal-case">{job.dropAddress.split(',')[0]}</span></p>
-                  <DeliveryStatusBadge status={job.status} className="border-2 border-nb-black" />
+              <div key={job.id} className="bg-white border-3 border-nb-black p-4 opacity-90 hover:opacity-100 transition-opacity shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
+                <div className="flex flex-col sm:flex-row justify-between sm:items-start mb-3 border-b-2 border-gray-100 pb-3 gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <span className="text-[10px] font-black text-nb-black bg-gray-100 border border-nb-black px-2 py-0.5 uppercase tracking-wide w-fit">Order #{job.orderId.slice(-6).toUpperCase()}</span>
+                    <DeliveryStatusBadge status={job.status} />
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Pendapatan Bersih (Dipostong 10%)</p>
+                    <p className="font-black text-nb-green text-lg">+{formatCurrency(Math.floor(Number(job.deliveryFee || 0) * 0.9))}</p>
+                  </div>
                 </div>
-                <p className="font-black text-nb-green text-base">+{formatCurrency(Number(job.fee) * 0.8)}</p>
+                <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Toko Asal</p>
+                    <p className="text-sm font-extrabold text-nb-black">{job.storeName}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Tanggal Dibuat</p>
+                    <p className="text-sm font-bold text-gray-700">{new Date(job.createdAt).toLocaleDateString('id-ID')}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide">Tujuan</p>
+                    <p className="text-sm font-bold text-gray-700 leading-snug">{job.dropAddress}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

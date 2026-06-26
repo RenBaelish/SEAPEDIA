@@ -7,6 +7,7 @@ import { Wallet as WalletIcon, Info, DollarSign, TrendingUp } from "lucide-react
 export default function DriverWalletPage() {
   const [wallet, setWallet] = useState<WalletDto | null>(null);
   const [transactions, setTransactions] = useState<WalletTransactionDto[]>([]);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   const fetchWallet = async () => {
     try {
@@ -64,6 +65,13 @@ export default function DriverWalletPage() {
               <p className="text-white/90 text-sm font-bold mb-1 uppercase tracking-wide">Total Tersedia</p>
               <h2 className="text-3xl font-black tracking-tight">{formatCurrency(Number(wallet.balance))}</h2>
             </div>
+            
+            <button 
+              onClick={() => setIsWithdrawModalOpen(true)}
+              className="w-full bg-nb-yellow text-nb-black border-2 border-nb-black py-2 font-black text-sm uppercase tracking-wider hover:bg-white transition-colors shadow-[2px_2px_0px_#0A0A0A]"
+            >
+              Tarik Saldo
+            </button>
 
             <div className="pt-4 border-t-3 border-black/20" style={{ borderTopWidth: '3px' }}>
               <div className="flex items-center gap-2 text-sm font-bold">
@@ -91,9 +99,9 @@ export default function DriverWalletPage() {
                   <h4 className="text-sm font-black text-nb-black bg-[#EBF5FF] border-2 border-nb-black px-3 py-1 inline-block mb-4 uppercase tracking-wide">{date}</h4>
                   <div className="space-y-0">
                     {txs.map((tx, index) => {
-                      const isIncome = tx.type === 'INCOME';
-                      const isTopup = tx.type === 'TOP_UP';
-                      const isPayment = tx.type === 'PAYMENT';
+                      const isIncome = tx.type === 'DELIVERY_EARNING' || tx.type === 'COMMISSION' || tx.type === 'REFUND';
+                      const isTopup = tx.type === 'TOPUP';
+                      const isPayment = tx.type === 'PURCHASE' || tx.type === 'WITHDRAWAL';
                       
                       let Icon = WalletIcon;
                       let iconBg = 'bg-gray-100';
@@ -135,6 +143,38 @@ export default function DriverWalletPage() {
           </div>
         </div>
       </div>
+
+      {/* Withdraw Modal Placeholder */}
+      {isWithdrawModalOpen && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-sm">
+            <div className="flex justify-between items-center p-4 border-b-4 border-nb-black">
+              <h3 className="font-black text-lg">Tarik Saldo</h3>
+              <button 
+                onClick={() => setIsWithdrawModalOpen(false)}
+                className="w-8 h-8 border-2 border-nb-black bg-nb-red text-white flex items-center justify-center hover:bg-white hover:text-nb-black transition-colors"
+              >
+                <span className="font-bold">X</span>
+              </button>
+            </div>
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 bg-gray-100 border-2 border-nb-black rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign size={28} className="text-gray-400" strokeWidth={2} />
+              </div>
+              <h4 className="text-base font-extrabold text-nb-black mb-2">Fitur Belum Tersedia</h4>
+              <p className="text-sm font-bold text-gray-600 mb-6">
+                Fitur penarikan saldo ke rekening bank (Withdraw) saat ini masih dalam tahap pengembangan.
+              </p>
+              <button 
+                onClick={() => setIsWithdrawModalOpen(false)}
+                className="btn-primary w-full py-2.5"
+              >
+                Mengerti
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

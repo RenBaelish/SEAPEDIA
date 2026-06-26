@@ -154,18 +154,39 @@ deliveryRouter.get('/earnings', async (c) => {
   // Calculate total earnings (only from INCOME type)
   const totalEarnings = history.filter(h => h.type === 'INCOME').reduce((sum, h) => sum + h.amount, 0);
 
-  // We map history to calculate running balance or just return it since we don't have balanceAfter in schema
-  // Actually we'll just mock balanceAfter by accumulating from bottom
+  // We map history to calculate running balance and attach order details
   let runningBalance = 0;
-  const historyWithBalance = [...history].reverse().map(h => {
-    runningBalance += h.amount; // amount is positive or negative
-    return { ...h, balanceAfter: runningBalance };
-  }).reverse();
+  const historyWithBalance = await Promise.all([...history].reverse().map(async (h) => {
+    runningBalance += h.amount;
+    
+    let orderDetails = null;
+    if (h.type === 'INCOME' && h.description.includes('pesanan ')) {
+      const orderIdMatch = h.description.match(/pesanan ([\w-]+)/);
+      const orderId = orderIdMatch ? orderIdMatch[1] : null;
+      if (orderId) {
+        const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
+        if (order) {
+          const store = await db.select().from(stores).where(eq(stores.id, order.storeId)).get();
+          const address = await db.select().from(addresses).where(eq(addresses.userId, order.buyerId)).get();
+          orderDetails = {
+            id: order.id,
+            storeName: store?.name || 'Toko',
+            buyerName: address?.recipientName || 'Pembeli',
+            dropAddress: address ? `${address.street}, ${address.city}` : 'Alamat',
+            deliveryFee: order.deliveryFee
+          };
+        }
+      }
+    }
+
+    return { ...h, balanceAfter: runningBalance, order: orderDetails };
+  }));
+  const finalHistory = historyWithBalance.reverse();
 
   return c.json({ 
     data: {
       totalEarnings,
-      history: historyWithBalance
+      history: finalHistory
     } 
   });
 });
@@ -186,52 +207,30 @@ deliveryRouter.post('/:id/complete', async (c) => {
     completedAt: new Date()
   }).where(eq(deliveryJobs.id, jobId));
 
-  // Update order status (Trigger payment to seller which is already handled in orderRouter or here)
-  // To avoid duplicate logic, let's just make an internal call or duplicate the logic for PESANAN_SELESAI.
-  // Actually, we should just update order status and let the order router's PUT /orders/:id/status handle it, or duplicate it here.
-  // Let's duplicate the seller payment logic here so the driver finishing it pays the seller.
+  // Update order status to TERKIRIM (Buyer hasn't confirmed yet)
   const order = await db.select().from(orders).where(eq(orders.id, job.orderId)).get();
   if (order) {
-    await db.update(orders).set({ status: 'PESANAN_SELESAI' }).where(eq(orders.id, job.orderId));
+    await db.update(orders).set({ status: 'TERKIRIM' }).where(eq(orders.id, job.orderId));
     
-    // Add income to seller
-    const { wallets, stores, walletMutations } = await import('../db/schema');
-    const store = await db.select().from(stores).where(eq(stores.id, order.storeId)).get();
-    if (store) {
-      let sellerWallet = await db.select().from(wallets).where(eq(wallets.userId, store.ownerId)).get();
-      let sellerWalletId = sellerWallet?.id;
-      if (sellerWallet) {
-        await db.update(wallets).set({ balance: sellerWallet.balance + order.totalAmount }).where(eq(wallets.id, sellerWallet.id));
-      } else {
-        sellerWalletId = crypto.randomUUID();
-        await db.insert(wallets).values({ id: sellerWalletId, userId: store.ownerId, balance: order.totalAmount });
-      }
+    // Add delivery fee income to driver (Minus 10% platform commission)
+    const { wallets, walletMutations } = await import('../db/schema');
+    const netFee = Math.floor(order.deliveryFee * 0.9);
 
-      await db.insert(walletMutations).values({
-        id: crypto.randomUUID(),
-        walletId: sellerWalletId as string,
-        amount: order.totalAmount,
-        type: 'INCOME',
-        description: `Penjualan pesanan ${order.id} selesai dikirim`
-      });
-    }
-
-    // Add delivery fee income to driver
     let driverWallet = await db.select().from(wallets).where(eq(wallets.userId, user.id as string)).get();
     let driverWalletId = driverWallet?.id;
     if (driverWallet) {
-      await db.update(wallets).set({ balance: driverWallet.balance + order.deliveryFee }).where(eq(wallets.id, driverWallet.id));
+      await db.update(wallets).set({ balance: driverWallet.balance + netFee }).where(eq(wallets.id, driverWallet.id));
     } else {
       driverWalletId = crypto.randomUUID();
-      await db.insert(wallets).values({ id: driverWalletId, userId: user.id as string, balance: order.deliveryFee });
+      await db.insert(wallets).values({ id: driverWalletId, userId: user.id as string, balance: netFee });
     }
 
     await db.insert(walletMutations).values({
       id: crypto.randomUUID(),
       walletId: driverWalletId as string,
-      amount: order.deliveryFee,
+      amount: netFee,
       type: 'INCOME',
-      description: `Pendapatan pengiriman pesanan ${order.id}`
+      description: `Pendapatan pengiriman pesanan ${order.id} (Dipotong Komisi 10%)`
     });
   }
 

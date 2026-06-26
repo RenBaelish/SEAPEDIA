@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { formatCurrency } from "../../../../lib/format";
 import { api } from "../../../../lib/api";
-import { Wallet, TrendingUp, ArrowDownLeft } from "lucide-react";
+import { Wallet, TrendingUp, ArrowDownLeft, X, Package } from "lucide-react";
+import { Modal } from "../../../../components/ui/Modal";
 
 export default function DriverEarningsPage() {
   const [report, setReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedTx, setSelectedTx] = useState<any>(null);
 
   useEffect(() => {
     const fetchEarnings = async () => {
@@ -64,7 +66,12 @@ export default function DriverEarningsPage() {
         ) : (
           <div className="space-y-4">
             {report.history.map((tx: any) => (
-              <div key={tx.id} className="bg-white p-4 border-3 border-nb-black flex justify-between items-center shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
+              <div 
+                key={tx.id} 
+                className="bg-white p-4 border-3 border-nb-black flex justify-between items-center shadow-[4px_4px_0px_#0A0A0A] cursor-pointer hover:bg-nb-yellow transition-colors" 
+                style={{ borderWidth: '3px' }}
+                onClick={() => setSelectedTx(tx)}
+              >
                 <div>
                   <p className="font-extrabold text-nb-black text-sm mb-1">{tx.description}</p>
                   <p className="text-xs font-bold text-gray-500">{new Date(tx.createdAt).toLocaleDateString('id-ID')} {new Date(tx.createdAt).toLocaleTimeString('id-ID')}</p>
@@ -78,6 +85,84 @@ export default function DriverEarningsPage() {
           </div>
         )}
       </div>
+
+      <Modal isOpen={!!selectedTx} onClose={() => setSelectedTx(null)} title="Detail Transaksi Pendapatan">
+        {selectedTx && (
+          <div className="p-4 space-y-5 max-h-[85vh] overflow-y-auto">
+            <div className="text-center pb-4 border-b-2 border-gray-100">
+              <div className="w-12 h-12 bg-nb-green border-2 border-nb-black rounded-full flex items-center justify-center mx-auto mb-3">
+                <Wallet size={20} className="text-white" strokeWidth={2.5} />
+              </div>
+              <p className="text-sm font-bold text-gray-500 mb-1">Total Didapat</p>
+              <p className="text-2xl font-black text-nb-green">+{formatCurrency(Number(selectedTx.amount))}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-1">ID Transaksi</p>
+                <p className="text-xs font-extrabold text-nb-black uppercase tracking-wide truncate" title={selectedTx.id}>#{selectedTx.id.split('-')[0]}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-500 mb-1">Waktu Selesai</p>
+                <p className="text-xs font-extrabold text-nb-black">{new Date(selectedTx.createdAt).toLocaleString('id-ID')}</p>
+              </div>
+            </div>
+
+            {selectedTx.order ? (
+              <div className="bg-[#F7F5F0] border-2 border-nb-black p-4 space-y-4">
+                <h4 className="text-xs font-black text-nb-black uppercase tracking-wide flex items-center gap-2 mb-2">
+                  <Package size={14} /> Informasi Pengiriman
+                </h4>
+                
+                <div>
+                  <p className="text-xs font-bold text-gray-500 mb-1">ID Pesanan</p>
+                  <p className="text-xs font-black text-nb-black bg-white border border-nb-black px-2 py-1 w-fit uppercase">{selectedTx.order.id}</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 mb-1">Toko Asal</p>
+                    <p className="text-sm font-extrabold text-nb-black">{selectedTx.order.storeName}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 mb-1">Penerima</p>
+                    <p className="text-sm font-extrabold text-nb-black">{selectedTx.order.buyerName}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold text-gray-500 mb-1">Alamat Tujuan</p>
+                  <p className="text-sm font-extrabold text-nb-black leading-snug">{selectedTx.order.dropAddress}</p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold text-gray-500 mb-1">Rincian Pendapatan</p>
+                  <div className="bg-white border-2 border-nb-black p-3 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-gray-500">Ongkos Kirim Pesanan (Kotor)</span>
+                      <span className="text-xs font-extrabold text-nb-black">{formatCurrency(Number(selectedTx.order.deliveryFee || 0))}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-nb-red">
+                      <span className="text-xs font-bold">Potongan Komisi (10%)</span>
+                      <span className="text-xs font-extrabold">-{formatCurrency(Number(selectedTx.order.deliveryFee || 0) - Number(selectedTx.amount))}</span>
+                    </div>
+                    <div className="pt-2 border-t border-dashed border-gray-300 flex justify-between items-center">
+                      <span className="text-xs font-bold text-nb-black uppercase tracking-wide">Pendapatan Bersih</span>
+                      <span className="text-sm font-black text-nb-green">+{formatCurrency(Number(selectedTx.amount))}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-gray-50 border-2 border-gray-200 p-4 text-center">
+                <p className="text-sm font-bold text-gray-500">Detail pesanan tidak tersedia untuk transaksi ini.</p>
+              </div>
+            )}
+
+            <button onClick={() => setSelectedTx(null)} className="btn-primary w-full py-2.5">Tutup</button>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
