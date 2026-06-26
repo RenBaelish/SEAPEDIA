@@ -121,8 +121,7 @@ adminRouter.post('/categories', async (c) => {
   await db.insert(categories).values({
     id: crypto.randomUUID(),
     name: body.name,
-    slug: body.slug,
-    iconUrl: body.iconUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'
+    slug: body.slug
   });
 
   return c.json({ message: 'Kategori berhasil ditambahkan' });
@@ -163,6 +162,23 @@ adminRouter.delete('/promos/:id', async (c) => {
   
   await db.delete(promos).where(eq(promos.id, promoId));
   return c.json({ message: 'Promo berhasil dihapus' });
+});
+
+adminRouter.put('/promos/:id', async (c) => {
+  const db = drizzle(c.env.DB);
+  const promoId = c.req.param('id');
+  const body = await c.req.json();
+
+  if (!body.discountAmount || !body.quota) {
+    return c.json({ message: 'Incomplete data' }, 400);
+  }
+
+  await db.update(promos).set({
+    discountAmount: body.discountAmount,
+    quota: body.quota
+  }).where(eq(promos.id, promoId));
+
+  return c.json({ message: 'Promo berhasil diperbarui' });
 });
 
 adminRouter.get('/analytics', async (c) => {
@@ -217,31 +233,34 @@ adminRouter.get('/analytics', async (c) => {
   });
 });
 
-adminRouter.post('/trigger-overdue', async (c) => {
+adminRouter.post('/overdue/simulate', async (c) => {
   const db = drizzle(c.env.DB);
   const body = await c.req.json().catch(() => ({}));
-  const daysOffset = body.daysOffset || 3; // Default 3 days to simulate overdue
+  const hoursToAdvance = body.hoursToAdvance || 24;
 
-  // In SQLite, date manipulation is tricky if stored as integer timestamps
-  // We'll calculate the threshold timestamp in seconds
-  const thresholdTimestamp = Math.floor(Date.now() / 1000) - (daysOffset * 24 * 60 * 60);
+  const currentTimestamp = Math.floor(Date.now() / 1000);
+  const simulatedTime = currentTimestamp + (hoursToAdvance * 60 * 60);
 
-  // Find orders that are SEDANG_DIKEMAS and were created BEFORE the threshold
-  const overdueOrders = await db.select().from(orders)
-    .where(sql`${orders.status} = 'SEDANG_DIKEMAS' AND ${orders.createdAt} < datetime(${thresholdTimestamp}, 'unixepoch')`)
-    .all();
-
-  // If we can't do datetime comparisons easily with integers, let's just fetch all SEDANG_DIKEMAS and filter in JS
-  // Since we stored createdAt as timestamp integer
-  const allPackingOrders = await db.select().from(orders).where(eq(orders.status, 'SEDANG_DIKEMAS')).all();
+  // We need to fetch all active orders and see if simulatedTime - createdAt > threshold
+  const activeOrders = await db.select().from(orders).where(
+    sql`${orders.status} IN ('SEDANG_DIKEMAS', 'SEDANG_DIKIRIM')`
+  ).all();
   
   let refundedCount = 0;
 
-  for (const order of allPackingOrders) {
+  for (const order of activeOrders) {
     const createdAtSeconds = Math.floor(new Date(order.createdAt).getTime() / 1000);
+    const hoursElapsed = (simulatedTime - createdAtSeconds) / 3600;
     
-    // If order is older than threshold
-    if (createdAtSeconds < thresholdTimestamp) {
+    let shouldCancel = false;
+    
+    if (order.status === 'SEDANG_DIKEMAS' && hoursElapsed >= 24) {
+      shouldCancel = true;
+    } else if (order.status === 'SEDANG_DIKIRIM' && hoursElapsed >= 72) {
+      shouldCancel = true;
+    }
+
+    if (shouldCancel) {
       // 1. Update order status to DIKEMBALIKAN
       await db.update(orders).set({ status: 'DIKEMBALIKAN' }).where(eq(orders.id, order.id));
       
@@ -263,5 +282,5 @@ adminRouter.post('/trigger-overdue', async (c) => {
     }
   }
 
-  return c.json({ message: `Simulasi waktu maju ${daysOffset} hari berhasil dijalankan. ${refundedCount} pesanan dibatalkan secara otomatis (Refund).` });
+  return c.json({ message: `Simulasi waktu maju ${hoursToAdvance} jam berhasil dijalankan. ${refundedCount} pesanan dibatalkan secara otomatis (Refund).` });
 });

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { api } from "../../../../lib/api";
-import { Store, Search, ExternalLink } from "lucide-react";
+import { Store, Search, ExternalLink, Info, Star, CreditCard, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Modal } from "../../../../components/ui/Modal";
 
 export default function AdminStoresPage() {
   const [stores, setStores] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStore, setSelectedStore] = useState<any>(null);
 
   useEffect(() => {
     api.get('/admin/stores')
@@ -95,9 +97,13 @@ export default function AdminStoresPage() {
                       </td>
                       <td className="px-5 py-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <Link to={`/store/${store.slug}`} className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors" title="Lihat Toko">
-                            <ExternalLink size={16} strokeWidth={2.5} />
-                          </Link>
+                          <button 
+                            onClick={() => setSelectedStore(store)}
+                            className="w-8 h-8 flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors" 
+                            title="Lihat Detail Toko"
+                          >
+                            <Info size={16} strokeWidth={2.5} />
+                          </button>
                           <button 
                             onClick={async () => {
                               try {
@@ -132,6 +138,61 @@ export default function AdminStoresPage() {
           </div>
         )}
       </div>
+
+      <Modal isOpen={!!selectedStore} onClose={() => setSelectedStore(null)} title="Detail Toko Khusus Admin">
+        {selectedStore && (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-100">
+              <div className="w-16 h-16 border-2 border-nb-black bg-white overflow-hidden shrink-0">
+                <img src={selectedStore.logoUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'} alt={selectedStore.name} className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-lg text-nb-black leading-tight">{selectedStore.name}</h3>
+                <p className="text-sm font-bold text-nb-blue mb-1">@{selectedStore.slug}</p>
+                <span className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-wide border-2 inline-block ${
+                  selectedStore.status === 'ACTIVE' ? 'bg-green-50 text-nb-green border-nb-green' :
+                  selectedStore.status === 'SUSPENDED' ? 'bg-red-50 text-nb-red border-nb-red' :
+                  'bg-gray-100 text-nb-black border-nb-black'
+                }`}>
+                  {selectedStore.status === 'ACTIVE' ? 'Aktif' : selectedStore.status === 'SUSPENDED' ? 'Ditangguhkan' : 'Tutup'}
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-[#F7F5F0] border-2 border-nb-black p-3">
+                <p className="text-[10px] font-extrabold text-gray-500 uppercase flex items-center gap-1.5 mb-1"><DollarSign size={12} /> Total Penjualan</p>
+                <p className="text-lg font-black text-nb-green">{selectedStore.totalSales || 0}</p>
+              </div>
+              <div className="bg-[#F7F5F0] border-2 border-nb-black p-3">
+                <p className="text-[10px] font-extrabold text-gray-500 uppercase flex items-center gap-1.5 mb-1"><Star size={12} /> Rating</p>
+                <p className="text-lg font-black text-nb-black">{selectedStore.rating || 0}</p>
+              </div>
+            </div>
+
+            <div>
+              <p className="text-[10px] font-extrabold text-gray-500 uppercase mb-1">Deskripsi Toko</p>
+              <p className="text-sm font-bold text-gray-800 bg-gray-50 p-3 border-2 border-gray-200">
+                {selectedStore.description || 'Toko ini belum menambahkan deskripsi apapun.'}
+              </p>
+            </div>
+
+            <div className="flex justify-between items-center bg-gray-50 p-3 border-2 border-gray-200">
+              <div>
+                <p className="text-[10px] font-extrabold text-gray-500 uppercase mb-1">Terdaftar Sejak</p>
+                <p className="text-sm font-black text-nb-black">
+                  {new Date(selectedStore.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </p>
+              </div>
+              <Link to={`/store/${selectedStore.slug}`} className="btn-secondary h-9 px-4 text-xs flex items-center gap-2">
+                Kunjungi Halaman <ExternalLink size={14} strokeWidth={2.5} />
+              </Link>
+            </div>
+            
+            <button onClick={() => setSelectedStore(null)} className="btn-primary w-full py-2.5">Tutup</button>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

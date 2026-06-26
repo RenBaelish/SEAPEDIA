@@ -57,6 +57,32 @@ promoRouter.post('/', zValidator('json', promoSchema), async (c) => {
   return c.json({ message: 'Promo created successfully' }, 201);
 });
 
+promoRouter.get('/mine', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ message: 'Unauthorized' }, 401);
+  }
+
+  const token = authHeader.split(' ')[1];
+  const secret = c.env.JWT_SECRET || 'fallback_secret';
+
+  let payload;
+  try {
+    payload = await verify(token, secret, "HS256");
+  } catch (err) {
+    return c.json({ message: 'Invalid token' }, 401);
+  }
+
+  const db = drizzle(c.env.DB);
+  const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
+  if (!store) {
+    return c.json({ message: 'Store not found' }, 404);
+  }
+
+  const storePromos = await db.select().from(promos).where(eq(promos.storeId, store.id)).all();
+  return c.json({ data: storePromos });
+});
+
 promoRouter.get('/store/:storeId', async (c) => {
   const db = drizzle(c.env.DB);
   const storeId = c.req.param('storeId');

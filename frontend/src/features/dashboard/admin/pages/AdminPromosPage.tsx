@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { api } from "../../../../lib/api";
-import { Megaphone, Plus, Search, Loader2, Trash2 } from "lucide-react";
+import { Megaphone, Plus, Trash2, Search, Loader2, Edit3 } from "lucide-react";
 import { useConfirm } from "../../../../contexts/ConfirmContext";
+import { Modal } from "../../../../components/ui/Modal";
 
 export default function AdminPromosPage() {
   const [promos, setPromos] = useState<any[]>([]);
@@ -16,6 +17,9 @@ export default function AdminPromosPage() {
     quota: 100
   });
   const [submitting, setSubmitting] = useState(false);
+  const [editingPromo, setEditingPromo] = useState<any>(null);
+  const [editFormData, setEditFormData] = useState({ discountAmount: 0, quota: 0 });
+  const [editSubmitting, setEditSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const { showConfirm } = useConfirm();
 
@@ -71,6 +75,21 @@ export default function AdminPromosPage() {
         console.error(err);
         setMessage({ text: "Gagal menghapus promo", type: "error" });
       }
+    }
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditSubmitting(true);
+    try {
+      await api.put(`/admin/promos/${editingPromo.id}`, editFormData);
+      setPromos(promos.map(p => p.id === editingPromo.id ? { ...p, discountAmount: editFormData.discountAmount, quota: editFormData.quota } : p));
+      setMessage({ text: "Promo berhasil diperbarui", type: "success" });
+      setEditingPromo(null);
+    } catch (err: any) {
+      setMessage({ text: err.response?.data?.message || "Gagal memperbarui promo", type: "error" });
+    } finally {
+      setEditSubmitting(false);
     }
   };
 
@@ -215,13 +234,25 @@ export default function AdminPromosPage() {
                         {new Date(promo.createdAt).toLocaleDateString('id-ID')}
                       </td>
                       <td className="px-5 py-4 text-center">
-                        <button
-                          onClick={() => handleDelete(promo.id)}
-                          className="w-8 h-8 inline-flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-red hover:text-white transition-colors"
-                          title="Hapus Promo"
-                        >
-                          <Trash2 size={16} strokeWidth={2.5} />
-                        </button>
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingPromo(promo);
+                              setEditFormData({ discountAmount: promo.discountAmount, quota: promo.quota });
+                            }}
+                            className="w-8 h-8 inline-flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-yellow text-nb-black transition-colors"
+                            title="Edit Promo"
+                          >
+                            <Edit3 size={16} strokeWidth={2.5} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(promo.id)}
+                            className="w-8 h-8 inline-flex items-center justify-center border-2 border-nb-black bg-white hover:bg-nb-red hover:text-white transition-colors"
+                            title="Hapus Promo"
+                          >
+                            <Trash2 size={16} strokeWidth={2.5} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -237,6 +268,40 @@ export default function AdminPromosPage() {
           </div>
         )}
       </div>
+
+      {editingPromo && (
+        <Modal isOpen={true} onClose={() => setEditingPromo(null)} title="Edit Promo Platform">
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Potongan (Rp)</label>
+              <input 
+                type="number"
+                value={editFormData.discountAmount} 
+                onChange={(e) => setEditFormData({ ...editFormData, discountAmount: Number(e.target.value) })} 
+                required 
+                min="1000"
+                className="nb-input w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Kuota</label>
+              <input 
+                type="number"
+                value={editFormData.quota} 
+                onChange={(e) => setEditFormData({ ...editFormData, quota: Number(e.target.value) })} 
+                required 
+                min="1"
+                className="nb-input w-full"
+              />
+            </div>
+            <div className="pt-4 flex justify-end">
+              <button type="submit" disabled={editSubmitting} className="btn-primary w-full py-2.5 flex justify-center items-center gap-2">
+                {editSubmitting ? <><Loader2 size={18} strokeWidth={2.5} className="animate-spin" /> Menyimpan...</> : 'Simpan Perubahan'}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }
