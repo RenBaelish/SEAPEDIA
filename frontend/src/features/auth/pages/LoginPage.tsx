@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { api } from "../../../lib/api";
 import { useAuthStore } from "../../../store/auth.store";
-import { useConfirm } from "../../../contexts/ConfirmContext";
+import toast from "react-hot-toast";
+
 import { Input } from "../../../components/ui/Input";
 import { ShieldCheck, ArrowRight } from "lucide-react";
 
@@ -15,7 +16,7 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
-  const { showConfirm } = useConfirm();
+
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -104,7 +105,7 @@ export default function LoginPage() {
                 <div className="flex justify-end pt-1">
                   <button 
                     type="button" 
-                    onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur pemulihan kata sandi belum tersedia pada versi ini.', confirmText: 'Tutup', hideCancel: true })}
+                    onClick={() => toast.error('Fitur pemulihan kata sandi belum tersedia pada versi ini.')}
                     className="text-xs font-bold text-nb-blue hover:underline hover:text-nb-black transition-colors"
                   >
                     Lupa Kata Sandi?

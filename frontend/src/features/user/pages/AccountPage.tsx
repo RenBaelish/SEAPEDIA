@@ -7,7 +7,7 @@ import { Input } from "../../../components/ui/Input";
 import {
   MapPin, Plus, Trash2, Star, User, Package, Heart,
   Settings, ChevronRight, CheckCircle, Edit3, Phone,
-  Mail, Lock, ShieldCheck, Wallet, AlertCircle, X
+  Mail, Lock, ShieldCheck, Wallet, AlertCircle, X, LogOut
 } from "lucide-react";
 
 const TABS = [
@@ -141,7 +141,7 @@ export default function AccountPage() {
       };
 
       if (res.data.data?.accessToken) {
-        useAuthStore.getState().setUser(updatedUser, { accessToken: res.data.data.accessToken });
+        useAuthStore.getState().setUser(updatedUser, { ...useAuthStore.getState().tokens!, accessToken: res.data.data.accessToken });
       } else {
         useAuthStore.getState().setUser(updatedUser, useAuthStore.getState().tokens!);
       }
@@ -155,7 +155,18 @@ export default function AccountPage() {
 
   return (
     <div className="flex-1 w-full bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6 min-h-[600px]">
-      <h1 className="text-xl font-extrabold text-nb-black mb-6 nb-section-title">Pengaturan Akun</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-extrabold text-nb-black nb-section-title">Pengaturan Akun</h1>
+        <button 
+          onClick={() => {
+            useAuthStore.getState().clearAuth();
+            window.location.href = "/auth/login";
+          }}
+          className="md:hidden btn-primary h-9 px-4 text-xs font-bold flex items-center gap-2 bg-nb-red border-nb-black text-white hover:bg-red-600"
+        >
+          <LogOut size={14} strokeWidth={3} /> Keluar
+        </button>
+      </div>
       <div className="mb-6">
         <div className="flex overflow-x-auto hide-scrollbar border-b-4 border-nb-black">
           {TABS.map(tab => (

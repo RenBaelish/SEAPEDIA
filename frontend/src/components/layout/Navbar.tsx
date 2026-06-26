@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search, ShoppingCart, User, Package, LogOut, Settings,
-  Bell, Wallet, ChevronDown, ChevronRight, Menu, X, Store
+  Bell, Wallet, ChevronDown, ChevronRight, Store
 } from "lucide-react";
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from "../../store/auth.store";
@@ -45,7 +45,6 @@ export function Navbar() {
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(CATEGORIES[0]);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
   const searchRef = useRef<HTMLDivElement>(null);
@@ -99,7 +98,9 @@ export function Navbar() {
             <span className="font-semibold text-nb-yellow">SEAPEDIA — Belanja Lebih Smart</span>
             <div className="flex items-center gap-5 text-gray-300">
               <Link to="/about" className="hover:text-nb-yellow transition-colors">Tentang Kami</Link>
-              <Link to="/seller" className="hover:text-nb-yellow transition-colors">Jadi Penjual</Link>
+              {!user?.roles?.includes(RoleType.SELLER) && (
+                <Link to="/seller" className="hover:text-nb-yellow transition-colors">Jadi Penjual</Link>
+              )}
               <Link to="/search" className="hover:text-nb-yellow transition-colors">Promo</Link>
               <Link to="/help" className="hover:text-nb-yellow transition-colors">Bantuan</Link>
             </div>
@@ -228,7 +229,7 @@ export function Navbar() {
                 {user?.activeRole === "BUYER" && (
                   <Link
                     to="/cart"
-                    className="relative flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
+                    className="hidden md:flex relative items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                     style={{ borderWidth: '3px' }}
                     aria-label="Keranjang"
                   >
@@ -251,13 +252,13 @@ export function Navbar() {
                 </button>
 
                 {/* Account Menu */}
-                <div className="relative" ref={accountRef}>
+                <div className="relative hidden md:block" ref={accountRef}>
                   <button
                     onClick={() => setAccountMenuOpen(!accountMenuOpen)}
                     className="flex items-center gap-2 h-11 px-3 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                     style={{ borderWidth: '3px' }}
                   >
-                    <Avatar name={user?.fullName} size="sm" />
+                    <Avatar name={user?.fullName} src={user?.profilePictureUrl} size="sm" />
                     <ChevronDown size={14} strokeWidth={3} className="hidden md:block" />
                   </button>
 
@@ -274,17 +275,22 @@ export function Navbar() {
                         </span>
                       </div>
 
-                      {/* Dashboard link */}
-                      {roleDashboardPath[user?.activeRole as RoleType] && (
-                        <Link
-                          to={roleDashboardPath[user?.activeRole as RoleType]!}
-                          onClick={() => setAccountMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-bold hover:bg-nb-yellow transition-colors"
-                        >
-                          <Settings size={16} strokeWidth={2.5} />
-                          Dashboard
-                        </Link>
-                      )}
+                      {/* Dashboard links based on all roles */}
+                      {user?.roles?.map(role => {
+                        const dashPath = roleDashboardPath[role as RoleType];
+                        if (!dashPath) return null;
+                        return (
+                          <Link
+                            key={role}
+                            to={dashPath}
+                            onClick={() => setAccountMenuOpen(false)}
+                            className="flex items-center gap-3 px-4 py-3 border-b-2 border-gray-100 text-sm font-bold hover:bg-nb-yellow transition-colors"
+                          >
+                            <Settings size={16} strokeWidth={2.5} />
+                            Dashboard {roleLabels[role as RoleType]}
+                          </Link>
+                        );
+                      })}
 
                       <Link
                         to="/orders"
@@ -325,55 +331,27 @@ export function Navbar() {
                 </div>
               </>
             ) : (
-              <>
+              <div className="flex items-center gap-2">
                 <Link
-                  to="auth/login"
-                  className="hidden md:flex items-center justify-center h-11 px-4 border-3 border-nb-black bg-white hover:bg-gray-50 font-bold text-sm transition-colors"
+                  to="/auth/login"
+                  className="flex items-center justify-center h-10 md:h-11 px-3 md:px-4 border-3 border-nb-black bg-white hover:bg-gray-50 font-bold text-xs md:text-sm transition-colors"
                   style={{ borderWidth: '3px' }}
                 >
                   Masuk
                 </Link>
                 <Link
-                  to="auth/register"
-                  className="flex items-center justify-center h-11 px-4 border-3 border-nb-black bg-nb-yellow hover:bg-[#FFD700] font-bold text-sm shadow-[3px_3px_0px_#0A0A0A] hover:shadow-[4px_4px_0px_#0A0A0A] hover:-translate-x-px hover:-translate-y-px transition-all"
+                  to="/auth/register"
+                  className="hidden md:flex items-center justify-center h-11 px-5 border-3 border-nb-black bg-nb-yellow text-nb-black hover:bg-black hover:text-white font-extrabold text-sm transition-colors"
                   style={{ borderWidth: '3px' }}
                 >
                   Daftar
                 </Link>
-              </>
+              </div>
             )}
 
-            {/* Mobile menu toggle */}
-            <button
-              className="md:hidden flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white"
-              style={{ borderWidth: '3px' }}
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Menu"
-            >
-              {mobileMenuOpen ? <X size={20} strokeWidth={3} /> : <Menu size={20} strokeWidth={3} />}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* ── Mobile Menu ── */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t-3 border-nb-black"
-          style={{ borderTopWidth: '3px' }}>
-          <div className="p-4 space-y-2">
-            {CATEGORIES.slice(0, 6).map((cat) => (
-              <button
-                key={cat.slug}
-                onClick={() => { navigate(`/search?category=${cat.slug}`); setMobileMenuOpen(false); }}
-                className="w-full flex items-center gap-3 px-3 py-2.5 border-2 border-gray-200 bg-gray-50 text-sm font-semibold hover:bg-nb-yellow hover:border-nb-black transition-colors"
-              >
-                <img src={cat.icon} alt="" className="w-5 h-5 object-contain" />
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
     </header>
   );
 }
