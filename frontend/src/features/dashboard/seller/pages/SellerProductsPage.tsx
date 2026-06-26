@@ -22,10 +22,10 @@ interface Product {
   categoryName: string;
 }
 
-const STATUS_BADGE: Record<string, "success" | "warning" | "error" | "info"> = {
-  ACTIVE: "success",
-  DRAFT: "warning",
-  INACTIVE: "error",
+const STATUS_BADGE: Record<string, "green" | "yellow" | "red" | "blue"> = {
+  ACTIVE: "green",
+  DRAFT: "yellow",
+  INACTIVE: "red",
 };
 
 export default function SellerProductsPage() {
@@ -175,7 +175,7 @@ export default function SellerProductsPage() {
 
                     {/* Status */}
                     <td className="px-5 py-4 text-center border-r-2 border-nb-black">
-                      <Badge variant={STATUS_BADGE[product.status] ?? "info"} className="border-2 border-nb-black">
+                      <Badge variant={STATUS_BADGE[product.status] ?? "blue"} className="border-2 border-nb-black">
                         {product.status}
                       </Badge>
                     </td>

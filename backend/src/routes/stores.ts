@@ -51,6 +51,7 @@ storeRouter.post('/', zValidator('json', storeSchema), async (c) => {
     id: storeId,
     ownerId: payload.id as string,
     name: data.name,
+    slug: data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
     description: data.description || ''
   });
 

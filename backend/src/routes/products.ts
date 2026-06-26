@@ -286,13 +286,12 @@ productRouter.get('/', async (c) => {
   ];
   
   if (q) {
-    conditions.push(
-      or(
-        like(products.name, `%${q}%`),
-        like(products.description, `%${q}%`),
-        like(categories.name, `%${q}%`)
-      )
+    const searchCondition = or(
+      like(products.name, `%${q}%`),
+      like(products.description, `%${q}%`),
+      like(categories.name, `%${q}%`)
     );
+    if (searchCondition) conditions.push(searchCondition);
   }
 
   if (categorySlug) {

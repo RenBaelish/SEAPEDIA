@@ -13,7 +13,7 @@ export default function SellerOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await api.get("/orders/seller/list");
+      const res = await api.get("/orders/store/incoming");
       setOrders(res.data.data);
     } catch (err) {
       console.error(err);
@@ -29,7 +29,7 @@ export default function SellerOrdersPage() {
   const handleProcessOrder = async (orderId: string) => {
     setProcessingId(orderId);
     try {
-      await api.patch(`/orders/${orderId}/process`);
+      await api.put(`/orders/${orderId}/status`, { status: "MENUNGGU_PENGIRIM" });
       await showAlert({ title: "Berhasil", message: "Pesanan berhasil diproses!" });
       fetchOrders();
     } catch (err: any) {
@@ -69,7 +69,7 @@ export default function SellerOrdersPage() {
                   <span className="font-extrabold text-sm text-nb-black uppercase tracking-wide bg-nb-yellow border-2 border-nb-black px-2 py-0.5">{order.buyer.fullName}</span>
                   <span className="text-nb-black font-black">•</span>
                   <span className="text-xs font-bold text-gray-600">{new Date(order.createdAt).toLocaleDateString('id-ID')}</span>
-                  <OrderStatusBadge status={order.status} className="border-2 border-nb-black shadow-[2px_2px_0px_#0A0A0A]" />
+                  <OrderStatusBadge status={order.status} />
                 </div>
                 
                 <div className="space-y-3 mt-4 border-l-2 border-nb-black pl-4 ml-1">
@@ -99,18 +99,18 @@ export default function SellerOrdersPage() {
                   {formatCurrency(Number(order.subtotal) - Number(order.discount || 0))}
                 </p>
                 
-                {order.status === 'PROCESSING' && (
+                {order.status === 'SEDANG_DIKEMAS' && (
                   <button 
                     onClick={() => handleProcessOrder(order.id)}
                     disabled={processingId === order.id}
                     className="btn-primary w-full justify-center disabled:opacity-50"
                   >
-                    {processingId === order.id ? "Memproses..." : "Proses Pesanan"}
+                    {processingId === order.id ? "Memproses..." : "Cari Driver / Kirim"}
                   </button>
                 )}
-                {order.status === 'READY_FOR_PICKUP' && (
+                {order.status === 'MENUNGGU_PENGIRIM' && (
                   <p className="text-xs text-nb-blue flex items-center gap-1.5 font-extrabold border-2 border-nb-blue bg-[#EBF5FF] px-3 py-1.5 w-full justify-center md:justify-end">
-                    <Truck size={14} strokeWidth={2.5} /> Menunggu Kurir
+                    <Truck size={14} strokeWidth={2.5} /> Menunggu Driver
                   </p>
                 )}
               </div>

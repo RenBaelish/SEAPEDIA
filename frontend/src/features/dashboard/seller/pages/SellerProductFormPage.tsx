@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { ArrowLeft, Upload, X } from "lucide-react";
+import { ArrowLeft, Upload, X, ImagePlus } from "lucide-react";
 import { z } from "zod";
 import { api } from "../../../../lib/api";
 import { useAlert } from "../../../../contexts/AlertContext";
+import { Modal } from "../../../../components/ui/Modal";
 
 // ─── Zod schema (mirrors backend) ──
 const productSchema = z.object({
@@ -47,6 +48,7 @@ export default function SellerProductFormPage() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Fetch categories + product data (edit mode)
   useEffect(() => {
@@ -273,9 +275,19 @@ export default function SellerProductFormPage() {
         {/* Images */}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
           <h3 className="text-base font-extrabold text-nb-black mb-2 border-b-2 border-gray-100 pb-2">Gambar Produk</h3>
-          <p className="text-xs font-semibold text-gray-500 mb-5">
-            Tambahkan URL gambar (maks. 8). Pastikan URL dapat diakses publik.
-          </p>
+          <div className="flex items-center justify-between mb-5">
+            <p className="text-xs font-semibold text-gray-500">
+              Tambahkan URL gambar (maks. 8). Pastikan URL dapat diakses publik.
+            </p>
+            <button 
+              type="button" 
+              onClick={() => setIsUploadModalOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-bold text-nb-black border-2 border-nb-black px-3 py-1.5 bg-gray-50 hover:bg-nb-yellow transition-colors"
+            >
+              <ImagePlus size={14} strokeWidth={2.5} />
+              Upload Foto
+            </button>
+          </div>
 
           {/* Existing images */}
           {(form.images ?? []).length > 0 && (
@@ -326,6 +338,20 @@ export default function SellerProductFormPage() {
           </button>
         </div>
       </form>
+
+      {/* Upload Modal Placeholder */}
+      <Modal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} title="Upload Foto">
+        <div className="p-4 text-center">
+          <ImagePlus size={48} className="mx-auto text-gray-300 mb-4" strokeWidth={1.5} />
+          <h3 className="text-lg font-extrabold text-nb-black mb-2">Fitur Belum Tersedia</h3>
+          <p className="text-sm font-medium text-gray-600 mb-6">
+            Fitur upload gambar langsung dari komputer sedang dalam pengembangan. Untuk sementara, gunakan fitur tautan (URL) gambar untuk mengunggah foto produk Anda.
+          </p>
+          <button onClick={() => setIsUploadModalOpen(false)} className="btn-primary px-6 py-2 mx-auto">
+            Mengerti
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
