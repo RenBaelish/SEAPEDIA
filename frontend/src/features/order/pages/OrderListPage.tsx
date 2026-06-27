@@ -14,7 +14,6 @@ const ORDER_STATUS_LABELS: Record<string, { label: string, color: string, bg: st
   SEDANG_DIKIRIM: { label: "Sedang Dikirim", color: "text-white", bg: "bg-[#00BCD4]" },
   PESANAN_SELESAI: { label: "Pesanan Selesai", color: "text-white", bg: "bg-nb-green" },
   DIKEMBALIKAN: { label: "Dikembalikan", color: "text-white", bg: "bg-nb-red" },
-  // Fallbacks
   PENDING: { label: "Menunggu Pembayaran", color: "text-nb-black", bg: "bg-nb-yellow" },
   PAID: { label: "Sudah Dibayar", color: "text-white", bg: "bg-nb-blue" },
 };
@@ -65,7 +64,7 @@ export default function OrderListPage() {
     <div className="flex-1 w-full bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6 min-h-[600px]">
       <h1 className="text-xl font-extrabold text-nb-black mb-6 nb-section-title">Daftar Transaksi</h1>
 
-      {/* Filter Bar */}
+      {}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1 md:max-w-[320px]">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={2.5} />
@@ -94,7 +93,7 @@ export default function OrderListPage() {
         </div>
       </div>
 
-      {/* Content List */}
+      {}
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => <div key={i} className="h-40 skeleton border-3 border-nb-black" style={{ borderWidth: '3px' }} />)}
@@ -122,7 +121,7 @@ export default function OrderListPage() {
 
             return (
               <div key={order.id} className="border-4 border-nb-black p-4 bg-white hover:bg-[#F7F5F0] transition-colors shadow-[4px_4px_0px_#0A0A0A]">
-                {/* Card Header */}
+                {}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b-3 border-nb-black mb-3 gap-2" style={{ borderBottomWidth: '3px' }}>
                   <div className="flex flex-wrap items-center gap-2">
                     <ShoppingBag size={16} className="text-nb-black hidden sm:block" strokeWidth={2.5} />
@@ -137,13 +136,13 @@ export default function OrderListPage() {
                   <span className="text-[10px] sm:text-xs font-bold text-gray-500">INV/{order.id.substring(0, 8).toUpperCase()}</span>
                 </div>
 
-                {/* Store Name */}
+                {}
                 <div className="flex items-center gap-2 mb-3">
                   <img src="/icon/verify-icon.png" alt="verified" className="w-4 h-4 object-contain" />
                   <span className="text-sm font-extrabold text-nb-black">{order.store?.name || "Toko SEAPEDIA"}</span>
                 </div>
 
-                {/* Content Row */}
+                {}
                 <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
                   <div className="flex flex-1 gap-4">
                     <div className="w-16 h-16 bg-gray-100 overflow-hidden shrink-0 border-2 border-nb-black">
@@ -162,7 +161,7 @@ export default function OrderListPage() {
                     </div>
                   </div>
 
-                  {/* Total & Action */}
+                  {}
                   <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-[150px] shrink-0 border-t-2 md:border-t-0 md:border-l-3 border-nb-black pt-3 md:pt-0 md:pl-4" style={{ borderLeftWidth: '3px' }}>
                     <div className="text-left md:text-right mb-0 md:mb-3">
                       <p className="text-xs font-extrabold text-gray-500 uppercase tracking-wide mb-1">Total Belanja</p>
@@ -171,7 +170,7 @@ export default function OrderListPage() {
                   </div>
                 </div>
 
-                {/* Card Footer */}
+                {}
                 <div className="flex items-center justify-end mt-4 pt-3 border-t-3 border-nb-black" style={{ borderTopWidth: '3px' }}>
                   <Link 
                     to={`/orders/${order.id}`}

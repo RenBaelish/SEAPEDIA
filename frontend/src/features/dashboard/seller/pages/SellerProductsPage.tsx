@@ -105,7 +105,7 @@ export default function SellerProductsPage() {
         </button>
       </div>
 
-      {/* Search */}
+      {}
       <div className="relative max-w-sm">
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-nb-black" strokeWidth={3} />
         <input
@@ -117,7 +117,7 @@ export default function SellerProductsPage() {
         />
       </div>
 
-      {/* Table */}
+      {}
       <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-16">
@@ -144,7 +144,7 @@ export default function SellerProductsPage() {
               <tbody>
                 {filtered.map((product) => (
                   <tr key={product.id} className="border-b-2 border-nb-black last:border-b-0 hover:bg-[#F7F5F0] transition-colors">
-                    {/* Product info */}
+                    {}
                     <td className="px-5 py-4 border-r-2 border-nb-black">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 border-2 border-nb-black shrink-0 bg-white overflow-hidden">
@@ -161,26 +161,26 @@ export default function SellerProductsPage() {
                       </div>
                     </td>
 
-                    {/* Price */}
+                    {}
                     <td className="px-5 py-4 font-extrabold text-nb-black border-r-2 border-nb-black">
                       {formatCurrency(product.price)}
                     </td>
 
-                    {/* Stock */}
+                    {}
                     <td className="px-5 py-4 border-r-2 border-nb-black">
                       <span className={`font-extrabold px-2 py-0.5 border-2 ${product.stock <= 5 ? "border-nb-red bg-red-50 text-nb-red" : "border-nb-black bg-white text-nb-black"}`}>
                         {product.stock}
                       </span>
                     </td>
 
-                    {/* Status */}
+                    {}
                     <td className="px-5 py-4 text-center border-r-2 border-nb-black">
                       <Badge variant={STATUS_BADGE[product.status] ?? "blue"} className="border-2 border-nb-black">
                         {product.status}
                       </Badge>
                     </td>
 
-                    {/* Actions */}
+                    {}
                     <td className="px-5 py-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -214,7 +214,7 @@ export default function SellerProductsPage() {
         )}
       </div>
 
-      {/* Delete confirmation modal */}
+      {}
       <Modal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}

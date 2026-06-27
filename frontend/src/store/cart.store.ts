@@ -4,16 +4,14 @@ import { CartDto, CartItemDto } from '@/types';
 
 interface CartState {
   cart: CartDto | null;
-  isOpen: boolean;         // cart drawer open state
+  isOpen: boolean;
 
-  // Actions
   setCart: (cart: CartDto) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
 
-  // Optimistic helpers
   optimisticAddItem: (item: CartItemDto) => void;
   optimisticUpdateQuantity: (itemId: string, quantity: number) => void;
   optimisticRemoveItem: (itemId: string) => void;

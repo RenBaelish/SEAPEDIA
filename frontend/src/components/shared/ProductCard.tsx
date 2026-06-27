@@ -23,7 +23,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <Link to={`/product/${product.slug}`} className="block outline-none group">
       <div className="bg-white h-full flex flex-col border-3 border-nb-black shadow-[3px_3px_0px_#0A0A0A] hover:shadow-[5px_5px_0px_#0A0A0A] hover:-translate-x-px hover:-translate-y-px transition-all duration-150"
         style={{ borderWidth: '3px' }}>
-        {/* Image */}
+        {}
         <div className="relative aspect-square bg-gray-100 overflow-hidden border-b-3 border-nb-black"
           style={{ borderBottomWidth: '3px' }}>
           <img
@@ -32,13 +32,13 @@ export function ProductCard({ product }: ProductCardProps) {
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          {/* Discount badge */}
+          {}
           {discountPercent > 0 && (
             <div className="absolute top-0 left-0 bg-nb-red text-white text-xs font-extrabold px-2 py-1 border-r-2 border-b-2 border-nb-black">
               -{discountPercent}%
             </div>
           )}
-          {/* Low stock */}
+          {}
           {product.stock <= 3 && product.stock > 0 && (
             <div className="absolute bottom-0 right-0 bg-nb-yellow text-nb-black text-xs font-extrabold px-2 py-1 border-l-2 border-t-2 border-nb-black">
               Sisa {product.stock}
@@ -46,26 +46,26 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Content */}
+        {}
         <div className="p-3 flex flex-col flex-1">
           <p className="text-xs font-semibold text-gray-800 line-clamp-2 mb-2 leading-snug group-hover:text-nb-black transition-colors">
             {product.name}
           </p>
 
           <div className="mt-auto space-y-1.5">
-            {/* Price */}
+            {}
             <div className="font-extrabold text-sm text-nb-black leading-tight">
               {formatCurrency(product.price)}
             </div>
 
-            {/* Compare price */}
+            {}
             {discountPercent > 0 && (
               <div className="flex items-center gap-1.5">
                 <span className="text-xs text-gray-400 line-through">{formatCurrency(product.comparePrice!)}</span>
               </div>
             )}
 
-            {/* Rating & sold */}
+            {}
             <div className="flex items-center gap-1.5 pt-1 border-t border-gray-100">
               <Star size={10} className="text-amber-400 fill-amber-400" />
               <span className="text-xs font-medium text-gray-600">{(product.rating ?? 0).toFixed(1)}</span>
@@ -73,7 +73,7 @@ export function ProductCard({ product }: ProductCardProps) {
               <span className="text-xs text-gray-500">{formatSold(product.sold)} terjual</span>
             </div>
 
-            {/* Store */}
+            {}
             <div className="flex items-center gap-1 pt-0.5">
               <img src="/icon/verify-icon.png" alt="verified" className="w-3 h-3 object-contain" />
               <span className="text-xs text-gray-500 truncate font-medium">{product.storeName}</span>

@@ -24,7 +24,6 @@ const authMiddleware = async (c: any, next: any) => {
 
 orderRouter.use('*', authMiddleware);
 
-// Validate Voucher
 orderRouter.post('/checkout/validate-voucher', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -44,7 +43,6 @@ orderRouter.post('/checkout/validate-voucher', async (c) => {
   return c.json({ data: { discount: promo.discountAmount, type: promo.type } });
 });
 
-// Checkout
 orderRouter.post('/checkout', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -139,7 +137,6 @@ orderRouter.post('/checkout', async (c) => {
   return c.json({ message: 'Checkout successful', orderId }, 201);
 });
 
-// Get My Orders
 orderRouter.get('/me', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -182,7 +179,6 @@ orderRouter.get('/me', async (c) => {
   return c.json({ data: myOrders });
 });
 
-// Seller: Get Incoming Orders
 orderRouter.get('/store/incoming', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -230,7 +226,6 @@ orderRouter.get('/store/incoming', async (c) => {
   return c.json({ data: mappedIncomingOrders });
 });
 
-// Get Order Details
 orderRouter.get('/:id', async (c) => {
   const db = drizzle(c.env.DB);
   const orderId = c.req.param('id');
@@ -295,7 +290,6 @@ orderRouter.get('/:id', async (c) => {
   });
 });
 
-// Update Status
 orderRouter.put('/:id/status', async (c) => {
   const db = drizzle(c.env.DB);
   const orderId = c.req.param('id');

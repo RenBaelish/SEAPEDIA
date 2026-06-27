@@ -86,7 +86,7 @@ export default function DriverDashboardPage() {
   return (
     <div className="space-y-5">
 
-      {/* ── Welcome ── */}
+      {}
       <div>
         <h1 className="text-xl font-extrabold text-nb-black">
           Halo, <span className="text-nb-blue">{user?.fullName}</span>!
@@ -96,7 +96,7 @@ export default function DriverDashboardPage() {
         </p>
       </div>
 
-      {/* ── Stats ── */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
@@ -123,7 +123,7 @@ export default function DriverDashboardPage() {
         })}
       </div>
 
-      {/* ── Quick Tips ── */}
+      {}
       <div className="bg-white border-2 border-gray-200 p-4">
         <h3 className="text-sm font-extrabold text-nb-black mb-3 flex items-center gap-2">
           <span className="w-1 h-4 bg-nb-blue inline-block" />

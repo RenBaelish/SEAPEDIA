@@ -18,7 +18,6 @@ interface AppReview {
   createdAt: string;
 }
 
-// Icon mapping from /public/icon/
 const CATEGORY_ICON_MAP: Record<string, string> = {
   "handphone":   "/icon/handphone-icon.png",
   "komputer":    "/icon/komputer-icon.png",
@@ -39,7 +38,6 @@ function getCategoryIcon(name: string): string | null {
   return null;
 }
 
-// Static top-up widget items
 const TOPUP_ITEMS = [
   { label: "Pulsa",      icon: "/icon/topup-icon.png" },
   { label: "Paket Data", icon: "/icon/topup-icon.png" },
@@ -83,14 +81,14 @@ export default function HomePage() {
   return (
     <div className="bg-[#F7F5F0] pb-16">
 
-      {/* ─── Hero Banner + Promo Slider ────────────────────────── */}
+      {}
       <div className="bg-nb-yellow border-b-4 border-nb-black">
         <div className="page-container py-4">
           <PromoSlider />
         </div>
       </div>
 
-      {/* ─── Kategori Populer ──────────────────────────────────── */}
+      {}
       <div className="page-container mt-4">
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-6"
           style={{ borderWidth: '3px' }}>
@@ -127,7 +125,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ─── Top Up & Tagihan Widget ───────────────────────────── */}
+      {}
       <div className="page-container mt-4">
         <div className="bg-nb-black border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
           style={{ borderWidth: '3px' }}>
@@ -152,7 +150,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ─── Promo Banner Strip ────────────────────────────────── */}
+      {}
       <div className="page-container mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
         {[
           { bg: "bg-nb-green", label: "GRATIS ONGKIR", sub: "Setiap hari tanpa syarat" },
@@ -173,7 +171,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* ─── Produk Incaranmu ──────────────────────────────────── */}
+      {}
       <div className="page-container mt-4">
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-6"
           style={{ borderWidth: '3px' }}>
@@ -205,7 +203,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ─── Featured Stores ───────────────────────────────────── */}
+      {}
       <div className="page-container mt-4">
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-6"
           style={{ borderWidth: '3px' }}>
@@ -246,18 +244,18 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ─── App Reviews ───────────────────────────────────────── */}
+      {}
       <div id="reviews" className="page-container mt-4">
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 md:p-8"
           style={{ borderWidth: '3px' }}>
-          {/* Header */}
+          {}
           <div className="mb-6 pb-4 border-b-3 border-nb-black" style={{ borderBottomWidth: '3px' }}>
             <h2 className="text-xl font-extrabold text-nb-black nb-section-title">Apa Kata Mereka?</h2>
             <p className="text-sm text-gray-500 mt-1 font-medium ml-4">Ulasan nyata dari pengguna SEAPEDIA</p>
           </div>
 
           <div className="grid md:grid-cols-[1fr_360px] gap-6">
-            {/* Review list */}
+            {}
             <div className="flex flex-col gap-3">
               {loadingReviews ? (
                 <p className="text-sm text-gray-400 font-medium">Memuat ulasan...</p>
@@ -292,7 +290,7 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Review form */}
+            {}
             <div className="h-fit">
               <div className="border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] bg-nb-yellow p-5"
                 style={{ borderWidth: '3px' }}>

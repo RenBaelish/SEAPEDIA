@@ -1,8 +1,6 @@
 import { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, forwardRef, ReactNode } from 'react';
 import { clsx } from "clsx";
 
-// ─── Text Input ─────────────────────────────────────────────────────────────
-
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
@@ -52,8 +50,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-// ─── Textarea ───────────────────────────────────────────────────────────────
-
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
@@ -87,8 +83,6 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   }
 );
 Textarea.displayName = "Textarea";
-
-// ─── Select ─────────────────────────────────────────────────────────────────
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;

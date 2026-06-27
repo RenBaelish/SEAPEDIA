@@ -3,27 +3,108 @@
   "info": {
     "title": "SEAPEDIA API",
     "version": "1.0.0",
-    "description": "API documentation for SEAPEDIA platform."
+    "description": "Multi-role e-commerce platform API. Supports Admin, Seller, Buyer, and Driver workflows. Protected endpoints require a Bearer JWT token in the Authorization header."
   },
   "servers": [
     {
       "url": "http://127.0.0.1:8787",
-      "description": "Local Dev Server"
+      "description": "Local Development"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
   "paths": {
-    "/auth/login": {
+    "/auth/register": {
       "post": {
-        "summary": "User Login",
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new user",
+        "description": "Creates a new account. Roles can be BUYER, SELLER, DRIVER. Returns a JWT.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "fullName",
+                  "username",
+                  "email",
+                  "password",
+                  "roles"
+                ],
                 "properties": {
-                  "email": { "type": "string" },
-                  "password": { "type": "string" }
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 8
+                  },
+                  "roles": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "BUYER",
+                        "SELLER",
+                        "DRIVER"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registration successful"
+          },
+          "400": {
+            "description": "Email or username already exists"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "description": "Returns JWT. The token includes user roles; call /auth/switch-role to set activeRole.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -31,39 +112,1529 @@
         },
         "responses": {
           "200": {
-            "description": "Successful login"
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "403": {
+            "description": "Account banned"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get current user profile",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user with latest profile data"
+          },
+          "401": {
+            "description": "Invalid token"
+          }
+        }
+      }
+    },
+    "/auth/profile": {
+      "put": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Update profile",
+        "description": "Updates name, email, username, picture URL, phone, gender, birthDate. Optional password change.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "profilePictureUrl": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "birthDate": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated, new token issued if email/username changed"
+          }
+        }
+      }
+    },
+    "/auth/switch-role": {
+      "patch": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Switch active role",
+        "description": "Issues a new JWT with the selected activeRole embedded. Required before accessing role-specific dashboards.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "role"
+                ],
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "BUYER",
+                      "SELLER",
+                      "DRIVER",
+                      "ADMIN"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "New token with activeRole"
+          },
+          "403": {
+            "description": "User does not own this role"
+          }
+        }
+      }
+    },
+    "/reviews/app": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "List public app reviews",
+        "responses": {
+          "200": {
+            "description": "Array of reviews (guestName, rating 1-5, comment, createdAt)"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Submit an app review",
+        "description": "Open to guests and logged-in users. No checkout required.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "guestName",
+                  "rating",
+                  "comment"
+                ],
+                "properties": {
+                  "guestName": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review submitted"
           }
         }
       }
     },
     "/products": {
       "get": {
-        "summary": "Get Products",
+        "tags": [
+          "Products"
+        ],
+        "summary": "List products (public)",
+        "description": "Paginated catalog. Filters: q, category (slug), sort (newest/price_asc/price_desc/popular), storeId.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "newest",
+                "price_asc",
+                "price_desc",
+                "popular"
+              ]
+            }
+          },
+          {
+            "name": "storeId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "List of products"
+            "description": "Paginated product list with store info"
+          }
+        }
+      }
+    },
+    "/products/{slug}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get product by slug (public)",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product detail"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/products/seller": {
+      "get": {
+        "tags": [
+          "Products - Seller"
+        ],
+        "summary": "Get seller's own products",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller's products"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products - Seller"
+        ],
+        "summary": "Create a product",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "price",
+                  "stock"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  },
+                  "comparePrice": {
+                    "type": "number"
+                  },
+                  "stock": {
+                    "type": "integer"
+                  },
+                  "weight": {
+                    "type": "integer"
+                  },
+                  "categoryId": {
+                    "type": "string"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created"
+          },
+          "403": {
+            "description": "Seller must have a store first"
+          }
+        }
+      }
+    },
+    "/products/seller/{id}": {
+      "put": {
+        "tags": [
+          "Products - Seller"
+        ],
+        "summary": "Update a product",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "403": {
+            "description": "Not your product"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Products - Seller"
+        ],
+        "summary": "Delete a product",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/stores": {
+      "get": {
+        "tags": [
+          "Stores"
+        ],
+        "summary": "List all stores (public)",
+        "responses": {
+          "200": {
+            "description": "Array of stores"
+          }
+        }
+      }
+    },
+    "/stores/{slug}": {
+      "get": {
+        "tags": [
+          "Stores"
+        ],
+        "summary": "Get store by slug (public)",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store with products and stats"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/stores/me": {
+      "get": {
+        "tags": [
+          "Stores - Seller"
+        ],
+        "summary": "Get seller's own store",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Seller store data"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stores - Seller"
+        ],
+        "summary": "Create a store",
+        "description": "Store name must be globally unique.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "logoUrl": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Store created"
+          },
+          "400": {
+            "description": "Name already taken"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Stores - Seller"
+        ],
+        "summary": "Update store",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store updated"
+          }
+        }
+      }
+    },
+    "/wallet": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get wallet balance",
+        "description": "Works for Buyer, Seller, and Driver roles.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallet with current balance"
+          }
+        }
+      }
+    },
+    "/wallet/topup": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Top up wallet (dummy simulation)",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "amount"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "minimum": 1000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Top up successful"
+          }
+        }
+      }
+    },
+    "/wallet/transactions": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Wallet transaction history",
+        "description": "Returns all mutations: TOP_UP, PAYMENT, INCOME, REFUND.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of wallet mutations"
+          }
+        }
+      }
+    },
+    "/addresses": {
+      "get": {
+        "tags": [
+          "Addresses"
+        ],
+        "summary": "Get saved delivery addresses",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of addresses"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Addresses"
+        ],
+        "summary": "Add a delivery address",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "label",
+                  "recipientName",
+                  "phone",
+                  "street",
+                  "city",
+                  "province",
+                  "postalCode"
+                ],
+                "properties": {
+                  "label": {
+                    "type": "string"
+                  },
+                  "recipientName": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "street": {
+                    "type": "string"
+                  },
+                  "city": {
+                    "type": "string"
+                  },
+                  "province": {
+                    "type": "string"
+                  },
+                  "postalCode": {
+                    "type": "string"
+                  },
+                  "isDefault": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Address added"
+          }
+        }
+      }
+    },
+    "/addresses/{id}": {
+      "patch": {
+        "tags": [
+          "Addresses"
+        ],
+        "summary": "Update address or set as default",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Addresses"
+        ],
+        "summary": "Delete an address",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
           }
         }
       }
     },
     "/cart": {
       "get": {
-        "summary": "Get Cart",
-        "security": [{ "BearerAuth": [] }],
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Get buyer's cart",
+        "description": "Returns cart with items, store info. One cart may only contain products from one store.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "User's cart and items"
+            "description": "Cart with items and subtotal"
           }
         }
       }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+    },
+    "/cart/items": {
+      "post": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Add item to cart",
+        "description": "Returns 400 if item is from a different store than existing cart items.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "productId",
+                  "quantity"
+                ],
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item added"
+          },
+          "400": {
+            "description": "Cross-store conflict or insufficient stock"
+          }
+        }
+      }
+    },
+    "/cart/items/{id}": {
+      "patch": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Update item quantity",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Remove item from cart",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Removed"
+          }
+        }
+      }
+    },
+    "/cart/clear": {
+      "delete": {
+        "tags": [
+          "Cart"
+        ],
+        "summary": "Clear entire cart",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart cleared"
+          }
+        }
+      }
+    },
+    "/orders/checkout/validate-voucher": {
+      "post": {
+        "tags": [
+          "Orders - Buyer"
+        ],
+        "summary": "Validate voucher code",
+        "description": "Checks if code is valid for current cart's store. Returns discount amount.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Valid code with discount info"
+          },
+          "400": {
+            "description": "Invalid or expired"
+          }
+        }
+      }
+    },
+    "/orders/checkout": {
+      "post": {
+        "tags": [
+          "Orders - Buyer"
+        ],
+        "summary": "Checkout",
+        "description": "Converts cart to order. Calculates: subtotal, discount, tax (PPN 12% on subtotal-discount), delivery fee, final total. Methods: INSTANT, NEXT_DAY, REGULAR.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "addressId",
+                  "deliveryMethod"
+                ],
+                "properties": {
+                  "addressId": {
+                    "type": "string"
+                  },
+                  "deliveryMethod": {
+                    "type": "string",
+                    "enum": [
+                      "INSTANT",
+                      "NEXT_DAY",
+                      "REGULAR"
+                    ]
+                  },
+                  "promoCode": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Order created with initial status SEDANG_DIKEMAS"
+          },
+          "400": {
+            "description": "Insufficient balance or invalid cart"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "get": {
+        "tags": [
+          "Orders - Buyer"
+        ],
+        "summary": "Buyer order history",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of orders"
+          }
+        }
+      }
+    },
+    "/orders/{id}": {
+      "get": {
+        "tags": [
+          "Orders - Buyer"
+        ],
+        "summary": "Order detail",
+        "description": "Full order with items, address, status history with timestamps.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order detail"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/orders/{id}/status": {
+      "patch": {
+        "tags": [
+          "Orders - Buyer"
+        ],
+        "summary": "Buyer confirms order received",
+        "description": "Changes status to PESANAN_SELESAI. Releases seller payment (gross minus 5% platform commission).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Order finalized, seller wallet credited"
+          }
+        }
+      }
+    },
+    "/orders/seller": {
+      "get": {
+        "tags": [
+          "Orders - Seller"
+        ],
+        "summary": "Seller's incoming orders",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orders for seller's store"
+          }
+        }
+      }
+    },
+    "/orders/{id}/process": {
+      "post": {
+        "tags": [
+          "Orders - Seller"
+        ],
+        "summary": "Process an order (Seller)",
+        "description": "Seller packs order. Status changes from SEDANG_DIKEMAS to MENUNGGU_PENGIRIM, making it visible to drivers.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status updated to MENUNGGU_PENGIRIM"
+          },
+          "403": {
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
+    "/deliveries/available": {
+      "get": {
+        "tags": [
+          "Deliveries - Driver"
+        ],
+        "summary": "Available delivery jobs",
+        "description": "Orders with status MENUNGGU_PENGIRIM not yet taken by any driver.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of available jobs"
+          }
+        }
+      }
+    },
+    "/deliveries/my-jobs": {
+      "get": {
+        "tags": [
+          "Deliveries - Driver"
+        ],
+        "summary": "Driver job history",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Past and current jobs with earnings info"
+          }
+        }
+      }
+    },
+    "/deliveries/{id}/take": {
+      "post": {
+        "tags": [
+          "Deliveries - Driver"
+        ],
+        "summary": "Take a job",
+        "description": "Driver claims the job. Status changes to SEDANG_DIKIRIM. Only one driver per job.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job taken"
+          },
+          "400": {
+            "description": "Already taken"
+          }
+        }
+      }
+    },
+    "/deliveries/{id}/complete": {
+      "post": {
+        "tags": [
+          "Deliveries - Driver"
+        ],
+        "summary": "Mark delivery complete",
+        "description": "Status changes to TERKIRIM. Driver receives 90% of delivery fee (10% platform commission deducted).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delivery completed, driver wallet credited"
+          }
+        }
+      }
+    },
+    "/promos": {
+      "get": {
+        "tags": [
+          "Promos"
+        ],
+        "summary": "List all promos and vouchers",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of promos"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Promos"
+        ],
+        "summary": "Create promo or voucher",
+        "description": "maxUsage=null means unlimited (Promo behavior). Set maxUsage for Voucher behavior.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code",
+                  "discountType",
+                  "discountValue",
+                  "expiresAt"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "discountType": {
+                    "type": "string",
+                    "enum": [
+                      "PERCENTAGE",
+                      "FIXED"
+                    ]
+                  },
+                  "discountValue": {
+                    "type": "number"
+                  },
+                  "minPurchase": {
+                    "type": "number"
+                  },
+                  "maxDiscount": {
+                    "type": "number"
+                  },
+                  "maxUsage": {
+                    "type": "integer",
+                    "nullable": true
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "storeId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/promos/{id}": {
+      "delete": {
+        "tags": [
+          "Promos"
+        ],
+        "summary": "Delete promo",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        }
+      }
+    },
+    "/admin/stats": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Marketplace overview stats",
+        "description": "Aggregated counts: users, stores, products, orders, deliveries, revenue.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats object"
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List all users",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All users with roles and status"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/ban": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Ban user",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User banned"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}/unban": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Unban user",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User unbanned"
+          }
+        }
+      }
+    },
+    "/admin/stores": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List all stores (admin)",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All stores with owner and product count"
+          }
+        }
+      }
+    },
+    "/admin/stores/{id}/suspend": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Suspend store",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store suspended"
+          }
+        }
+      }
+    },
+    "/admin/stores/{id}/activate": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Activate store",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Store activated"
+          }
+        }
+      }
+    },
+    "/admin/orders": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "List all orders (admin)",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All orders with financial breakdown"
+          }
+        }
+      }
+    },
+    "/admin/overdue/simulate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Simulate overdue processing",
+        "description": "Manually triggers overdue scan. SLA: INSTANT=2h, NEXT_DAY=24h, REGULAR=72h. Eligible orders -> DIKEMBALIKAN, buyer refunded, stock restored.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns count of orders processed"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List product categories (public)",
+        "responses": {
+          "200": {
+            "description": "Array of categories with name and slug"
+          }
+        }
       }
     }
   }

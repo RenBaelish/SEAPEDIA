@@ -43,7 +43,6 @@ export default function ProductDetailPage() {
       .then((res) => {
         setProduct(res.data.data);
         setSelectedImg(0);
-        // Fetch related products from same category
         api.get(`/products?limit=6`)
           .then(r => setRelatedProducts(r.data.data.filter((p: ProductSummary) => p.slug !== slug).slice(0, 6)))
           .catch(() => {});
@@ -92,7 +91,7 @@ export default function ProductDetailPage() {
       <div className="bg-gray-50 min-h-screen">
         <div className="page-container py-8">
           <div className="grid md:grid-cols-[420px_1fr_300px] gap-6">
-            {/* Skeleton */}
+            {}
             <div className="bg-white rounded-xl h-[420px] " />
             <div className="space-y-4">
               <div className="h-6 bg-gray-200 rounded  w-3/4" />
@@ -129,7 +128,7 @@ export default function ProductDetailPage() {
   return (
     <div className="bg-[#F7F5F0] min-h-screen pb-16">
 
-      {/* Breadcrumb */}
+      {}
       <div className="bg-white border-b-4 border-nb-black">
         <div className="page-container py-2.5">
           <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
@@ -144,13 +143,13 @@ export default function ProductDetailPage() {
 
       <div className="page-container py-4">
 
-        {/* ─── Main Product Panel ── */}
+        {}
         <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] overflow-hidden">
           <div className="flex flex-col lg:grid lg:grid-cols-[340px_1fr_280px] xl:grid-cols-[380px_1fr_300px] gap-0">
 
-            {/* 1. Image Gallery */}
+            {}
             <div className="p-5 border-b-2 lg:border-b-0 lg:border-r-2 border-nb-black">
-              {/* Main Image */}
+              {}
               <div className="relative group aspect-square bg-gray-50 overflow-hidden mb-3 border-2 border-nb-black">
                 <img
                   src={allImages[selectedImg]}
@@ -165,7 +164,7 @@ export default function ProductDetailPage() {
                 <button className="absolute top-3 right-3 w-8 h-8 bg-white border-2 border-nb-black flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <ZoomIn size={16} className="text-nb-black" />
                 </button>
-                {/* Nav arrows for multiple images */}
+                {}
                 {allImages.length > 1 && (
                   <>
                     <button onClick={() => setSelectedImg(i => Math.max(0, i - 1))} className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity">
@@ -177,7 +176,7 @@ export default function ProductDetailPage() {
                   </>
                 )}
               </div>
-              {/* Thumbnail row */}
+              {}
               {allImages.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto">
                   {allImages.map((img, i) => (
@@ -193,7 +192,7 @@ export default function ProductDetailPage() {
                   ))}
                 </div>
               )}
-              {/* Share / Wishlist */}
+              {}
               <div className="flex gap-2 mt-4">
                 <button
                   onClick={() => setWishlist(w => !w)}
@@ -210,13 +209,13 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* 2. Product Info */}
+            {}
             <div className="p-5 lg:p-6 border-b-2 lg:border-b-0 lg:border-r-2 border-nb-black overflow-hidden">
               <h1 className="text-lg font-extrabold text-nb-black leading-snug mb-3 break-words">
                 {product.name}
               </h1>
 
-              {/* Rating row */}
+              {}
               <div className="flex items-center flex-wrap gap-3 mb-4">
                 <div className="flex items-center gap-1.5">
                   <div className="flex">
@@ -233,7 +232,7 @@ export default function ProductDetailPage() {
                 <span className="text-xs font-bold text-nb-black bg-nb-yellow px-2 py-0.5 border border-nb-black">{product.categoryName}</span>
               </div>
 
-              {/* Price */}
+              {}
               <div className="bg-white border-2 border-nb-black p-4 mb-5 shadow-[4px_4px_0px_#0A0A0A]">
                 <div className="flex items-baseline gap-3 flex-wrap">
                   <span className="text-3xl font-extrabold text-nb-black leading-none">
@@ -251,7 +250,7 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              {/* Shipping info */}
+              {}
               <div className="space-y-3 mb-5">
                 <div className="flex items-start gap-3">
                   <Truck size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
@@ -278,7 +277,7 @@ export default function ProductDetailPage() {
 
               <div className="border-t border-gray-100 my-4" />
 
-              {/* Store card */}
+              {}
               <div className="flex items-center gap-3 p-4 border-2 border-gray-200 hover:border-nb-black transition-colors">
                 <div className="w-12 h-12 flex items-center justify-center text-xl flex-shrink-0 overflow-hidden border-2 border-nb-black bg-nb-yellow">
                   {product.storeLogoUrl ? (
@@ -306,7 +305,7 @@ export default function ProductDetailPage() {
 
               <div className="border-t border-gray-100 my-4" />
 
-              {/* Description */}
+              {}
               <div>
                 <h3 className="text-base font-bold text-gray-800 mb-3">Deskripsi Produk</h3>
                 <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
@@ -314,7 +313,7 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* Product details table */}
+              {}
               <div className="mt-5 overflow-hidden">
                 <h3 className="text-base font-bold text-gray-800 mb-3">Detail Produk</h3>
                 <div className="grid grid-cols-2 gap-x-2 gap-y-2 text-sm break-words">
@@ -333,10 +332,10 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* 3. CTA Panel */}
+            {}
             <div className="p-5">
               <div className="sticky top-20 space-y-4">
-                {/* Quantity selector */}
+                {}
                 <div>
                   <p className="text-sm font-semibold text-gray-700 mb-2">Atur jumlah</p>
                   <div className="flex items-center gap-3">
@@ -366,13 +365,13 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
 
-                {/* Subtotal */}
+                {}
                 <div className="flex items-center justify-between bg-white border-2 border-nb-black p-3 mb-4 shadow-[2px_2px_0px_#0A0A0A]">
                   <span className="text-xs font-bold text-nb-black uppercase">Subtotal</span>
                   <span className="text-base font-black text-nb-black truncate max-w-[140px] text-right">{formatCurrency(product.price * qty)}</span>
                 </div>
 
-                {/* CTA Buttons */}
+                {}
                 <div className="space-y-2">
                   <button
                     onClick={() => handleAddToCart(false)}
@@ -394,7 +393,7 @@ export default function ProductDetailPage() {
                   </button>
                 </div>
 
-                {/* Chat seller */}
+                {}
                 <button 
                   onClick={() => showConfirm({ title: 'Fitur Belum Tersedia', message: 'Fitur Chat Penjual belum tersedia pada versi ini.', confirmText: 'Tutup', hideCancel: true })}
                   className="w-full mt-3 flex items-center justify-center gap-2 h-11 border-3 border-nb-black bg-white text-nb-black font-extrabold text-sm hover:bg-nb-yellow transition-colors"
@@ -404,7 +403,7 @@ export default function ProductDetailPage() {
                   Chat Penjual
                 </button>
 
-                {/* Trust badges */}
+                {}
                 <div className="pt-2 border-t border-gray-100 space-y-2">
                   {[
                     { icon: "", text: "Transaksi 100% aman" },
@@ -422,7 +421,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* ─── Produk Terkait ── */}
+        {}
         {relatedProducts.length > 0 && (
           <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] mt-4 p-6" style={{ borderWidth: '3px' }}>
             <div className="flex items-center justify-between mb-5">

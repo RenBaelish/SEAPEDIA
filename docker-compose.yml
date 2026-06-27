@@ -1,4 +1,4 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   backend:
@@ -6,22 +6,22 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8787:8787"
-    volumes:
-      - ./backend:/app
+      - '8787:8787'
     environment:
       - NODE_ENV=development
-    command: npm run dev
+    working_dir: /app
+    command: pnpm run dev --host 0.0.0.0
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - '5173:5173'
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
-    command: npm run dev
+      - VITE_API_URL=http://backend:8787
+    command: npm run dev -- --host 0.0.0.0

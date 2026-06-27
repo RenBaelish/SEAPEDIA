@@ -40,7 +40,7 @@ export default function StoreProfilePage() {
       if (sortBy === "terlaris") return b.sold - a.sold;
       if (sortBy === "harga-asc") return a.price - b.price;
       if (sortBy === "harga-desc") return b.price - a.price;
-      return 0; // terbaru
+      return 0;
     });
 
     return result;
@@ -105,7 +105,7 @@ export default function StoreProfilePage() {
   return (
     <div className="bg-[#F7F5F0] min-h-screen pb-16">
       
-      {/* ─── Cover / Banner ── */}
+      {}
       <div className="h-[120px] md:h-[240px] bg-nb-black w-full relative border-b-4 border-nb-black overflow-hidden flex items-center justify-center">
         {store.bannerUrl ? (
           <img src={store.bannerUrl} alt="Banner" className="w-full h-full object-cover opacity-90" />
@@ -118,10 +118,10 @@ export default function StoreProfilePage() {
 
       <div className="page-container max-w-[1200px] -mt-10 md:-mt-14 relative z-10">
         
-        {/* ─── Header Toko ── */}
+        {}
         <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] mb-5 p-5 flex flex-col md:flex-row gap-5 items-start md:items-center">
           
-          {/* Logo & Info */}
+          {}
           <div className="flex items-center gap-4 flex-1">
             <div className="w-20 h-20 md:w-24 md:h-24 bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] flex-shrink-0 flex items-center justify-center relative overflow-hidden" style={{ borderWidth: '3px' }}>
               {store.logoUrl ? (
@@ -155,7 +155,7 @@ export default function StoreProfilePage() {
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {}
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button onClick={handleNotAvailable} className="flex-1 md:flex-none btn-primary h-10 px-6 text-sm">
               Follow
@@ -172,7 +172,7 @@ export default function StoreProfilePage() {
           </div>
         </div>
 
-        {/* ─── Navigation Tabs ── */}
+        {}
         <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] mb-5 sticky top-16 z-20">
           <div className="flex overflow-x-auto hide-scrollbar border-b-3 border-nb-black px-2" style={{ borderBottomWidth: '3px' }}>
             {[
@@ -195,7 +195,7 @@ export default function StoreProfilePage() {
             ))}
           </div>
 
-          {/* Filter Bar (Only in Produk tab) */}
+          {}
           {activeTab === "produk" && (
             <div className="p-4 flex flex-col md:flex-row items-start md:items-center gap-3 border-b-2 border-nb-black">
               <div className="relative w-full md:flex-1 md:max-w-[300px]">
@@ -229,11 +229,11 @@ export default function StoreProfilePage() {
           )}
         </div>
 
-        {/* ─── Content Area ── */}
+        {}
         
         {activeTab === "beranda" && (
           <div className="space-y-5">
-            {/* Promo Banner / Voucher */}
+            {}
             <div className="bg-nb-yellow border-4 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-extrabold text-nb-black mb-1">Promo Cashback 10%</h3>
@@ -244,7 +244,7 @@ export default function StoreProfilePage() {
               </button>
             </div>
 
-            {/* Etalase Unggulan */}
+            {}
             <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-base font-extrabold text-nb-black nb-section-title">Produk Unggulan</h2>

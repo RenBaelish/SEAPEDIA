@@ -61,10 +61,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (location.state?.promoCode && !appliedVoucher && !loading) {
       setVoucherCode(location.state.promoCode);
-      // We need to call the API to actually validate it, 
-      // but since we can't call handleApplyVoucher directly due to dependencies,
-      // we just set the code so the user can click 'Terapkan'.
-      // Better yet, let's just trigger the apply logic inline or via a dedicated effect.
     }
   }, [location.state, loading]);
 
@@ -149,7 +145,7 @@ export default function CheckoutPage() {
 
         <div className="flex flex-col md:flex-row gap-5">
           <div className="flex-1 space-y-5">
-            {/* ── Address Selection ── */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-gray-100">
                 <div className="w-8 h-8 bg-nb-yellow border-2 border-nb-black flex items-center justify-center">
@@ -186,7 +182,7 @@ export default function CheckoutPage() {
               )}
             </div>
 
-            {/* ── Product List ── */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
               <h2 className="font-extrabold text-base text-nb-black mb-4 pb-3 border-b-2 border-gray-100 flex items-center gap-2">
                 Pesanan dari <span className="text-nb-blue">{cart.store?.name}</span>
@@ -219,7 +215,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* ── Shipping Method ── */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-gray-100">
                 <div className="w-8 h-8 bg-nb-blue border-2 border-nb-black flex items-center justify-center">
@@ -248,7 +244,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* ── Voucher Section ── */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5" style={{ borderWidth: '3px' }}>
               <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-gray-100">
                 <div className="w-8 h-8 bg-nb-green border-2 border-nb-black flex items-center justify-center">
@@ -280,7 +276,7 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* ── Summary Box ── */}
+          {}
           <div className="w-full md:w-80 shrink-0">
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5 sticky top-24" style={{ borderWidth: '3px' }}>
               <h3 className="font-extrabold text-base text-nb-black mb-4 pb-3 border-b-2 border-gray-100">Ringkasan Belanja</h3>
@@ -313,7 +309,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Payment Method - Wallet */}
+              {}
               <div className="bg-nb-yellow border-2 border-nb-black p-4 mb-5 shadow-[2px_2px_0px_#0A0A0A]">
                 <div className="flex items-center gap-2 mb-2">
                   <Wallet size={16} className="text-nb-black" strokeWidth={2.5} />

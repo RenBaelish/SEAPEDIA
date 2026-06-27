@@ -9,7 +9,6 @@ import type { Env } from '../types';
 
 export const addressRouter = new Hono<Env>();
 
-// Middleware to verify JWT and extract user info
 addressRouter.use('*', async (c, next) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -54,14 +53,12 @@ addressRouter.post('/', zValidator('json', createAddressSchema), async (c) => {
 
   const addressId = crypto.randomUUID();
 
-  // If new address is set as default, remove default from others
   if (data.isDefault) {
     await db.update(addresses)
       .set({ isDefault: false })
       .where(eq(addresses.userId, payload.id));
   }
 
-  // If it's the first address, make it default automatically
   const existingCount = await db.select().from(addresses).where(eq(addresses.userId, payload.id));
   const isDefault = existingCount.length === 0 ? true : data.isDefault;
 

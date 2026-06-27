@@ -25,7 +25,6 @@ export default function VoucherManagePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { showAlert } = useAlert();
 
-  // Form State
   const [code, setCode] = useState('');
   const [type, setType] = useState<'SHIPPING' | 'DISCOUNT'>('DISCOUNT');
   const [amount, setAmount] = useState('');
@@ -75,7 +74,7 @@ export default function VoucherManagePage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-xl font-extrabold text-nb-black">Voucher Toko</h1>
@@ -87,7 +86,7 @@ export default function VoucherManagePage() {
         </Button>
       </div>
 
-      {/* Stats/Summary */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-5 flex items-center gap-4">
           <div className="w-12 h-12 bg-nb-blue border-2 border-nb-black flex items-center justify-center shrink-0">
@@ -100,7 +99,7 @@ export default function VoucherManagePage() {
         </Card>
       </div>
 
-      {/* List */}
+      {}
       <Card className="overflow-hidden">
         <div className="p-4 border-b-3 border-nb-black bg-gray-50 flex items-center justify-between">
           <h2 className="text-sm font-extrabold text-nb-black flex items-center gap-2">
@@ -154,7 +153,7 @@ export default function VoucherManagePage() {
         )}
       </Card>
 
-      {/* Create Modal */}
+      {}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Buat Voucher Baru">
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <Input

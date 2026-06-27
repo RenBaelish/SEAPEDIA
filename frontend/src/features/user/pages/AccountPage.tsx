@@ -182,7 +182,7 @@ export default function AccountPage() {
         </div>
       </div>
 
-      {/* ── Tab: Biodata Diri ── */}
+      {}
       {activeTab === "profile" && (
         <div className="p-2">
           <div className="flex items-center justify-between mb-6">
@@ -212,7 +212,7 @@ export default function AccountPage() {
               </p>
             </div>
 
-            {/* Form area */}
+            {}
             <div className="flex-1 space-y-6">
               <div>
                 <h3 className="text-sm font-extrabold text-nb-black mb-1">Ubah Biodata Diri</h3>
@@ -271,7 +271,7 @@ export default function AccountPage() {
         </div>
       )}
 
-      {/* ── Tab: Daftar Alamat ── */}
+      {}
       {activeTab === "address" && (
         <div className="p-2">
           <div className="pb-5 mb-5 border-b-2 border-gray-100 flex items-center justify-between">
@@ -284,7 +284,7 @@ export default function AccountPage() {
             </button>
           </div>
 
-          {/* Add form modal */}
+          {}
           {showAddForm && (
             <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
               <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[520px]">
@@ -458,7 +458,7 @@ export default function AccountPage() {
         </div>
       )}
 
-      {/* ── Tab: Keamanan ── */}
+      {}
       {activeTab === "security" && (
         <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6 space-y-4" style={{ borderWidth: '3px' }}>
           <h3 className="text-base font-extrabold text-nb-black mb-2">Keamanan Akun</h3>
@@ -491,7 +491,7 @@ export default function AccountPage() {
         </div>
       )}
 
-      {/* Profile Edit Modal */}
+      {}
       {showProfileModal && (
         <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
           <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[440px]">

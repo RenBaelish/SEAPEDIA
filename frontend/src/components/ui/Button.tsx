@@ -24,7 +24,7 @@ const variantClasses: Record<Variant, string> = {
 
 const sizeClasses: Record<Size, string> = {
   sm: "h-9 px-3 text-xs",
-  md: "", // height via --btn-height CSS var
+  md: "",
   lg: "h-12 px-6 text-base",
 };
 
@@ -51,9 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         className={clsx(
           variantClasses[variant],
-          // For non-nb-btn variants add size manually
           !isNbBtn && variant !== "link" && sizeClasses[size],
-          // For nb-btn, only sm/lg override
           isNbBtn && size === "sm" && "h-9 px-3 text-xs",
           isNbBtn && size === "lg" && "h-12 px-6 text-base",
           fullWidth && "w-full",

@@ -33,7 +33,7 @@ export default function DriverJobBoardPage() {
       fetchJobs();
     } catch (err: any) {
       showAlert({ title: "Gagal", message: err.response?.data?.message || "Gagal mengambil pekerjaan. Mungkin sudah diambil driver lain." });
-      fetchJobs(); // refresh to remove the taken job
+      fetchJobs();
     } finally {
       setProcessingId(null);
     }

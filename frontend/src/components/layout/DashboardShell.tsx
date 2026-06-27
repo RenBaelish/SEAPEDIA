@@ -83,7 +83,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
 
   return (
     <div className="flex min-h-screen bg-[#F7F5F0]">
-      {/* ── Sidebar ── */}
+      {}
       <aside
         className={clsx(
           "fixed top-0 left-0 h-full bg-white z-[50]",
@@ -92,10 +92,10 @@ export function DashboardShell({ role }: DashboardShellProps) {
           sidebarOpen ? "w-56" : "w-14"
         )}
       >
-        {/* Sidebar top accent */}
+        {}
         <div className={clsx("h-2 w-full shrink-0 border-b-4 border-nb-black", roleColors[role])} />
 
-        {/* Header */}
+        {}
         <div className="h-14 flex items-center justify-between px-3 border-b-4 border-nb-black shrink-0 bg-[#F7F5F0]">
           {sidebarOpen && (
             <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-10 w-auto ml-1" />
@@ -109,7 +109,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
           </button>
         </div>
 
-        {/* Nav */}
+        {}
         <nav className="flex-1 py-3 overflow-y-auto">
           {items.map((item) => (
             <NavLink
@@ -133,7 +133,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
           ))}
         </nav>
 
-        {/* Footer */}
+        {}
         <div className="p-3 border-t-4 border-nb-black shrink-0 bg-[#F7F5F0]">
           {sidebarOpen ? (
             <div className="flex items-center gap-2">
@@ -184,14 +184,14 @@ export function DashboardShell({ role }: DashboardShellProps) {
         </div>
       </aside>
 
-      {/* ── Main ── */}
+      {}
       <main
         className={clsx(
           "flex-1 flex flex-col min-h-screen transition-all duration-200",
           sidebarOpen ? "ml-56" : "ml-14"
         )}
       >
-        {/* Topbar */}
+        {}
         <div className="h-14 bg-white border-b-4 border-nb-black flex items-center px-6 sticky top-0 z-40">
           <div className="flex items-center gap-3">
             <div className={clsx("w-2 h-6 border-2 border-nb-black shrink-0", roleColors[role].split(' ')[0])} />
@@ -199,7 +199,7 @@ export function DashboardShell({ role }: DashboardShellProps) {
           </div>
         </div>
 
-        {/* Content */}
+        {}
         <div className="flex-1 p-5 md:p-6">
           <Outlet />
         </div>

@@ -35,25 +35,20 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
   );
 }
 
-// Status badge helper used across dashboards
 export function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { label: string; variant: BadgeVariant }> = {
-    // Orders
     MENUNGGU_PEMBAYARAN: { label: "Menunggu Bayar",     variant: "warning" },
     MENUNGGU_KONFIRMASI: { label: "Menunggu Konfirmasi",variant: "blue" },
     DIKEMAS:             { label: "Dikemas",            variant: "blue" },
     DIKIRIM:             { label: "Dikirim",            variant: "blue" },
     PESANAN_SELESAI:     { label: "Selesai",            variant: "green" },
     DIBATALKAN:          { label: "Dibatalkan",         variant: "red" },
-    // Delivery
     MENUNGGU_DRIVER:     { label: "Menunggu Driver",    variant: "warning" },
     SELESAI:             { label: "Selesai",            variant: "green" },
-    // Store / User
     ACTIVE:              { label: "Aktif",              variant: "green" },
     SUSPENDED:           { label: "Suspended",          variant: "warning" },
     BANNED:              { label: "Banned",             variant: "red" },
     CLOSED:              { label: "Ditutup",            variant: "muted" },
-    // Product
     DRAFT:               { label: "Draft",              variant: "muted" },
     INACTIVE:            { label: "Nonaktif",           variant: "muted" },
     DELETED:             { label: "Dihapus",            variant: "red" },
@@ -63,6 +58,5 @@ export function StatusBadge({ status }: { status: string }) {
   return <Badge variant={entry.variant}>{entry.label}</Badge>;
 }
 
-// Aliases for backward compatibility
 export const OrderStatusBadge = StatusBadge;
 export const DeliveryStatusBadge = StatusBadge;

@@ -37,7 +37,7 @@ export function PromoSlider() {
         </div>
       ))}
 
-      {/* Controls */}
+      {}
       <button
         onClick={prevSlide}
         className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-white/80 hover:bg-white rounded-full flex items-center justify-center text-gray-800 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
@@ -51,7 +51,7 @@ export function PromoSlider() {
         <ChevronRight size={24} />
       </button>
 
-      {/* Dots */}
+      {}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
         {slides.map((_, i) => (
           <button

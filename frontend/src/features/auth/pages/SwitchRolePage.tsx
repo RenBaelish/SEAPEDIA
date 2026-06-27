@@ -21,7 +21,6 @@ export default function SwitchRolePage() {
   const [loading, setLoading] = useState<RoleType | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // If not logged in, shouldn't be here
   if (!user) {
     navigate("/auth/login");
     return null;
@@ -32,17 +31,14 @@ export default function SwitchRolePage() {
     setError(null);
 
     try {
-      // Hit API to switch role on the session
       const res = await api.patch("/auth/switch-role", { role });
       const { accessToken, refreshToken, activeRole } = res.data.data;
       
-      // Update tokens and activeRole in Zustand
       if (tokens) {
         setUser(user, { accessToken, refreshToken, expiresIn: tokens.expiresIn });
       }
       setActiveRole(activeRole);
       
-      // Route appropriately
       if (activeRole === RoleType.SELLER) navigate("/seller");
       else if (activeRole === RoleType.DRIVER) navigate("/driver");
       else if (activeRole === RoleType.ADMIN) navigate("/admin");
@@ -106,7 +102,7 @@ export default function SwitchRolePage() {
           })}
         </div>
 
-        {/* Back to home as default role */}
+        {}
         <div className="mt-8">
           <Button variant="secondary" fullWidth onClick={() => navigate("/")}>
             Batal

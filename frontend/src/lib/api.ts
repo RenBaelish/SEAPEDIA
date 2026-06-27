@@ -9,7 +9,6 @@ export const api = axios.create({
   withCredentials: true,
 });
 
-// ─── Request interceptor — attach Bearer token ────────────────────────────
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const tokens = useAuthStore.getState().tokens;
   if (tokens?.accessToken) {
@@ -18,7 +17,6 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// ─── Response interceptor — handle 401 / token refresh ────────────────────
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {

@@ -6,12 +6,12 @@ export const users = sqliteTable('users', {
   fullName: text('full_name').notNull(),
   username: text('username').notNull().unique(),
   email: text('email').notNull().unique(),
-  password: text('password').notNull(), // hashed
+  password: text('password').notNull(),
   profilePictureUrl: text('profile_picture_url').notNull().default('https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg'),
   phoneNumber: text('phone_number'),
   gender: text('gender'),
   birthDate: text('birth_date'),
-  status: text('status').notNull().default('ACTIVE'), // ACTIVE, BANNED
+  status: text('status').notNull().default('ACTIVE'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),
@@ -19,7 +19,7 @@ export const users = sqliteTable('users', {
 
 export const roles = sqliteTable('roles', {
   id: text('id').primaryKey(),
-  name: text('name').notNull().unique(), // ADMIN, BUYER, SELLER, DRIVER
+  name: text('name').notNull().unique(),
 });
 
 export const userRoles = sqliteTable('user_roles', {
@@ -46,7 +46,7 @@ export const stores = sqliteTable('stores', {
   description: text('description'),
   logoUrl: text('logo_url'),
   bannerUrl: text('banner_url'),
-  status: text('status').notNull().default('ACTIVE'), // ACTIVE, SUSPENDED, CLOSED
+  status: text('status').notNull().default('ACTIVE'),
   rating: real('rating').notNull().default(0),
   totalSales: integer('total_sales').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' })
@@ -72,8 +72,8 @@ export const products = sqliteTable('products', {
   rating: real('rating').notNull().default(0),
   sold: integer('sold').notNull().default(0),
   stock: integer('stock').notNull(),
-  weight: integer('weight').notNull().default(1000), // in grams
-  status: text('status').notNull().default('ACTIVE'), // DRAFT, ACTIVE, INACTIVE, DELETED
+  weight: integer('weight').notNull().default(1000),
+  status: text('status').notNull().default('ACTIVE'),
   images: text('images', { mode: 'json' }).notNull().default('[]'),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
@@ -89,7 +89,7 @@ export const wallets = sqliteTable('wallets', {
 export const addresses = sqliteTable('addresses', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id),
-  label: text('label').notNull(), // e.g. Rumah, Kantor
+  label: text('label').notNull(),
   recipientName: text('recipient_name').notNull(),
   phone: text('phone').notNull(),
   street: text('street').notNull(),
@@ -102,7 +102,7 @@ export const addresses = sqliteTable('addresses', {
 export const carts = sqliteTable('carts', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().unique().references(() => users.id),
-  storeId: text('store_id').references(() => stores.id), // Enforce single store checkout
+  storeId: text('store_id').references(() => stores.id),
 });
 
 export const cartItems = sqliteTable('cart_items', {
@@ -116,7 +116,7 @@ export const orders = sqliteTable('orders', {
   id: text('id').primaryKey(),
   buyerId: text('buyer_id').notNull().references(() => users.id),
   storeId: text('store_id').notNull().references(() => stores.id),
-  status: text('status').notNull(), // SEDANG_DIKEMAS, MENUNGGU_PENGIRIM, SEDANG_DIKIRIM, PESANAN_SELESAI, DIKEMBALIKAN
+  status: text('status').notNull(),
   totalAmount: integer('total_amount').notNull(),
   deliveryFee: integer('delivery_fee').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
@@ -137,7 +137,7 @@ export const promos = sqliteTable('promos', {
   storeId: text('store_id').references(() => stores.id),
   code: text('code').notNull().unique(),
   discountAmount: integer('discount_amount').notNull(),
-  type: text('type').notNull(), // 'SHIPPING' or 'DISCOUNT'
+  type: text('type').notNull(),
   quota: integer('quota').notNull(),
   usedCount: integer('used_count').notNull().default(0),
   createdAt: integer('created_at', { mode: 'timestamp' })
@@ -148,8 +148,8 @@ export const promos = sqliteTable('promos', {
 export const walletMutations = sqliteTable('wallet_mutations', {
   id: text('id').primaryKey(),
   walletId: text('wallet_id').notNull().references(() => wallets.id),
-  amount: integer('amount').notNull(), // positive for income/topup, negative for payment
-  type: text('type').notNull(), // 'TOP_UP', 'PAYMENT', 'REFUND', 'INCOME'
+  amount: integer('amount').notNull(),
+  type: text('type').notNull(),
   description: text('description').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
@@ -159,8 +159,8 @@ export const walletMutations = sqliteTable('wallet_mutations', {
 export const deliveryJobs = sqliteTable('delivery_jobs', {
   id: text('id').primaryKey(),
   orderId: text('order_id').notNull().unique().references(() => orders.id),
-  driverId: text('driver_id').references(() => users.id), // Null if not taken
-  status: text('status').notNull(), // 'MENUNGGU_DRIVER', 'DIKIRIM', 'SELESAI'
+  driverId: text('driver_id').references(() => users.id),
+  status: text('status').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
     .notNull()
     .default(sql`(strftime('%s', 'now'))`),

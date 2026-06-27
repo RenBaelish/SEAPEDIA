@@ -1,4 +1,3 @@
-// ─── Enums ────────────────────────────────────────────────────────────────────
 
 export enum RoleType {
   ADMIN = "ADMIN",
@@ -63,8 +62,6 @@ export enum AddressType {
   OTHER = "OTHER",
 }
 
-// ─── Common ────────────────────────────────────────────────────────────────────
-
 export interface PaginationMeta {
   page: number;
   limit: number;
@@ -86,8 +83,6 @@ export interface ApiError {
   code?: string;
 }
 
-// ─── Auth DTOs ────────────────────────────────────────────────────────────────
-
 export interface RegisterDto {
   username: string;
   email: string;
@@ -103,7 +98,7 @@ export interface LoginDto {
 }
 
 export interface TokenPayload {
-  sub: string; // userId
+  sub: string;
   activeRole: RoleType;
   sessionId: string;
   iat?: number;
@@ -115,8 +110,6 @@ export interface AuthTokens {
   refreshToken: string;
   expiresIn: number;
 }
-
-// ─── User DTOs ────────────────────────────────────────────────────────────────
 
 export interface UserPublic {
   id: string;
@@ -133,8 +126,6 @@ export interface UserPublic {
   activeRole: RoleType;
   createdAt: string;
 }
-
-// ─── Product DTOs ─────────────────────────────────────────────────────────────
 
 export interface ProductSummary {
   id: string;
@@ -162,8 +153,6 @@ export interface ProductDetail extends ProductSummary {
   createdAt: string;
 }
 
-// ─── Cart DTOs ────────────────────────────────────────────────────────────────
-
 export interface CartItemDto {
   id: string;
   productId: string;
@@ -188,8 +177,6 @@ export interface CartDto {
   };
   items: CartItemDto[];
 }
-
-// ─── Order DTOs ───────────────────────────────────────────────────────────────
 
 export interface OrderSummary {
   id: string;
@@ -227,8 +214,6 @@ export interface OrderDetail {
   createdAt: string;
 }
 
-// ─── Delivery DTOs ────────────────────────────────────────────────────────────
-
 export interface DeliveryJobDto {
   id: string;
   orderId: string;
@@ -244,8 +229,6 @@ export interface DeliveryJobDto {
   deliveredAt?: string;
 }
 
-// ─── Voucher DTOs ─────────────────────────────────────────────────────────────
-
 export interface VoucherDto {
   id: string;
   code: string;
@@ -257,8 +240,6 @@ export interface VoucherDto {
   validUntil: string;
 }
 
-// ─── Review DTOs ──────────────────────────────────────────────────────────────
-
 export interface ReviewDto {
   id: string;
   rating: number;
@@ -268,8 +249,6 @@ export interface ReviewDto {
   buyerAvatar?: string;
   createdAt: string;
 }
-
-// ─── Wallet DTOs ──────────────────────────────────────────────────────────────
 
 export interface WalletDto {
   id: string;

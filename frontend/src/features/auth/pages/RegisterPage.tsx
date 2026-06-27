@@ -54,9 +54,9 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col justify-center py-12 px-4">
       <div className="mx-auto w-full max-w-[420px]">
-        {/* Card */}
+        {}
         <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A]">
-          {/* Yellow header bar */}
+          {}
           <div className="bg-nb-yellow border-b-4 border-nb-black px-6 py-5 flex flex-col items-center text-center">
             <Link to="/" className="mb-3 inline-block bg-white px-3 py-1.5 border-2 border-nb-black shadow-[3px_3px_0px_#0A0A0A]">
               <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-8 w-auto object-contain" />

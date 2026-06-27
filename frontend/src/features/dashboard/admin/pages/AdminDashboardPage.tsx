@@ -12,7 +12,6 @@ export default function AdminDashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  // Overdue simulator state
   const [hoursToAdvance, setHoursToAdvance] = useState<string>("24");
   const [simulateLoading, setSimulateLoading] = useState(false);
 
@@ -113,7 +112,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-5">
 
-      {/* ── Header ── */}
+      {}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-extrabold text-nb-black">Admin Dashboard</h1>
@@ -121,7 +120,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* ── Stat Cards ── */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
@@ -148,7 +147,7 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      {/* ── SLA Simulator ── */}
+      {}
       <div className="bg-white border-2 border-nb-red shadow-[3px_3px_0px_#E63329] p-5 relative overflow-hidden">
         <div className="absolute top-3 right-4 opacity-5 pointer-events-none">
           <Clock size={120} className="text-nb-red" />

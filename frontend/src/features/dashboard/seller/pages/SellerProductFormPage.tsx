@@ -6,7 +6,6 @@ import { api } from "../../../../lib/api";
 import { useAlert } from "../../../../contexts/AlertContext";
 import { Modal } from "../../../../components/ui/Modal";
 
-// ─── Zod schema (mirrors backend) ──
 const productSchema = z.object({
   name: z.string().min(3, "Min. 3 karakter").max(200),
   description: z.string().min(10, "Min. 10 karakter"),
@@ -24,7 +23,6 @@ type FieldErrors = Partial<Record<keyof ProductForm, string>>;
 
 interface Category { id: string; name: string; slug: string; }
 
-// ─── Component ──
 export default function SellerProductFormPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id?: string }>();
@@ -50,7 +48,6 @@ export default function SellerProductFormPage() {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  // Fetch categories + product data (edit mode)
   useEffect(() => {
     api.get("/categories").then((res) => setCategories(res.data.data ?? [])).catch(() => {});
 
@@ -82,7 +79,7 @@ export default function SellerProductFormPage() {
   const addImage = () => {
     if (!newImageUrl.trim()) return;
     try {
-      new URL(newImageUrl); // validate URL format
+      new URL(newImageUrl);
       setField("images", [...(form.images ?? []), newImageUrl.trim()]);
       setNewImageUrl("");
     } catch {
@@ -142,7 +139,7 @@ export default function SellerProductFormPage() {
 
   return (
     <div className="max-w-3xl space-y-6">
-      {/* Header */}
+      {}
       <div className="flex items-center gap-3">
         <Link
           to="/seller/products"
@@ -160,7 +157,7 @@ export default function SellerProductFormPage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Basic Info */}
+        {}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
           <h3 className="text-base font-extrabold text-nb-black mb-5 border-b-2 border-gray-100 pb-2">Informasi Produk</h3>
           <div className="space-y-5">
@@ -218,7 +215,7 @@ export default function SellerProductFormPage() {
           </div>
         </div>
 
-        {/* Pricing & Stock */}
+        {}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
           <h3 className="text-base font-extrabold text-nb-black mb-5 border-b-2 border-gray-100 pb-2">Harga & Stok</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -272,7 +269,7 @@ export default function SellerProductFormPage() {
           </div>
         </div>
 
-        {/* Images */}
+        {}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6">
           <h3 className="text-base font-extrabold text-nb-black mb-2 border-b-2 border-gray-100 pb-2">Gambar Produk</h3>
           <div className="flex items-center justify-between mb-5">
@@ -289,7 +286,7 @@ export default function SellerProductFormPage() {
             </button>
           </div>
 
-          {/* Existing images */}
+          {}
           {(form.images ?? []).length > 0 && (
             <div className="grid grid-cols-4 sm:grid-cols-6 gap-3 mb-5">
               {(form.images ?? []).map((url, i) => (
@@ -307,7 +304,7 @@ export default function SellerProductFormPage() {
             </div>
           )}
 
-          {/* Add new image URL */}
+          {}
           {(form.images ?? []).length < 8 && (
             <div className="flex gap-3">
               <input
@@ -328,7 +325,7 @@ export default function SellerProductFormPage() {
           )}
         </div>
 
-        {/* Submit */}
+        {}
         <div className="flex gap-4">
           <Link to="/seller/products" className="btn-secondary px-6 py-3">
             Batal
@@ -339,7 +336,7 @@ export default function SellerProductFormPage() {
         </div>
       </form>
 
-      {/* Upload Modal Placeholder */}
+      {}
       <Modal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} title="Upload Foto">
         <div className="p-4 text-center">
           <ImagePlus size={48} className="mx-auto text-gray-300 mb-4" strokeWidth={1.5} />

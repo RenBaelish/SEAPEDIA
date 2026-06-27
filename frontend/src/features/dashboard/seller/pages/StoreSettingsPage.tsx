@@ -109,7 +109,7 @@ export default function StoreSettingsPage() {
         </div>
       </div>
 
-      {/* Store avatar preview */}
+      {}
       {store && (
         <div className="flex items-center gap-5 bg-white border-2 border-nb-black p-5 shadow-[4px_4px_0px_#0A0A0A]">
           <div className="w-16 h-16 border-2 border-nb-black flex items-center justify-center overflow-hidden shrink-0 bg-nb-yellow">

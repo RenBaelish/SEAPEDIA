@@ -15,14 +15,13 @@ const registerSchema = z.object({
   username: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(8),
-  roles: z.array(z.string()).min(1) // array of role names
+  roles: z.array(z.string()).min(1)
 });
 
 authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
   const db = drizzle(c.env.DB);
   const data = c.req.valid('json');
 
-  // Check if user exists
   const existingUser = await db.select().from(users).where(eq(users.email, data.email)).get();
   if (existingUser) {
     return c.json({ message: 'Email already exists' }, 400);
@@ -36,7 +35,6 @@ authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
   const hashedPassword = bcrypt.hashSync(data.password, 10);
   const userId = crypto.randomUUID();
 
-  // Insert user
   await db.insert(users).values({
     id: userId,
     fullName: data.fullName,
@@ -45,7 +43,6 @@ authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
     password: hashedPassword
   });
 
-  // Assign roles
   for (const roleName of data.roles) {
     let role = await db.select().from(roles).where(eq(roles.name, roleName.toUpperCase())).get();
     if (!role) {
@@ -114,7 +111,6 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
     return c.json({ message: 'Akun Anda telah diblokir. Silakan hubungi dukungan pelanggan.' }, 403);
   }
 
-  // Get roles
   const userRolesList = await db
     .select({ name: roles.name })
     .from(userRoles)
@@ -123,13 +119,12 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
 
   const roleNames = userRolesList.map(r => r.name);
 
-  // Generate JWT
   const secret = c.env.JWT_SECRET || 'fallback_secret';
   const token = await sign({
     id: user.id, email: user.email,
     username: user.username,
     roles: roleNames,
-    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 1 day
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24
   }, secret, "HS256");
 
   const defaultRole = roleNames.includes("BUYER") ? "BUYER" : roleNames[0];
@@ -162,7 +157,6 @@ authRouter.get('/me', async (c) => {
   try {
     const payload = await verify(token, secret, "HS256");
     
-    // fetch latest user data
     const db = drizzle(c.env.DB);
     const dbUser = await db.select().from(users).where(eq(users.id, payload.id as string)).get();
     
@@ -220,7 +214,6 @@ authRouter.put('/profile', async (c) => {
     await db.update(users).set(updateData).where(eq(users.id, payload.id as string));
   }
 
-  // If email or username changed, we should issue a new token
   let newToken = token;
   if (body.email || body.username) {
     newToken = await sign({
@@ -260,11 +253,10 @@ authRouter.patch('/switch-role', async (c) => {
     return c.json({ message: 'User does not have the specified role' }, 403);
   }
 
-  // Generate new JWT with activeRole
   const newToken = await sign({
     ...payload,
     activeRole: role,
-    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 1 day
+    exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24
   }, secret, "HS256");
 
   return c.json({

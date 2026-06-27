@@ -24,11 +24,9 @@ const authMiddleware = async (c: any, next: any) => {
 
 deliveryRouter.use('*', authMiddleware);
 
-// Driver: Get Available Jobs (Orders waiting for driver)
 deliveryRouter.get('/available', async (c) => {
   const db = drizzle(c.env.DB);
   
-  // Create jobs for MENUNGGU_PENGIRIM if they don't exist yet
   const waitingOrders = await db.select().from(orders).where(eq(orders.status, 'MENUNGGU_PENGIRIM')).all();
   for (const order of waitingOrders) {
     const existingJob = await db.select().from(deliveryJobs).where(eq(deliveryJobs.orderId, order.id)).get();
@@ -41,7 +39,6 @@ deliveryRouter.get('/available', async (c) => {
     }
   }
 
-  // Fetch available jobs
   const jobs = await db.select({
     id: deliveryJobs.id,
     orderId: deliveryJobs.orderId,
@@ -58,7 +55,6 @@ deliveryRouter.get('/available', async (c) => {
   .where(eq(deliveryJobs.status, 'MENUNGGU_DRIVER'))
   .all();
 
-  // Attach addresses
   const availableJobs = await Promise.all(jobs.map(async (job) => {
     const address = await db.select().from(addresses).where(and(eq(addresses.userId, job.buyerId), eq(addresses.isDefault, true))).get();
     return {
@@ -72,13 +68,11 @@ deliveryRouter.get('/available', async (c) => {
   return c.json({ data: availableJobs });
 });
 
-// Driver: Take Job
 deliveryRouter.post('/:id/take', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
   const jobId = c.req.param('id');
 
-  // Verify role
   if (!user.roles.includes('DRIVER')) {
     return c.json({ message: 'Forbidden' }, 403);
   }
@@ -87,13 +81,11 @@ deliveryRouter.post('/:id/take', async (c) => {
   if (!job) return c.json({ message: 'Job not found' }, 404);
   if (job.status !== 'MENUNGGU_DRIVER') return c.json({ message: 'Job is already taken' }, 400);
 
-  // Update job
   await db.update(deliveryJobs).set({
     driverId: user.id as string,
     status: 'DIKIRIM'
   }).where(eq(deliveryJobs.id, jobId));
 
-  // Update order status
   await db.update(orders).set({
     status: 'SEDANG_DIKIRIM'
   }).where(eq(orders.id, job.orderId));
@@ -101,7 +93,6 @@ deliveryRouter.post('/:id/take', async (c) => {
   return c.json({ message: 'Job taken successfully' });
 });
 
-// Driver: My Active Jobs
 deliveryRouter.get('/my-jobs', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -135,12 +126,10 @@ deliveryRouter.get('/my-jobs', async (c) => {
   return c.json({ data: myJobs });
 });
 
-// Driver: Get Earnings Report
 deliveryRouter.get('/earnings', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
 
-  // Assuming walletMutations records the driver earnings. Let's fetch them.
   const { wallets, walletMutations } = await import('../db/schema');
   
   const myWallet = await db.select().from(wallets).where(eq(wallets.userId, user.id as string)).get();
@@ -148,13 +137,11 @@ deliveryRouter.get('/earnings', async (c) => {
   let history: any[] = [];
   if (myWallet) {
     history = await db.select().from(walletMutations).where(eq(walletMutations.walletId, myWallet.id)).orderBy(walletMutations.createdAt).all();
-    history = history.reverse(); // Latest first
+    history = history.reverse();
   }
 
-  // Calculate total earnings (only from INCOME type)
   const totalEarnings = history.filter(h => h.type === 'INCOME').reduce((sum, h) => sum + h.amount, 0);
 
-  // We map history to calculate running balance and attach order details
   let runningBalance = 0;
   const historyWithBalance = await Promise.all([...history].reverse().map(async (h) => {
     runningBalance += h.amount;
@@ -191,7 +178,6 @@ deliveryRouter.get('/earnings', async (c) => {
   });
 });
 
-// Driver: Complete Job
 deliveryRouter.post('/:id/complete', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
@@ -201,18 +187,15 @@ deliveryRouter.post('/:id/complete', async (c) => {
   if (!job) return c.json({ message: 'Job not found or not yours' }, 404);
   if (job.status === 'SELESAI') return c.json({ message: 'Job already completed' }, 400);
 
-  // Update job
   await db.update(deliveryJobs).set({
     status: 'SELESAI',
     completedAt: new Date()
   }).where(eq(deliveryJobs.id, jobId));
 
-  // Update order status to TERKIRIM (Buyer hasn't confirmed yet)
   const order = await db.select().from(orders).where(eq(orders.id, job.orderId)).get();
   if (order) {
     await db.update(orders).set({ status: 'TERKIRIM' }).where(eq(orders.id, job.orderId));
     
-    // Add delivery fee income to driver (Minus 10% platform commission)
     const { wallets, walletMutations } = await import('../db/schema');
     const netFee = Math.floor(order.deliveryFee * 0.9);
 

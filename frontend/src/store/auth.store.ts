@@ -8,7 +8,6 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  // Actions
   setUser: (user: UserPublic, tokens: AuthTokens) => void;
   setActiveRole: (role: RoleType) => void;
   clearAuth: () => void;
@@ -38,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "seapedia-auth",
-      // Only persist tokens and minimal user data; re-fetch full profile on mount
       partialize: (state) => ({
         tokens: state.tokens,
         user: state.user,

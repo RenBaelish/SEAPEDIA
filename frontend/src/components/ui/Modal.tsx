@@ -53,13 +53,13 @@ export function Modal({
       role="dialog"
       aria-modal="true"
     >
-      {/* Backdrop */}
+      {}
       <div
         className="absolute inset-0 bg-black/60"
         onClick={onClose}
       />
 
-      {/* Panel */}
+      {}
       <div
         className={clsx(
           "relative bg-white w-full border-4 border-nb-black",
@@ -68,10 +68,10 @@ export function Modal({
           sizeClasses[size]
         )}
       >
-        {/* Yellow accent top bar */}
+        {}
         <div className="h-2 bg-nb-yellow w-full" />
 
-        {/* Header */}
+        {}
         {(title || showClose) && (
           <div className="flex items-center justify-between px-5 py-4 border-b-3 border-nb-black">
             {title && (
@@ -91,10 +91,10 @@ export function Modal({
           </div>
         )}
 
-        {/* Body */}
+        {}
         <div className="p-5 overflow-y-auto max-h-[80vh]">{children}</div>
 
-        {/* Footer */}
+        {}
         {footer && (
           <div className="px-5 pb-5 pt-0 border-t-2 border-gray-200 pt-4">{footer}</div>
         )}

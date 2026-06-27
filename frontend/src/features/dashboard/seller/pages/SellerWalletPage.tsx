@@ -25,7 +25,6 @@ export default function SellerWalletPage() {
     fetchWallet();
   }, []);
 
-  // Group transactions by date
   const groupedTransactions = useMemo(() => {
     const groups: Record<string, WalletTransactionDto[]> = {};
     transactions.forEach(tx => {
@@ -52,7 +51,7 @@ export default function SellerWalletPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Balance Card */}
+        {}
         <div className="md:col-span-1 bg-nb-blue border-4 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6 relative overflow-hidden h-fit">
           <div className="relative z-10 text-white space-y-6">
             <div className="flex items-center gap-2">
@@ -74,7 +73,7 @@ export default function SellerWalletPage() {
           </div>
         </div>
 
-        {/* Transactions History */}
+        {}
         <div className="md:col-span-2 bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-6">
           <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-gray-100">
             <h3 className="text-base font-extrabold text-nb-black uppercase tracking-wide">Riwayat Penjualan</h3>

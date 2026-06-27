@@ -25,7 +25,6 @@ export default function AdminAnalyticsPage() {
     );
   }
 
-  // Format data for Recharts
   const storeChartData = data.topStores.map(store => ({
     name: store.name,
     Pesanan: store.orderCount
@@ -46,7 +45,7 @@ export default function AdminAnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {/* Top Stores Chart */}
+        {}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
           <div className="p-4 border-b-2 border-nb-black flex items-center justify-between bg-[#F7F5F0]">
             <h2 className="text-sm font-black text-nb-black uppercase tracking-wide flex items-center gap-2">
@@ -77,7 +76,7 @@ export default function AdminAnalyticsPage() {
           </div>
         </div>
 
-        {/* Top Products Chart */}
+        {}
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-hidden">
           <div className="p-4 border-b-2 border-nb-black flex items-center justify-between bg-[#F7F5F0]">
             <h2 className="text-sm font-black text-nb-black uppercase tracking-wide flex items-center gap-2">
@@ -114,7 +113,7 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      {/* Detail Tables as fallbacks below charts */}
+      {}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mt-6">
         <div className="bg-white border-2 border-nb-black shadow-[4px_4px_0px_#0A0A0A] overflow-x-auto">
            <table className="w-full min-w-[400px] text-sm text-left">

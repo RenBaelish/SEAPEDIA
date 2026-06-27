@@ -30,7 +30,7 @@ export function BottomNav() {
             to={targetPath}
             className={`relative flex flex-col items-center justify-center w-full h-full text-nb-black transition-colors ${isActive ? "bg-nb-yellow" : "bg-white hover:bg-[#F7F5F0]"}`}
           >
-            {/* Active Indicator (Brutalism line at top) */}
+            {}
             {isActive && (
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-nb-black"></div>
             )}
@@ -38,7 +38,7 @@ export function BottomNav() {
             <div className={`relative mb-1 ${isActive ? "scale-110" : ""} transition-transform`}>
               <Icon size={24} strokeWidth={isActive ? 3 : 2.5} />
               
-              {/* Badge for Cart */}
+              {}
               {item.badge !== undefined && item.badge > 0 && (
                 <span className="absolute -top-1.5 -right-2 bg-nb-red text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-none border-2 border-nb-black shadow-[1px_1px_0px_#0A0A0A]">
                   {item.badge > 99 ? '99+' : item.badge}

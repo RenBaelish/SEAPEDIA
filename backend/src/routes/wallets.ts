@@ -81,7 +81,6 @@ walletRouter.post('/topup', zValidator('json', topupSchema), async (c) => {
     }).where(eq(wallets.id, wallet.id));
   }
 
-  // Record mutation
   await db.insert(walletMutations).values({
     id: crypto.randomUUID(),
     walletId: currentWalletId as string,

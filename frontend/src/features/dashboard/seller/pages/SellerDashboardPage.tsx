@@ -117,7 +117,7 @@ export default function SellerDashboardPage() {
   return (
     <div className="space-y-5">
 
-      {/* ── Welcome ── */}
+      {}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold text-nb-black">
@@ -139,7 +139,7 @@ export default function SellerDashboardPage() {
         </Link>
       </div>
 
-      {/* ── Stat Cards (Soft Brutalism) ── */}
+      {}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat, idx) => {
           const Icon = stat.icon;
@@ -166,7 +166,7 @@ export default function SellerDashboardPage() {
         })}
       </div>
 
-      {/* ── Quick Actions ── */}
+      {}
       <div className="bg-white border-2 border-gray-200 p-4">
         <h3 className="text-sm font-extrabold text-nb-black mb-4 flex items-center gap-2">
           <span className="w-1 h-4 bg-nb-yellow inline-block" />

@@ -56,7 +56,6 @@ export default function WalletPage() {
     }
   };
 
-  // Group transactions by date
   const groupedTransactions = useMemo(() => {
     const groups: Record<string, WalletTransactionDto[]> = {};
     transactions.forEach(tx => {
@@ -82,7 +81,7 @@ export default function WalletPage() {
       
       <div className="flex flex-col md:flex-row gap-6">
         
-        {/* ─── Kiri: Informasi Dompet & Saldo ── */}
+        {}
         <div className="w-full md:w-[320px] shrink-0">
           <div className="bg-nb-blue border-4 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-6 text-white relative overflow-hidden mb-6">
             <div className="relative z-10">
@@ -110,7 +109,7 @@ export default function WalletPage() {
                 Top-up Saldo
               </button>
 
-              {/* Quick Links */}
+              {}
               <div className="flex gap-3 mt-5 pt-5 border-t-3 border-black/20" style={{ borderTopWidth: '3px' }}>
                 <div onClick={handleNotAvailable} className="flex-1 cursor-pointer group">
                   <div className="flex items-center gap-1.5 mb-1.5">
@@ -130,7 +129,7 @@ export default function WalletPage() {
             </div>
           </div>
 
-          {/* Penting untuk kamu */}
+          {}
           <div className="mt-8">
             <h3 className="text-base font-extrabold text-nb-black mb-3">Penting untuk kamu</h3>
             <div className="bg-nb-yellow border-3 border-nb-black p-4 shadow-[4px_4px_0px_#0A0A0A] overflow-hidden relative group cursor-pointer" style={{ borderWidth: '3px' }}>
@@ -153,7 +152,7 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* ─── Kanan: Riwayat Transaksi ── */}
+        {}
         <div className="flex-1 w-full mt-0">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-base font-extrabold text-nb-black flex items-center gap-2">
@@ -164,7 +163,7 @@ export default function WalletPage() {
             </h2>
           </div>
           
-          {/* Filter Bar */}
+          {}
           <div className="flex flex-wrap gap-3 mb-6 border-b-3 border-nb-black pb-6" style={{ borderBottomWidth: '3px' }}>
             <button onClick={handleNotAvailable} className="flex items-center gap-2 px-4 h-10 border-2 border-nb-black bg-white text-sm font-extrabold hover:bg-nb-yellow transition-colors">
               Semua Tanggal <Calendar size={16} className="ml-2" strokeWidth={2.5} />
@@ -174,7 +173,7 @@ export default function WalletPage() {
             </button>
           </div>
 
-          {/* List Transaksi */}
+          {}
           <div className="space-y-6">
             {Object.keys(groupedTransactions).length === 0 ? (
               <div className="py-12 border-3 border-nb-black bg-gray-50 text-center font-extrabold text-nb-black shadow-[4px_4px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
@@ -225,7 +224,7 @@ export default function WalletPage() {
         </div>
       </div>
 
-      {/* ─── Topup Modal ── */}
+      {}
       {isTopupModalOpen && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
           <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[400px]">

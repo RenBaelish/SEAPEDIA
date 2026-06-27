@@ -14,7 +14,6 @@ export default function CartPage() {
   const [recommendations, setRecommendations] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Cart Task State
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [promoCode, setPromoCode] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
@@ -25,7 +24,6 @@ export default function CartPage() {
     try {
       const res = await api.get("/cart");
       setCart(res.data.data);
-      // Auto-select all items on fetch
       if (res.data.data.items) {
         setSelectedItems(res.data.data.items.map((i: any) => i.id));
       }
@@ -124,7 +122,7 @@ export default function CartPage() {
     return (
       <div className="bg-[#F7F5F0] min-h-screen pt-6 pb-16">
         <div className="page-container">
-          {/* Empty state */}
+          {}
           <div className="bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] p-10 text-center mb-8">
             <img
               src="/icon/ilustrasi-keranjang-kosong-icon.png"
@@ -144,7 +142,7 @@ export default function CartPage() {
             </Link>
           </div>
 
-          {/* Recommendations */}
+          {}
           <h2 className="text-base font-extrabold text-nb-black nb-section-title mb-4">Rekomendasi untukmu</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {recommendations.map((p) => (
@@ -168,10 +166,10 @@ export default function CartPage() {
 
         <div className="flex flex-col md:flex-row gap-5 items-start">
 
-          {/* ─── Left: Items ── */}
+          {}
           <div className="flex-1 w-full space-y-3">
 
-            {/* Header bar */}
+            {}
             <div className="bg-white border-3 border-nb-black p-3 flex items-center justify-between"
               style={{ borderWidth: '3px' }}>
               <label className="flex items-center gap-3 cursor-pointer">
@@ -191,7 +189,7 @@ export default function CartPage() {
               </button>
             </div>
 
-            {/* Store & Products */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
               style={{ borderWidth: '3px' }}>
 
@@ -250,7 +248,7 @@ export default function CartPage() {
                             )}
                           </div>
 
-                          {/* Controls */}
+                          {}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center border-2 border-nb-black overflow-hidden">
                               <button
@@ -286,10 +284,10 @@ export default function CartPage() {
             </div>
           </div>
 
-          {/* ─── Right: Summary ── */}
+          {}
           <div className="w-full md:w-[300px] shrink-0 sticky top-24 space-y-3">
 
-            {/* Promo */}
+            {}
             <div 
               onClick={() => setIsPromoModalOpen(true)}
               className="bg-white border-3 border-nb-black p-4 flex items-center justify-between cursor-pointer hover:bg-nb-yellow transition-colors"
@@ -303,7 +301,7 @@ export default function CartPage() {
               <ChevronRight size={16} strokeWidth={3} className={promoCode ? "text-nb-green" : "text-nb-black"} />
             </div>
 
-            {/* Promo Modal */}
+            {}
             {isPromoModalOpen && (
               <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
                 <div className="bg-white border-4 border-nb-black shadow-[8px_8px_0px_#0A0A0A] w-full max-w-[400px]">
@@ -336,7 +334,7 @@ export default function CartPage() {
               </div>
             )}
 
-            {/* Summary card */}
+            {}
             <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-5"
               style={{ borderWidth: '3px' }}>
               <h3 className="text-sm font-extrabold text-nb-black mb-4 pb-3 border-b-2 border-gray-100">Ringkasan Belanja</h3>
@@ -371,7 +369,7 @@ export default function CartPage() {
               </button>
             </div>
 
-            {/* Trust badge */}
+            {}
             <div className="flex items-center gap-2 text-xs text-gray-500 px-1">
               <ShieldCheck size={14} className="text-green-500 shrink-0" />
               <span>Belanja aman & terpercaya bersama SEAPEDIA</span>
@@ -379,7 +377,7 @@ export default function CartPage() {
           </div>
         </div>
 
-        {/* Recommendations */}
+        {}
         {recommendations.length > 0 && (
           <div className="mt-12">
             <h2 className="text-base font-extrabold text-nb-black nb-section-title mb-4">Rekomendasi untukmu</h2>

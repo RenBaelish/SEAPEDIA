@@ -7,7 +7,6 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Form state
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({ name: '', slug: '', iconUrl: '' });
   const [submitting, setSubmitting] = useState(false);

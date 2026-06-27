@@ -14,7 +14,6 @@ const storeSchema = z.object({
   description: z.string().optional()
 });
 
-// Create Store
 storeRouter.post('/', zValidator('json', storeSchema), async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -39,7 +38,6 @@ storeRouter.post('/', zValidator('json', storeSchema), async (c) => {
   const db = drizzle(c.env.DB);
   const data = c.req.valid('json');
 
-  // Check if owner already has a store
   const existingStore = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
   if (existingStore) {
     return c.json({ message: 'You already have a store' }, 400);
@@ -58,7 +56,6 @@ storeRouter.post('/', zValidator('json', storeSchema), async (c) => {
   return c.json({ message: 'Store created successfully', storeId }, 201);
 });
 
-// Get My Store
 storeRouter.get('/me', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -85,7 +82,6 @@ storeRouter.get('/me', async (c) => {
   return c.json({ data: store });
 });
 
-// Get My Store Stats
 storeRouter.get('/me/stats', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) return c.json({ message: 'Unauthorized' }, 401);
@@ -128,7 +124,6 @@ const updateStoreSchema = z.object({
   bannerUrl: z.string().optional(),
 });
 
-// Update My Store
 storeRouter.patch('/me', zValidator('json', updateStoreSchema), async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -165,14 +160,12 @@ storeRouter.patch('/me', zValidator('json', updateStoreSchema), async (c) => {
   return c.json({ data: updatedStore });
 });
 
-// Get All Stores (Public)
 storeRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);
   const allStores = await db.select().from(stores).all();
   return c.json({ data: allStores });
 });
 
-// Get Store by ID or Slug (Public)
 storeRouter.get('/:idOrSlug', async (c) => {
   const db = drizzle(c.env.DB);
   const idOrSlug = c.req.param('idOrSlug');
@@ -185,7 +178,6 @@ storeRouter.get('/:idOrSlug', async (c) => {
   return c.json({ data: store });
 });
 
-// Get Store Products (Public)
 storeRouter.get('/:idOrSlug/products', async (c) => {
   const db = drizzle(c.env.DB);
   const idOrSlug = c.req.param('idOrSlug');

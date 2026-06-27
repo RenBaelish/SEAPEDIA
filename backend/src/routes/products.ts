@@ -21,7 +21,6 @@ const productSchema = z.object({
   images: z.array(z.string().url()).max(8).optional()
 });
 
-// Create Product
 productRouter.post('/', zValidator('json', productSchema), async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -40,7 +39,6 @@ productRouter.post('/', zValidator('json', productSchema), async (c) => {
 
   const db = drizzle(c.env.DB);
   
-  // Check if user has a store
   const store = await db.select().from(stores).where(eq(stores.ownerId, payload.id as string)).get();
   if (!store) {
     return c.json({ message: 'Forbidden. You do not have a store.' }, 403);
@@ -68,7 +66,6 @@ productRouter.post('/', zValidator('json', productSchema), async (c) => {
   return c.json({ message: 'Product created successfully', productId }, 201);
 });
 
-// Update Product
 productRouter.put('/:id', zValidator('json', productSchema), async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -115,7 +112,6 @@ productRouter.put('/:id', zValidator('json', productSchema), async (c) => {
   return c.json({ message: 'Product updated successfully' });
 });
 
-// Partial Update Product (e.g. status)
 productRouter.patch('/:id', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -154,7 +150,6 @@ productRouter.patch('/:id', async (c) => {
   return c.json({ message: 'Product status updated' });
 });
 
-// Delete Product
 productRouter.delete('/:id', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -189,7 +184,6 @@ productRouter.delete('/:id', async (c) => {
   return c.json({ message: 'Product deleted successfully' });
 });
 
-// Get My Products (Seller)
 productRouter.get('/seller/mine', async (c) => {
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -246,7 +240,6 @@ productRouter.get('/seller/mine', async (c) => {
   return c.json({ data: mappedProducts });
 });
 
-// Get All Products (Public Catalog)
 productRouter.get('/', async (c) => {
   const db = drizzle(c.env.DB);
   const q = c.req.query('q');
@@ -325,7 +318,6 @@ productRouter.get('/', async (c) => {
   return c.json({ data: mappedProducts });
 });
 
-// Get Product by ID
 productRouter.get('/:id', async (c) => {
   const db = drizzle(c.env.DB);
   const productId = c.req.param('id');
@@ -354,11 +346,10 @@ productRouter.get('/:id', async (c) => {
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
     .leftJoin(categories, eq(products.categoryId, categories.id))
-    .where(eq(products.slug, productId)) // Allow fetching by slug
+    .where(eq(products.slug, productId))
     .get();
 
   if (!product) {
-    // try by id if slug fails
     const productById = await db
       .select({
         id: products.id,
@@ -396,7 +387,6 @@ productRouter.get('/:id', async (c) => {
   return c.json({ data: { ...product, images: JSON.parse(product.images as string || '[]') } });
 });
 
-// Get Products by Store ID
 productRouter.get('/store/:storeId', async (c) => {
   const db = drizzle(c.env.DB);
   const storeId = c.req.param('storeId');

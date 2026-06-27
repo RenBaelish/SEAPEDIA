@@ -23,7 +23,6 @@ const roleDashboardPath: Partial<Record<RoleType, string>> = {
   DRIVER: "/driver",
 };
 
-// Category icons from /public/icon/
 const CATEGORIES = [
   { label: "Handphone & Tablet", icon: "/icon/handphone-icon.png",          slug: "handphone-tablet",   subs: ["Smartphone", "Tablet", "Aksesoris HP"] },
   { label: "Komputer & Laptop",  icon: "/icon/komputer-icon.png",           slug: "komputer-laptop",    subs: ["Laptop", "PC Desktop", "Mouse & Keyboard"] },
@@ -91,7 +90,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-[100] bg-white border-b-4 border-nb-black font-sans">
-      {/* ── Top Strip ── */}
+      {}
       <div className="bg-nb-black text-white hidden md:block">
         <div className="page-container">
           <div className="flex items-center justify-between h-8 text-xs">
@@ -108,16 +107,16 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* ── Main Navbar ── */}
+      {}
       <div className="page-container">
         <div className="flex items-center gap-3 md:gap-4 h-[68px]">
 
-          {/* Logo */}
+          {}
           <Link to="/" className="flex items-center shrink-0 mr-2" aria-label="SEAPEDIA Beranda">
             <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-12 w-auto object-contain" />
           </Link>
 
-          {/* Category Button (desktop) */}
+          {}
           <div
             className="hidden md:block relative"
             onMouseEnter={() => setCategoryMenuOpen(true)}
@@ -132,14 +131,14 @@ export function Navbar() {
               <ChevronDown size={14} strokeWidth={3} />
             </button>
 
-            {/* Mega Menu */}
+            {}
             {categoryMenuOpen && (
               <div
                 className="absolute left-0 top-full pt-0 z-[200]"
                 style={{ animation: 'slideDown 150ms ease' }}
               >
                 <div className="w-[660px] bg-white border-4 border-nb-black shadow-[6px_6px_0px_#0A0A0A] flex mt-0">
-                  {/* Left: Category list */}
+                  {}
                   <div className="w-52 border-r-3 border-nb-black overflow-y-auto max-h-[420px] bg-gray-50"
                     style={{ borderRightWidth: '3px' }}>
                     {CATEGORIES.filter(c => c.subs.length > 0).map((cat) => (
@@ -160,7 +159,7 @@ export function Navbar() {
                     ))}
                   </div>
 
-                  {/* Right: Sub-categories */}
+                  {}
                   <div className="flex-1 p-5">
                     <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-nb-black">
                       <img src={hoveredCategory.icon} alt="" className="w-6 h-6 object-contain" />
@@ -183,7 +182,7 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Search */}
+          {}
           <div className="flex-1 relative" ref={searchRef}>
             <form onSubmit={handleSearch} className="relative">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none z-10" strokeWidth={2.5} />
@@ -199,7 +198,7 @@ export function Navbar() {
               />
             </form>
 
-            {/* Search Dropdown */}
+            {}
             {isSearchFocused && (
               <div className="absolute left-0 top-full w-full bg-white border-3 border-nb-black border-t-0 shadow-[4px_4px_0px_#0A0A0A] z-[5] p-4"
                 style={{ borderWidth: '3px' }}>
@@ -220,12 +219,12 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Right Actions */}
+          {}
           <div className="flex items-center gap-2 shrink-0">
 
             {isAuthenticated ? (
               <>
-                {/* Cart */}
+                {}
                 {user?.activeRole === "BUYER" && (
                   <Link
                     to="/cart"
@@ -242,7 +241,7 @@ export function Navbar() {
                   </Link>
                 )}
 
-                {/* Notification */}
+                {}
                 <button
                   className="hidden md:flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                   style={{ borderWidth: '3px' }}
@@ -251,7 +250,7 @@ export function Navbar() {
                   <Bell size={20} strokeWidth={2.5} />
                 </button>
 
-                {/* Account Menu */}
+                {}
                 <div className="relative hidden md:block" ref={accountRef}>
                   <button
                     onClick={() => setAccountMenuOpen(!accountMenuOpen)}
@@ -265,7 +264,7 @@ export function Navbar() {
                   {accountMenuOpen && (
                     <div className="absolute right-0 top-full mt-1 w-64 bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] z-[200]"
                       style={{ borderWidth: '3px' }}>
-                      {/* Header */}
+                      {}
                       <div className="p-4 border-b-3 border-nb-black bg-nb-yellow"
                         style={{ borderBottomWidth: '3px' }}>
                         <p className="font-extrabold text-sm text-nb-black">{user?.fullName}</p>
@@ -275,7 +274,7 @@ export function Navbar() {
                         </span>
                       </div>
 
-                      {/* Dashboard links based on all roles */}
+                      {}
                       {user?.roles?.map(role => {
                         const dashPath = roleDashboardPath[role as RoleType];
                         if (!dashPath) return null;

@@ -37,7 +37,7 @@ export function Footer() {
     <footer className="bg-nb-black text-white border-t-4 border-nb-black mt-auto">
       <div className="page-container py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {/* Brand */}
+          {}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="inline-block mb-4">
               <img src="/logo-seapedia.png" alt="SEAPEDIA" className="h-14 w-auto object-contain brightness-0 invert" />
@@ -59,7 +59,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
+          {}
           {Object.entries(footerLinks).map(([section, links]) => (
             <div key={section}>
               <h4 className="text-sm font-extrabold text-nb-yellow tracking-wider mb-4 pb-2 border-b-2 border-gray-700">
@@ -81,7 +81,7 @@ export function Footer() {
           ))}
         </div>
 
-        {/* Bottom bar */}
+        {}
         <div className="mt-10 pt-6 border-t-2 border-gray-700 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-left">
           <div className="flex flex-col gap-1.5">
             <p className="text-xs text-gray-500">

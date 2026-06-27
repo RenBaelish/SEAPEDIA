@@ -35,7 +35,6 @@ adminRouter.get('/dashboard', async (c) => {
   const productCount = await db.select({ count: sql<number>`count(*)` }).from(products).get();
   const orderCount = await db.select({ count: sql<number>`count(*)` }).from(orders).get();
   
-  // Hitung revenue (contoh: 20% dari total pesanan selesai)
   const completedOrders = await db.select({ totalAmount: orders.totalAmount }).from(orders).where(eq(orders.status, 'PESANAN_SELESAI')).all();
   const revenue = completedOrders.reduce((sum, order) => sum + (order.totalAmount * 0.2), 0);
   
@@ -52,7 +51,6 @@ adminRouter.get('/dashboard', async (c) => {
 
 adminRouter.get('/users', async (c) => {
   const db = drizzle(c.env.DB);
-  // Get all users
   const allUsers = await db.select({
     id: users.id,
     fullName: users.fullName,
@@ -129,8 +127,6 @@ adminRouter.post('/categories', async (c) => {
 
 adminRouter.get('/promos', async (c) => {
   const db = drizzle(c.env.DB);
-  // Get platform promos (where storeId is null)
-  // Since we don't have isNull helper imported, we can just use sql
   const platformPromos = await db.select().from(promos).where(sql`${promos.storeId} IS NULL`).orderBy(desc(promos.createdAt)).all();
   return c.json({ data: platformPromos });
 });
@@ -146,7 +142,7 @@ adminRouter.post('/promos', async (c) => {
 
   await db.insert(promos).values({
     id: crypto.randomUUID(),
-    storeId: null, // null for platform promo
+    storeId: null,
     code: body.code,
     discountAmount: body.discountAmount,
     type: body.type || 'DISCOUNT',
@@ -184,7 +180,6 @@ adminRouter.put('/promos/:id', async (c) => {
 adminRouter.get('/analytics', async (c) => {
   const db = drizzle(c.env.DB);
   
-  // Example analytics: get top stores by order count
   const topStores = await db.select({
     id: stores.id,
     name: stores.name,
@@ -241,7 +236,6 @@ adminRouter.post('/overdue/simulate', async (c) => {
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const simulatedTime = currentTimestamp + (hoursToAdvance * 60 * 60);
 
-  // We need to fetch all active orders and see if simulatedTime - createdAt > threshold
   const activeOrders = await db.select().from(orders).where(
     sql`${orders.status} IN ('SEDANG_DIKEMAS', 'SEDANG_DIKIRIM')`
   ).all();
@@ -261,15 +255,12 @@ adminRouter.post('/overdue/simulate', async (c) => {
     }
 
     if (shouldCancel) {
-      // 1. Update order status to DIKEMBALIKAN
       await db.update(orders).set({ status: 'DIKEMBALIKAN' }).where(eq(orders.id, order.id));
       
-      // 2. Refund to buyer
       const buyerWallet = await db.select().from(wallets).where(eq(wallets.userId, order.buyerId)).get();
       if (buyerWallet) {
         await db.update(wallets).set({ balance: buyerWallet.balance + order.totalAmount }).where(eq(wallets.id, buyerWallet.id));
         
-        // Log mutation
         await db.insert(walletMutations).values({
           id: crypto.randomUUID(),
           walletId: buyerWallet.id,

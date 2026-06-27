@@ -32,7 +32,7 @@ export default function SearchPage() {
   return (
     <div className="bg-[#F7F5F0] min-h-screen pb-16">
 
-      {/* ── Sticky Search Header ── */}
+      {}
       <div className="bg-white border-b-4 border-nb-black sticky top-[68px] z-[40]">
         <div className="page-container py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>

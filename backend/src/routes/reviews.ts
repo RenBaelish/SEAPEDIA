@@ -91,10 +91,9 @@ reviewRouter.get('/app', async (c) => {
       }
     })
     .from(reviews)
-    .leftJoin(users, eq(reviews.userId, users.id)) // leftJoin because guestName reviews have no user
+    .leftJoin(users, eq(reviews.userId, users.id))
     .orderBy(desc(reviews.createdAt));
 
-  // Format to standard shape for frontend
   const formattedReviews = appReviews.map(r => ({
     id: r.id,
     guestName: r.guestName || r.user?.fullName || 'Anonymous',
