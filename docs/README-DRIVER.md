@@ -12,13 +12,13 @@ Drivers see available delivery jobs created when sellers process orders, take th
 
 ## Pages and Purpose
 
-| Page | Route | Purpose |
-|---|---|---|
-| Driver Dashboard | /driver | Available jobs overview |
-| Available Jobs | /driver | List of orders ready for pickup |
-| My Deliveries | /driver/my-deliveries | Job history (completed and active) |
-| Earnings | /driver/earnings | Income summary and breakdown |
-| Driver Wallet | /driver/wallet | Wallet balance and transaction history |
+| Page             | Route                 | Purpose                                |
+| ---------------- | --------------------- | -------------------------------------- |
+| Driver Dashboard | /driver               | Available jobs overview                |
+| Available Jobs   | /driver               | List of orders ready for pickup        |
+| My Deliveries    | /driver/my-deliveries | Job history (completed and active)     |
+| Earnings         | /driver/earnings      | Income summary and breakdown           |
+| Driver Wallet    | /driver/wallet        | Wallet balance and transaction history |
 
 ## Driver Flow
 
@@ -50,14 +50,14 @@ Buyer confirms receipt -> order becomes PESANAN_SELESAI
 
 ## Key API Endpoints
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /deliveries/available | List available jobs (MENUNGGU_PENGIRIM) |
-| POST | /deliveries/:id/take | Claim a job |
-| POST | /deliveries/:id/complete | Mark delivery as done |
-| GET | /deliveries/my-jobs | Driver's job history |
-| GET | /wallet | Wallet balance |
-| GET | /wallet/transactions | Earnings history |
+| Method | Endpoint                 | Description                             |
+| ------ | ------------------------ | --------------------------------------- |
+| GET    | /deliveries/available    | List available jobs (MENUNGGU_PENGIRIM) |
+| POST   | /deliveries/:id/take     | Claim a job                             |
+| POST   | /deliveries/:id/complete | Mark delivery as done                   |
+| GET    | /deliveries/my-jobs      | Driver's job history                    |
+| GET    | /wallet                  | Wallet balance                          |
+| GET    | /wallet/transactions     | Earnings history                        |
 
 ## Earnings Calculation
 

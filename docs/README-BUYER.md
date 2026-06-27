@@ -12,17 +12,17 @@ The Buyer role is the primary consumer of the marketplace. Buyers browse product
 
 ## Pages and Purpose
 
-| Page | Route | Purpose |
-|---|---|---|
-| Homepage | / | Browse featured products and app reviews |
-| Search / Catalog | /search | Filter and search products by category, keyword, sort |
-| Product Detail | /product/:slug | View product info, images, price, and add to cart |
-| Cart | /cart | View and manage cart items, see subtotal |
-| Checkout | /checkout | Select delivery address, shipping method, apply voucher, confirm payment |
-| Orders | /orders | List all past and current orders |
-| Order Detail | /orders/:id | View full order with items, tracking, and status timeline |
-| Wallet | /wallet | View balance, top up, and transaction history |
-| Account | /account | Edit profile, manage addresses |
+| Page             | Route          | Purpose                                                                  |
+| ---------------- | -------------- | ------------------------------------------------------------------------ |
+| Homepage         | /              | Browse featured products and app reviews                                 |
+| Search / Catalog | /search        | Filter and search products by category, keyword, sort                    |
+| Product Detail   | /product/:slug | View product info, images, price, and add to cart                        |
+| Cart             | /cart          | View and manage cart items, see subtotal                                 |
+| Checkout         | /checkout      | Select delivery address, shipping method, apply voucher, confirm payment |
+| Orders           | /orders        | List all past and current orders                                         |
+| Order Detail     | /orders/:id    | View full order with items, tracking, and status timeline                |
+| Wallet           | /wallet        | View balance, top up, and transaction history                            |
+| Account          | /account       | Edit profile, manage addresses                                           |
 
 ## Buyer Flow
 
@@ -65,27 +65,27 @@ Seller wallet credited (minus 5% platform fee)
 
 ## Key API Endpoints
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /products | Browse public product catalog |
-| GET | /products/:slug | Product detail |
-| GET | /cart | Get current cart |
-| POST | /cart/items | Add item to cart |
-| PATCH | /cart/items/:id | Update item quantity |
-| DELETE | /cart/items/:id | Remove item |
-| DELETE | /cart/clear | Empty cart |
-| POST | /orders/checkout/validate-voucher | Check promo code |
-| POST | /orders/checkout | Place order |
-| GET | /orders | Order history |
-| GET | /orders/:id | Order detail with status history |
-| PATCH | /orders/:id/status | Confirm receipt (PESANAN_SELESAI) |
-| GET | /wallet | Wallet balance |
-| POST | /wallet/topup | Top up balance |
-| GET | /wallet/transactions | Transaction history |
-| GET | /addresses | Saved addresses |
-| POST | /addresses | Add new address |
-| PATCH | /addresses/:id | Update or set default |
-| DELETE | /addresses/:id | Remove address |
+| Method | Endpoint                          | Description                       |
+| ------ | --------------------------------- | --------------------------------- |
+| GET    | /products                         | Browse public product catalog     |
+| GET    | /products/:slug                   | Product detail                    |
+| GET    | /cart                             | Get current cart                  |
+| POST   | /cart/items                       | Add item to cart                  |
+| PATCH  | /cart/items/:id                   | Update item quantity              |
+| DELETE | /cart/items/:id                   | Remove item                       |
+| DELETE | /cart/clear                       | Empty cart                        |
+| POST   | /orders/checkout/validate-voucher | Check promo code                  |
+| POST   | /orders/checkout                  | Place order                       |
+| GET    | /orders                           | Order history                     |
+| GET    | /orders/:id                       | Order detail with status history  |
+| PATCH  | /orders/:id/status                | Confirm receipt (PESANAN_SELESAI) |
+| GET    | /wallet                           | Wallet balance                    |
+| POST   | /wallet/topup                     | Top up balance                    |
+| GET    | /wallet/transactions              | Transaction history               |
+| GET    | /addresses                        | Saved addresses                   |
+| POST   | /addresses                        | Add new address                   |
+| PATCH  | /addresses/:id                    | Update or set default             |
+| DELETE | /addresses/:id                    | Remove address                    |
 
 ## Business Rules for Buyers
 
@@ -102,11 +102,11 @@ Seller wallet credited (minus 5% platform fee)
 
 ## Order Status Reference
 
-| Status | Meaning |
-|---|---|
-| SEDANG_DIKEMAS | Seller is packing the order |
-| MENUNGGU_PENGIRIM | Waiting for a driver |
-| SEDANG_DIKIRIM | Driver picked up and on the way |
-| TERKIRIM | Delivered, waiting for buyer to confirm |
-| PESANAN_SELESAI | Buyer confirmed receipt, finalized |
-| DIKEMBALIKAN | Refunded due to overdue or cancellation |
+| Status            | Meaning                                 |
+| ----------------- | --------------------------------------- |
+| SEDANG_DIKEMAS    | Seller is packing the order             |
+| MENUNGGU_PENGIRIM | Waiting for a driver                    |
+| SEDANG_DIKIRIM    | Driver picked up and on the way         |
+| TERKIRIM          | Delivered, waiting for buyer to confirm |
+| PESANAN_SELESAI   | Buyer confirmed receipt, finalized      |
+| DIKEMBALIKAN      | Refunded due to overdue or cancellation |

@@ -12,19 +12,19 @@ The Admin role has full read access to all platform data and moderation capabili
 
 ## Pages and Purpose
 
-| Page | Route | Purpose |
-|---|---|---|
-| Admin Dashboard | /admin | Overview stats: users, stores, orders, revenue |
-| Users | /admin/users | List all users, ban or unban accounts |
-| Stores | /admin/stores | List all stores, suspend or activate |
-| Products | /admin/products | Browse all products across stores |
-| Orders | /admin/orders | All orders with status and financial detail |
-| Promos | /admin/promos | Create and delete vouchers and promos |
-| Overdue Simulation | /admin | Trigger overdue check from Admin dashboard |
+| Page               | Route           | Purpose                                        |
+| ------------------ | --------------- | ---------------------------------------------- |
+| Admin Dashboard    | /admin          | Overview stats: users, stores, orders, revenue |
+| Users              | /admin/users    | List all users, ban or unban accounts          |
+| Stores             | /admin/stores   | List all stores, suspend or activate           |
+| Products           | /admin/products | Browse all products across stores              |
+| Orders             | /admin/orders   | All orders with status and financial detail    |
+| Promos             | /admin/promos   | Create and delete vouchers and promos          |
+| Overdue Simulation | /admin          | Trigger overdue check from Admin dashboard     |
 
 ## Admin Flow
 
-```
+```JavaScript
 Login with Admin account (admin@seapedia.id)
     |
     v
@@ -59,27 +59,27 @@ POST /admin/overdue/simulate
 
 ## Key API Endpoints
 
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /admin/stats | Aggregated platform statistics |
-| GET | /admin/users | All users with roles and status |
-| PATCH | /admin/users/:id/ban | Ban a user |
-| PATCH | /admin/users/:id/unban | Unban a user |
-| GET | /admin/stores | All stores with owner info |
-| PATCH | /admin/stores/:id/suspend | Suspend a store |
-| PATCH | /admin/stores/:id/activate | Activate a store |
-| GET | /admin/orders | All orders |
-| POST | /admin/overdue/simulate | Trigger overdue processing |
-| GET | /promos | List all promos |
-| POST | /promos | Create promo or voucher |
-| DELETE | /promos/:id | Delete promo |
+| Method | Endpoint                   | Description                     |
+| ------ | -------------------------- | ------------------------------- |
+| GET    | /admin/stats               | Aggregated platform statistics  |
+| GET    | /admin/users               | All users with roles and status |
+| PATCH  | /admin/users/:id/ban       | Ban a user                      |
+| PATCH  | /admin/users/:id/unban     | Unban a user                    |
+| GET    | /admin/stores              | All stores with owner info      |
+| PATCH  | /admin/stores/:id/suspend  | Suspend a store                 |
+| PATCH  | /admin/stores/:id/activate | Activate a store                |
+| GET    | /admin/orders              | All orders                      |
+| POST   | /admin/overdue/simulate    | Trigger overdue processing      |
+| GET    | /promos                    | List all promos                 |
+| POST   | /promos                    | Create promo or voucher         |
+| DELETE | /promos/:id                | Delete promo                    |
 
 ## SLA Reference
 
 | Delivery Method | SLA Limit |
-|---|---|
-| INSTANT | 2 hours |
-| NEXT_DAY | 24 hours |
-| REGULAR | 72 hours |
+| --------------- | --------- |
+| INSTANT         | 2 hours   |
+| NEXT_DAY        | 24 hours  |
+| REGULAR         | 72 hours  |
 
 SLA starts from order createdAt. If the order is still in SEDANG_DIKEMAS or MENUNGGU_PENGIRIM after the SLA, it is eligible for refund on next simulation run.
