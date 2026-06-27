@@ -27,10 +27,13 @@ app.use('*', cors({
   credentials: true,
 }))
 
+app.get('/favicon.ico', (c) => c.redirect('http://localhost:5173/only-logo-seapedia.png'))
+
 app.get('/openapi.json', (c) => c.json(openapiSpec))
 
 app.get('/docs', swaggerUI({
-  url: '/openapi.json'
+  url: '/openapi.json',
+  title: 'SEAPEDIA API Docs'
 }))
 
 app.get('/', (c) => {
