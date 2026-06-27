@@ -19,7 +19,7 @@ import seedHandler from './seed'
 const app = new Hono()
 
 app.use('*', cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'https://seapedia-compfest-seacademy.vercel.app'],
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
   exposeHeaders: ['Content-Length'],
