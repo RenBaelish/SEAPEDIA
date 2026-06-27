@@ -10,7 +10,8 @@
     {
       "binding": "DB",
       "database_name": "seapedia-db",
-      "database_id": "seapedia-local-db"
+      "database_id": "7863c4c2-d2bb-4561-b69d-3659a9cdc2cf"
+      // "database_id": "seapedia-local-db"
     }
   ]
 }
