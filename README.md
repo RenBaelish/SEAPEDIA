@@ -5,7 +5,7 @@
 # SEAPEDIA - E-Commerce Platform Ecosystem
 
 **Repository URL:** [https://github.com/RenBaelish/SEAPEDIA](https://github.com/RenBaelish/SEAPEDIA)
-**Git Clone URL:** https://github.com/RenBaelish/SEAPEDIA.git
+**Git Clone URL:** `https://github.com/RenBaelish/SEAPEDIA.git`
 
 SEAPEDIA is a comprehensive e-commerce platform built to fulfill the Advanced Fullstack Web Development task. It features a complete ecosystem with four distinct user roles: Admin, Buyer, Seller, and Driver.
 
@@ -36,113 +36,169 @@ For detailed documentation per role, please read the following:
 - **Database:** Cloudflare D1 (Serverless SQLite).
 - **Security:** Bcrypt (Password Hashing), JWT (Stateless Authentication).
 
-## 3. How to Run the Application Locally (Development Mode)
+## 3. Environment Variables Configuration
 
-**IMPORTANT NOTE:** Running this application locally **DOES NOT** require you to login to Cloudflare or have an active Cloudflare account. The local development environment uses wrangler d1 which simulates the database using a local SQLite file in the .wrangler folder.
+The application strictly avoids hardcoded API URLs or secrets. You must set up environment variables for both the frontend and backend. 
 
-To run the application locally without Docker, ensure your environment meets these prerequisites:
+### 1. Frontend (`frontend/.env`)
+Create a file named `.env` exactly inside the `frontend` folder and copy-paste the following content:
+```env
+VITE_API_URL=http://localhost:8787
+```
+*(Explanation: `VITE_API_URL` tells the Vite React application where the backend API is running).*
 
-### Prerequisites
-- **Node.js**: Version 18 or higher.
-- **PNPM**: Package manager used for the backend workspace (install via 
-pm install -g pnpm).
-- **NPM**: Default package manager for the frontend workspace.
+### 2. Backend (`backend/.dev.vars`)
+Cloudflare Workers uses a file named `.dev.vars` (instead of `.env`) for local development. Create a file named `.dev.vars` exactly inside the `backend` folder and copy-paste the following content:
+```env
+JWT_SECRET=super_secret_key_for_development
+```
+*(Explanation: `JWT_SECRET` is the secret key used to securely sign and verify JSON Web Tokens for user login sessions. For local development, this can be any random string).*
 
-### Environment Variables (.env)
-The application is designed to be plug-and-play for local evaluation. 
-- **Backend:** Uses Wrangler configuration (wrangler.jsonc) and local SQLite state. **No .env file is required for local development.**
-- **Frontend:** API requests proxy to http://localhost:8787 by default in the API client (lib/api.ts). **No .env file is required.**
+## 4. How to Run the Application Locally (Via Docker)
 
----
+We provide a `docker-compose.yml` file to run the entire stack (both frontend and backend) simultaneously with a single command. 
+
+**What happens inside Docker?**
+- The `backend` service builds the Hono server and exposes it on port `8787`.
+- The `frontend` service builds the React Vite server and exposes it on port `5173`.
+- They run concurrently in isolated containers, communicating seamlessly.
+
+**Steps to run via Docker:**
+1. Ensure [Docker Desktop](https://www.docker.com/) is installed and running.
+2. Open terminal in the project root directory (where `docker-compose.yml` is located).
+3. Run the stack in detached mode:
+   ```bash
+   docker-compose up -d --build
+   ```
+4. Access the **Frontend** at: `http://localhost:5173`
+5. Access the **Backend API Docs** at: `http://localhost:8787/docs`
+6. (Optional) To view logs: `docker-compose logs -f`
+7. (Optional) To stop the application: `docker-compose down`
+
+## 5. How to Run the Application Locally (Without Docker)
+
+**IMPORTANT NOTE:** Running this application locally **DOES NOT** require you to login to Cloudflare or have an active Cloudflare account. The local development environment uses `wrangler d1` which simulates the database using a local SQLite file in the `.wrangler` folder.
+
+If you prefer to run it manually without Docker, ensure you have **Node.js 18+**, **PNPM**, and **NPM** installed.
 
 ### Step 1: Getting the Source Code
 
-Depending on how you received the project, follow the appropriate method below to enter the project folder.
-
 **Method A: From GitHub Repository (Clone)**
 1. Open terminal and clone the repository:
-   git clone https://github.com/RenBaelish/SEAPEDIA.git
+   `git clone https://github.com/RenBaelish/SEAPEDIA.git`
 2. Enter the project root directory:
-   cd SEAPEDIA
+   `cd SEAPEDIA`
 
 **Method B: From ZIP File Extraction**
 1. Extract the downloaded ZIP file to your preferred location.
 2. Open terminal and navigate into the extracted root folder (where this README is located):
-   cd path/to/extracted/SEAPEDIA
-
----
+   `cd path/to/extracted/SEAPEDIA`
 
 ### Step 2: Run the Backend
 1. From the project root directory, navigate to the backend directory: 
-   cd backend
+   `cd backend`
 2. Install dependencies: 
-   pnpm install
+   `pnpm install`
 3. Start the backend development server: 
-   pnpm run dev 
+   `pnpm run dev` 
    *(This will start the server at http://localhost:8787 and automatically initialize the local SQLite database).*
 
 ### Step 3: Seed the Database
 Before using the application, you must populate the database with the initial products, stores, and demo accounts.
 1. Ensure the backend is running.
-2. Open your browser and navigate to: http://localhost:8787/seed
+2. Open your browser and navigate to: `http://localhost:8787/seed`
 3. Wait for the success response. The database is now populated.
 
 ### Step 4: Run the Frontend
 1. Open a **new terminal** at the project root directory, then navigate to the frontend directory: 
-   cd frontend
+   `cd frontend`
 2. Install dependencies: 
-   
-pm install
+   `npm install`
 3. Start the frontend development server: 
-   
-pm run dev
-4. Access the web application at: http://localhost:5173
+   `npm run dev`
+4. Access the web application at: `http://localhost:5173`
 
-## 4. How to Use the Application (Demo Accounts)
+## 6. How to Use the Application (Demo Accounts)
 
-You can log in to http://localhost:5173/auth/login using the following seeded accounts. All passwords are case-sensitive.
+You can log in to `http://localhost:5173/auth/login` using the following seeded accounts. All passwords are case-sensitive.
 
 **Admin Account:**
-- Email: dmin@seapedia.id
-- Password: Admin@SEAPEDIA2025
+- Email: `admin@seapedia.id`
+- Password: `Admin@SEAPEDIA2025`
 - Role: Admin (Full dashboard access)
 
 **Buyer Accounts:**
-- Email: udi.santoso@gmail.com
-- Password: Budi@Buyer2025
+- Email: `budi.santoso@gmail.com`
+- Password: `Budi@Buyer2025`
 - Role: Buyer (2,000,000 IDR Wallet Balance)
 
 **Seller Accounts:**
-- Email: 	echmart@seapedia.id
-- Password: TechMart@2025
+- Email: `techmart@seapedia.id`
+- Password: `TechMart@2025`
 - Role: Buyer & Seller (Can switch roles via Profile Menu. Pre-populated with Electronics).
 
 **Driver Accounts:**
-- Email: 
-udi.driver@seapedia.id
-- Password: Rudi@Driver2025
+- Email: `rudi.driver@seapedia.id`
+- Password: `Rudi@Driver2025`
 - Role: Driver (Access to Job Board for deliveries).
 
-## 5. API Documentation
+## 7. API Documentation
 
 The backend provides an automatically generated interactive OpenAPI / Swagger UI.
-Once the backend is running, access the documentation at: **http://localhost:8787/docs**
+Once the backend is running (via Docker or Manual), access the documentation at: **http://localhost:8787/docs**
 
-## 6. Production Deployment Guide
+## 8. Production Deployment Guide
 
-If you wish to deploy SEAPEDIA to production, the architecture is designed to be decoupled (Frontend and Backend are deployed separately).
+If you wish to deploy SEAPEDIA to production, the architecture is designed to be decoupled.
 
-### Backend Deployment (Cloudflare Workers)
-1. Navigate to the backend directory: cd backend
-2. Login to Cloudflare: 
-px wrangler login
-3. Create a D1 Database on Cloudflare dashboard and update the database_id in wrangler.jsonc.
-4. Deploy the backend: pnpm run deploy
-5. Note the generated Cloudflare Worker URL (e.g., https://seapedia-api.your-username.workers.dev).
+### Backend Deployment (Cloudflare Workers & D1)
+The backend is deployed to Cloudflare Workers (a serverless execution environment) and uses Cloudflare D1 (a serverless SQL database).
 
-### Frontend Deployment (Vercel / Netlify / Cloudflare Pages)
-1. Navigate to the frontend directory: cd frontend
-2. Update the VITE_API_URL environment variable in your hosting provider's dashboard to point to the backend's Production URL.
-3. Build the frontend: 
-pm run build
-4. The output in the dist folder can be served statically anywhere.
+1. Navigate to the backend directory: `cd backend`
+2. Login to your Cloudflare account via CLI: 
+   `npx wrangler login`
+3. Create a production D1 Database:
+   `npx wrangler d1 create seapedia-db`
+4. Update the `wrangler.jsonc` file in the `backend` folder with the `database_id` generated from the previous step.
+5. Apply the database migrations to the production database:
+   `npx wrangler d1 execute seapedia-db --remote --file=./drizzle/0000_schema.sql` (Adjust the SQL file name based on your drizzle migrations output).
+6. Set your production JWT Secret:
+   `npx wrangler secret put JWT_SECRET`
+   *(Enter your strong random string when prompted)*
+7. Deploy the backend: 
+   `pnpm run deploy`
+8. Note the generated Cloudflare Worker URL (e.g., `https://seapedia-api.your-username.workers.dev`).
+
+### Frontend Deployment (Vercel)
+To deploy the React frontend seamlessly to Vercel:
+1. Push your full repository to GitHub.
+2. Go to your [Vercel Dashboard](https://vercel.com) and click **Add New Project**.
+3. Import your `SEAPEDIA` GitHub repository.
+4. **Configure the Project:**
+   - **Framework Preset:** `Vite`
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+5. **Environment Variables:**
+   - Add a new variable named `VITE_API_URL`
+   - Set the value to your production backend URL from Cloudflare (e.g., `https://seapedia-api.your-username.workers.dev`)
+6. Click **Deploy**. Vercel will automatically build the `frontend` folder and host the application.
+
+## 9. System Architecture & Design (Advanced Topics)
+
+For a deeper dive into the technical architecture of SEAPEDIA, including:
+- Frontend & Backend APIs Architecture
+- Edge Caching & Global Load Balancing (Cloudflare)
+- CI/CD & Production Infrastructure
+- Authentication & Authorization
+- Database Entity Relationship Diagram (ERD)
+
+Please read our detailed **[System Architecture & Design Document](docs/SYSTEM_DESIGN.md)**.
+
+## 10. Security Hardening (Level 7 Task Fulfillment)
+
+SEAPEDIA fully implements the security requirements set in Level 7:
+1. **SQL Injection Prevention:** Uses Drizzle ORM which inherently executes parameterized queries, preventing SQLi attacks across all forms and API endpoints.
+2. **XSS Prevention:** React 18 is used on the frontend, which automatically sanitizes user inputs (like public application reviews) to prevent Cross-Site Scripting.
+3. **Input Validation:** Zod schemas rigorously validate incoming API requests before processing.
+4. **Role-Based Access Control (RBAC):** Backend Middleware securely extracts the active role from the JWT token. It prevents a Buyer from hitting Seller endpoints, or a user from accessing resources (like orders) they don't own.

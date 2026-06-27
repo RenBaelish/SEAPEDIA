@@ -14,7 +14,7 @@ const adminMiddleware = async (c: any, next: any) => {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret', "HS256") as any;
+    const payload = await verify(token, c.env.JWT_SECRET, "HS256") as any;
     if (!payload.roles || !payload.roles.includes('ADMIN')) {
       return c.json({ message: 'Forbidden: Admins only' }, 403);
     }

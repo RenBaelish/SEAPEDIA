@@ -16,7 +16,7 @@ walletRouter.get('/', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -52,7 +52,7 @@ walletRouter.post('/topup', zValidator('json', topupSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -99,7 +99,7 @@ walletRouter.get('/transactions', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {

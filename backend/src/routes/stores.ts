@@ -21,7 +21,7 @@ storeRouter.post('/', zValidator('json', storeSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -63,7 +63,7 @@ storeRouter.get('/me', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -89,7 +89,7 @@ storeRouter.get('/me/stats', async (c) => {
   const token = authHeader.split(' ')[1];
   let payload;
   try {
-    payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret', "HS256");
+    payload = await verify(token, c.env.JWT_SECRET, "HS256");
   } catch (err) {
     return c.json({ message: 'Invalid token' }, 401);
   }
@@ -131,7 +131,7 @@ storeRouter.patch('/me', zValidator('json', updateStoreSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {

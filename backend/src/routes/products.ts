@@ -28,7 +28,7 @@ productRouter.post('/', zValidator('json', productSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -73,7 +73,7 @@ productRouter.put('/:id', zValidator('json', productSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -119,7 +119,7 @@ productRouter.patch('/:id', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -157,7 +157,7 @@ productRouter.delete('/:id', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -191,7 +191,7 @@ productRouter.get('/seller/mine', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {

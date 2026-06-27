@@ -23,7 +23,7 @@ promoRouter.post('/', zValidator('json', promoSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -64,7 +64,7 @@ promoRouter.get('/mine', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {

@@ -16,7 +16,7 @@ addressRouter.use('*', async (c, next) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   try {
     const payload = await verify(token, secret, "HS256");

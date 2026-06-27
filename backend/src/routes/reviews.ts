@@ -43,7 +43,7 @@ reviewRouter.post('/', zValidator('json', reviewSchema), async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {

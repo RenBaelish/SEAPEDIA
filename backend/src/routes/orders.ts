@@ -14,7 +14,7 @@ const authMiddleware = async (c: any, next: any) => {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const payload = await verify(token, c.env.JWT_SECRET || 'fallback_secret', "HS256") as any;
+    const payload = await verify(token, c.env.JWT_SECRET, "HS256") as any;
     c.set('user', payload);
     await next();
   } catch (err) {

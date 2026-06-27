@@ -57,7 +57,7 @@ authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
     });
   }
 
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
   const token = await sign({
     id: userId, email: data.email,
     username: data.username,
@@ -119,7 +119,7 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
 
   const roleNames = userRolesList.map(r => r.name);
 
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
   const token = await sign({
     id: user.id, email: user.email,
     username: user.username,
@@ -152,7 +152,7 @@ authRouter.get('/me', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   try {
     const payload = await verify(token, secret, "HS256");
@@ -185,7 +185,7 @@ authRouter.put('/profile', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
@@ -237,7 +237,7 @@ authRouter.patch('/switch-role', async (c) => {
   }
 
   const token = authHeader.split(' ')[1];
-  const secret = c.env.JWT_SECRET || 'fallback_secret';
+  const secret = c.env.JWT_SECRET;
 
   let payload;
   try {
