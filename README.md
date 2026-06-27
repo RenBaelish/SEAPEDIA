@@ -4,8 +4,9 @@
 
 # SEAPEDIA - E-Commerce Platform Ecosystem
 
+**Live Web Application:** [https://seapedia-compfest-seacademy.vercel.app/](https://seapedia-compfest-seacademy.vercel.app/)
+**Live API Documentation (Swagger):** [https://seapedia-backend.raffirabbani518.workers.dev/docs](https://seapedia-backend.raffirabbani518.workers.dev/docs)
 **Repository URL:** [https://github.com/RenBaelish/SEAPEDIA](https://github.com/RenBaelish/SEAPEDIA)
-**Git Clone URL:** `https://github.com/RenBaelish/SEAPEDIA.git`
 
 SEAPEDIA is a comprehensive e-commerce platform built to fulfill the Advanced Fullstack Web Development task. It features a complete ecosystem with four distinct user roles: Admin, Buyer, Seller, and Driver.
 
@@ -145,7 +146,9 @@ You can log in to `http://localhost:5173/auth/login` using the following seeded 
 ## 7. API Documentation
 
 The backend provides an automatically generated interactive OpenAPI / Swagger UI.
-Once the backend is running (via Docker or Manual), access the documentation at: **http://localhost:8787/docs**
+**Live Production Documentation:** [https://seapedia-backend.raffirabbani518.workers.dev/docs](https://seapedia-backend.raffirabbani518.workers.dev/docs)
+
+*(If you are running the backend locally via Docker or Manual setup, you can access the local documentation at: **http://localhost:8787/docs**)*
 
 ## 8. Production Deployment Guide
 
