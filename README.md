@@ -161,7 +161,7 @@ The backend is deployed to Cloudflare Workers (a serverless execution environmen
    `npx wrangler d1 create seapedia-db`
 4. Update the `wrangler.jsonc` file in the `backend` folder with the `database_id` generated from the previous step.
 5. Apply the database migrations to the production database:
-   `npx wrangler d1 execute seapedia-db --remote --file=./drizzle/0000_schema.sql` (Adjust the SQL file name based on your drizzle migrations output).
+   `npx wrangler d1 migrations apply seapedia-db --remote`
 6. Set your production JWT Secret:
    `npx wrangler secret put JWT_SECRET`
    *(Enter your strong random string when prompted)*
