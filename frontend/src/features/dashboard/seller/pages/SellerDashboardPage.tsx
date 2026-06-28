@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { Package, ShoppingBag, TrendingUp, Store, Plus, ArrowRight } from "lucide-react";
+import { Package, ShoppingBag, TrendingUp, Store, Plus, ArrowRight, Wallet } from "lucide-react";
 import { api } from "../../../../lib/api";
 import { useAuthStore } from "../../../../store/auth.store";
 import { formatCurrency } from "../../../../lib/format";
