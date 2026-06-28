@@ -33,6 +33,7 @@ export default function ProductDetailPage() {
   const [selectedImg, setSelectedImg] = useState(0);
   const [addingToCart, setAddingToCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<ProductSummary[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState(false);
 
   const { isAuthenticated, user } = useAuthStore();
@@ -45,6 +46,9 @@ export default function ProductDetailPage() {
         setSelectedImg(0);
         api.get(`/products?limit=6`)
           .then(r => setRelatedProducts(r.data.data.filter((p: ProductSummary) => p.slug !== slug).slice(0, 6)))
+          .catch(() => {});
+        api.get(`/reviews/product/${res.data.data.id}`)
+          .then(r => setReviews(r.data.data))
           .catch(() => {});
       })
       .catch((err) => setError(err.response?.data?.message || "Produk tidak ditemukan."))
@@ -433,7 +437,34 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {}
+        {/* Ulasan Pembeli */}
+        <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] mt-4 p-6" style={{ borderWidth: '3px' }}>
+          <h2 className="text-base font-extrabold text-nb-black nb-section-title mb-5">Ulasan Pembeli ({reviews.length})</h2>
+          {reviews.length > 0 ? (
+            <div className="space-y-4">
+              {reviews.map((r) => (
+                <div key={r.id} className="pb-4 border-b-2 border-gray-100 last:border-b-0 last:pb-0">
+                  <div className="flex items-center gap-2 mb-2">
+                    <img src={r.user?.profilePictureUrl || "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg"} alt={r.user?.fullName} className="w-8 h-8 rounded-full border border-gray-200" />
+                    <div>
+                      <p className="text-sm font-bold text-nb-black leading-tight">{r.user?.fullName}</p>
+                      <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleDateString('id-ID')}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-0.5 mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} size={14} className={star <= r.rating ? "fill-nb-yellow text-nb-yellow" : "text-gray-200"} />
+                    ))}
+                  </div>
+                  <p className="text-sm text-gray-700">{r.comment}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500 font-medium">Belum ada ulasan untuk produk ini.</p>
+          )}
+        </div>
+
         {relatedProducts.length > 0 && (
           <div className="bg-white border-3 border-nb-black shadow-[4px_4px_0px_#0A0A0A] mt-4 p-6" style={{ borderWidth: '3px' }}>
             <div className="flex items-center justify-between mb-5">

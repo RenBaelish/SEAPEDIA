@@ -4,7 +4,8 @@ import { formatCurrency } from "../../../lib/format";
 import { api } from "../../../lib/api";
 import { useConfirm } from "../../../contexts/ConfirmContext";
 import { useAlert } from "../../../contexts/AlertContext";
-import { Package, MapPin, ArrowLeft } from "lucide-react";
+import { Package, MapPin, ArrowLeft, Star, Loader2 } from "lucide-react";
+import { Modal } from "../../../components/ui/Modal";
 
 const ORDER_STATUS_LABELS: Record<string, string> = {
   SEDANG_DIKEMAS: "Sedang Dikemas",
@@ -22,6 +23,9 @@ export default function OrderDetailPage() {
   const { showAlert } = useAlert();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [reviewModal, setReviewModal] = useState<{isOpen: boolean, productId: string, productName: string}>({ isOpen: false, productId: '', productName: '' });
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -45,6 +49,26 @@ export default function OrderDetailPage() {
       window.location.reload();
     } catch (e: any) {
       showAlert({ title: "Gagal", message: "Gagal menyelesaikan pesanan: " + (e.response?.data?.message || "Kesalahan server") });
+    }
+  };
+
+  const handleReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setReviewSubmitting(true);
+    try {
+      await api.post("/reviews/product", {
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+        orderId: id,
+        productId: reviewModal.productId
+      });
+      await showAlert({ title: "Berhasil", message: "Ulasan berhasil dikirim!" });
+      setReviewModal({ isOpen: false, productId: '', productName: '' });
+      setReviewForm({ rating: 5, comment: '' });
+    } catch (err: any) {
+      showAlert({ title: "Gagal", message: err.response?.data?.message || "Gagal mengirim ulasan" });
+    } finally {
+      setReviewSubmitting(false);
     }
   };
 
@@ -80,12 +104,24 @@ export default function OrderDetailPage() {
             </h2>
             <div className="space-y-4">
               {order.items?.map((item: any) => (
-                <div key={item.id} className="flex justify-between items-center pb-4 border-b-2 border-gray-50 last:border-0 last:pb-0">
-                  <div>
-                    <p className="font-extrabold text-nb-black">{item.productName}</p>
-                    <p className="text-sm font-bold text-gray-600">{item.quantity} x {formatCurrency(Number(item.price))}</p>
+                <div key={item.id} className="pb-4 border-b-2 border-gray-50 last:border-0 last:pb-0">
+                  <div className="flex justify-between items-center mb-2">
+                    <div>
+                      <p className="font-extrabold text-nb-black">{item.productName}</p>
+                      <p className="text-sm font-bold text-gray-600">{item.quantity} x {formatCurrency(Number(item.price))}</p>
+                    </div>
+                    <p className="font-extrabold text-nb-black">{formatCurrency(Number(item.subtotal))}</p>
                   </div>
-                  <p className="font-extrabold text-nb-black">{formatCurrency(Number(item.subtotal))}</p>
+                  {order.status === "PESANAN_SELESAI" && (
+                    <div className="flex justify-end">
+                      <button 
+                        onClick={() => setReviewModal({ isOpen: true, productId: item.productId, productName: item.productName })}
+                        className="text-xs font-bold px-3 py-1 bg-nb-yellow border-2 border-nb-black text-nb-black hover:bg-nb-black hover:text-white transition-colors"
+                      >
+                        Beri Ulasan
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -170,6 +206,48 @@ export default function OrderDetailPage() {
           )}
         </div>
       </div>
+
+      {reviewModal.isOpen && (
+        <Modal isOpen={true} onClose={() => setReviewModal({ isOpen: false, productId: '', productName: '' })} title="Beri Ulasan Produk">
+          <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <p className="font-extrabold text-nb-black text-sm">{reviewModal.productName}</p>
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Rating</label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setReviewForm({ ...reviewForm, rating: star })}
+                    className="p-1 focus:outline-none"
+                  >
+                    <Star
+                      size={24}
+                      className={star <= reviewForm.rating ? "fill-nb-yellow text-nb-black" : "text-gray-300"}
+                      strokeWidth={2}
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-extrabold text-nb-black uppercase tracking-wide mb-1.5">Ulasan</label>
+              <textarea
+                value={reviewForm.comment}
+                onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })}
+                required
+                className="nb-input w-full min-h-[100px] resize-none"
+                placeholder="Bagaimana kualitas produk ini?"
+              />
+            </div>
+            <div className="pt-2 flex justify-end">
+              <button type="submit" disabled={reviewSubmitting} className="btn-primary w-full flex justify-center items-center gap-2">
+                {reviewSubmitting ? <><Loader2 size={16} strokeWidth={3} className="animate-spin" /> Mengirim...</> : 'Kirim Ulasan'}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }
