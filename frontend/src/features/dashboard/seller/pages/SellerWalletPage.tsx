@@ -90,9 +90,9 @@ export default function SellerWalletPage() {
                   <h4 className="text-sm font-black text-nb-black bg-[#EBF5FF] border-2 border-nb-black px-3 py-1 inline-block mb-4 uppercase tracking-wide">{date}</h4>
                   <div className="space-y-0">
                     {txs.map((tx, index) => {
-                      const isIncome = tx.type === 'DELIVERY_EARNING' || tx.type === 'COMMISSION' || tx.type === 'REFUND';
-                      const isTopup = tx.type === 'TOPUP';
-                      const isPayment = tx.type === 'PURCHASE' || tx.type === 'WITHDRAWAL';
+                      const isIncome = tx.type === 'INCOME' || tx.type === 'COMMISSION' || tx.type === 'REFUND';
+                      const isTopup = tx.type === 'TOPUP' || tx.type === 'TOP_UP';
+                      const isPayment = tx.type === 'PURCHASE' || tx.type === 'WITHDRAWAL' || tx.type === 'PAYMENT';
                       
                       let Icon = WalletIcon;
                       let iconBg = 'bg-gray-100';

@@ -112,6 +112,7 @@ export default function SellerDashboardPage() {
     { label: "Kelola Produk", to: "/seller/products", icon: Package },
     { label: "Lihat Pesanan", to: "/seller/orders", icon: ShoppingBag },
     { label: "Pengaturan Toko", to: "/seller/store/settings", icon: Store },
+    { label: "Dompet Seller", to: "/seller/wallet", icon: Wallet },
   ];
 
   return (
@@ -172,7 +173,7 @@ export default function SellerDashboardPage() {
           <span className="w-1 h-4 bg-nb-yellow inline-block" />
           Aksi Cepat
         </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="flex flex-wrap gap-3">
           {quickLinks.map((link) => {
             const Icon = link.icon;
             return (

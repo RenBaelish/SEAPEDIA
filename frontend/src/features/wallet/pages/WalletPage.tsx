@@ -185,7 +185,7 @@ export default function WalletPage() {
                   <h4 className="text-sm font-black text-nb-black bg-[#F7F5F0] border-2 border-nb-black px-3 py-1 inline-block mb-4 uppercase tracking-wide">{dateStr}</h4>
                   <div className="space-y-0">
                     {txs.map((tx, index) => {
-                      const isIncome = tx.type === "TOPUP" || tx.type === "REFUND" || tx.type === "COMMISSION" || tx.type === "DELIVERY_EARNING";
+                      const isIncome = tx.type === "TOP_UP" || tx.type === "TOPUP" || tx.type === "REFUND" || tx.type === "COMMISSION" || tx.type === "INCOME";
                       const timeStr = new Date(tx.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                       
                       return (
