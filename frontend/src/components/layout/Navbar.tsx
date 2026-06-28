@@ -46,6 +46,25 @@ export function Navbar() {
   const [hoveredCategory, setHoveredCategory] = useState(CATEGORIES[0]);
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
+  // Search Auto-Suggest State
+  const [searchSuggestions, setSearchSuggestions] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setIsSearching(true);
+      api.get(`/products?search=${encodeURIComponent(searchQuery)}&limit=5`)
+        .then(res => setSearchSuggestions(res.data.data))
+        .catch(() => setSearchSuggestions([]))
+        .finally(() => setIsSearching(false));
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const searchRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -96,12 +115,12 @@ export function Navbar() {
           <div className="flex items-center justify-between h-8 text-xs">
             <span className="font-semibold text-nb-yellow">SEAPEDIA — Belanja Lebih Smart</span>
             <div className="flex items-center gap-5 text-gray-300">
-              <Link to="/about" className="hover:text-nb-yellow transition-colors">Tentang Kami</Link>
+              <Link to="/coming-soon" className="hover:text-nb-yellow transition-colors">Tentang Kami</Link>
               {!user?.roles?.includes(RoleType.SELLER) && (
-                <Link to="/seller" className="hover:text-nb-yellow transition-colors">Jadi Penjual</Link>
+                <Link to="/coming-soon" className="hover:text-nb-yellow transition-colors">Jadi Penjual</Link>
               )}
-              <Link to="/search" className="hover:text-nb-yellow transition-colors">Promo</Link>
-              <Link to="/help" className="hover:text-nb-yellow transition-colors">Bantuan</Link>
+              <Link to="/coming-soon" className="hover:text-nb-yellow transition-colors">Promo</Link>
+              <Link to="/coming-soon" className="hover:text-nb-yellow transition-colors">Bantuan</Link>
             </div>
           </div>
         </div>
@@ -199,22 +218,49 @@ export function Navbar() {
             </form>
 
             {}
-            {isSearchFocused && (
+                        {isSearchFocused && (
               <div className="absolute left-0 top-full w-full bg-white border-3 border-nb-black border-t-0 shadow-[4px_4px_0px_#0A0A0A] z-[5] p-4"
                 style={{ borderWidth: '3px' }}>
-                <p className="text-xs font-bold text-nb-black uppercase tracking-wide mb-2">Pencarian Populer</p>
-                <div className="flex flex-wrap gap-2">
-                  {["MacBook Pro", "Sepatu Ventela", "Kipas Angin", "Poco X6"].map(term => (
-                    <button
-                      key={term}
-                      type="button"
-                      onClick={() => { setSearchQuery(term); setIsSearchFocused(false); navigate(`/search?q=${term}`); }}
-                      className="px-3 py-1.5 border-2 border-nb-black bg-white hover:bg-nb-yellow font-semibold text-xs transition-colors"
-                    >
-                      {term}
-                    </button>
-                  ))}
-                </div>
+                {searchQuery.trim() ? (
+                  <div>
+                    <p className="text-xs font-bold text-nb-black uppercase tracking-wide mb-2">Hasil Pencarian</p>
+                    {isSearching ? (
+                      <p className="text-sm font-medium text-gray-500">Mencari...</p>
+                    ) : searchSuggestions.length > 0 ? (
+                      <div className="flex flex-col gap-1">
+                        {searchSuggestions.map((prod) => (
+                          <button
+                            key={prod.id}
+                            type="button"
+                            onClick={() => { setSearchQuery(prod.name); setIsSearchFocused(false); navigate(`/product/${prod.slug}`); }}
+                            className="text-left px-3 py-2 border-2 border-transparent hover:border-nb-black bg-white hover:bg-nb-yellow font-semibold text-sm transition-colors flex items-center justify-between"
+                          >
+                            <span className="truncate pr-4">{prod.name}</span>
+                            <span className="text-xs font-bold text-gray-500 shrink-0">Rp {prod.price.toLocaleString("id-ID")}</span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-500">Tidak ada hasil ditemukan.</p>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-bold text-nb-black uppercase tracking-wide mb-2">Pencarian Populer</p>
+                    <div className="flex flex-wrap gap-2">
+                      {["MacBook Pro", "Sepatu Ventela", "Kipas Angin", "Poco X6"].map(term => (
+                        <button
+                          key={term}
+                          type="button"
+                          onClick={() => { setSearchQuery(term); setIsSearchFocused(false); navigate(`/search?q=${term}`); }}
+                          className="px-3 py-1.5 border-2 border-nb-black bg-white hover:bg-nb-yellow font-semibold text-xs transition-colors"
+                        >
+                          {term}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -242,13 +288,14 @@ export function Navbar() {
                 )}
 
                 {}
-                <button
+                <Link
+                  to="/notifications"
                   className="hidden md:flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                   style={{ borderWidth: '3px' }}
                   aria-label="Notifikasi"
                 >
                   <Bell size={20} strokeWidth={2.5} />
-                </button>
+                </Link>
 
                 {}
                 <div className="relative hidden md:block" ref={accountRef}>

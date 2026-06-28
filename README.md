@@ -2,11 +2,13 @@
   <img src="frontend/public/logo-seapedia-for-readme.png" alt="SEAPEDIA Logo" width="220" />
 </div>
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 # SEAPEDIA - E-Commerce Platform Ecosystem
 
-**Live Web Application:** [https://seapedia-compfest-seacademy.vercel.app/](https://seapedia-compfest-seacademy.vercel.app/)
-**Live API Documentation (Swagger):** [https://seapedia-backend.raffirabbani518.workers.dev/docs](https://seapedia-backend.raffirabbani518.workers.dev/docs)
-**Repository URL:** [https://github.com/RenBaelish/SEAPEDIA](https://github.com/RenBaelish/SEAPEDIA)
+- **Live Web Application:** [https://seapedia-compfest-seacademy.vercel.app/](https://seapedia-compfest-seacademy.vercel.app/)
+- **Live API Documentation (Swagger):** [https://seapedia-backend.raffirabbani518.workers.dev/docs](https://seapedia-backend.raffirabbani518.workers.dev/docs)
+- **Repository URL:** [https://github.com/RenBaelish/SEAPEDIA](https://github.com/RenBaelish/SEAPEDIA)
 
 SEAPEDIA is a comprehensive e-commerce platform built to fulfill the Advanced Fullstack Web Development task. It features a complete ecosystem with four distinct user roles: Admin, Buyer, Seller, and Driver.
 
@@ -133,10 +135,17 @@ You can log in to `http://localhost:5173/auth/login` using the following seeded 
 - Password: `Budi@Buyer2025`
 - Role: Buyer (2,000,000 IDR Wallet Balance)
 
-**Seller Accounts:**
-- Email: `techmart@seapedia.id`
-- Password: `TechMart@2025`
-- Role: Buyer & Seller (Can switch roles via Profile Menu. Pre-populated with Electronics).
+**10 Akun Seller yang Tersedia:**
+- `techmart@seapedia.id` | Pass: `TechMart@2025` (TechMart Indonesia)
+- `glowskin@seapedia.id` | Pass: `GlowSkin@2025` (GlowSkin Official)
+- `urbanstyle@seapedia.id` | Pass: `UrbanStyle@2025` (Urban Style ID)
+- `freshmart@seapedia.id` | Pass: `FreshMart@2025` (FreshMart Daily)
+- `sportszone@seapedia.id` | Pass: `SportsZone@2025` (SportsZone ID)
+- `homedeco@seapedia.id` | Pass: `HomeDeco@2025` (HomeDeco Living)
+- `autojaya@seapedia.id` | Pass: `AutoJaya@2025` (AutoJaya Store)
+- `healthplus@seapedia.id` | Pass: `HealthPlus@2025` (HealthPlus ID)
+- `gaminghub@seapedia.id` | Pass: `GamingHub@2025` (GamingHub ID)
+- `periplus@seapedia.id` | Pass: `Periplus@2025` (Periplus Online)
 
 **Driver Accounts:**
 - Email: `rudi.driver@seapedia.id`
@@ -171,6 +180,9 @@ The backend is deployed to Cloudflare Workers (a serverless execution environmen
 7. Deploy the backend: 
    `pnpm run deploy`
 8. Note the generated Cloudflare Worker URL (e.g., `https://seapedia-api.your-username.workers.dev`).
+9. **IMPORTANT**: Seed the production database by visiting the seed endpoint in your browser or running:
+   `curl https://<YOUR_WORKER_URL>/seed`
+   *(This populates the empty production database with products, users, and stores).*
 
 ### Frontend Deployment (Vercel)
 To deploy the React frontend seamlessly to Vercel:

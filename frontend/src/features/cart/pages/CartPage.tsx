@@ -370,8 +370,8 @@ export default function CartPage() {
             </div>
 
             {}
-            <div className="flex items-center gap-2 text-xs text-gray-500 px-1">
-              <ShieldCheck size={14} className="text-green-500 shrink-0" />
+            <div className="flex items-center justify-center gap-2 p-3 mt-2 border-2 border-nb-black bg-green-200 text-xs font-bold text-nb-black shadow-[3px_3px_0px_#0A0A0A]">
+              <ShieldCheck size={16} strokeWidth={3} className="text-green-700 shrink-0" />
               <span>Belanja aman & terpercaya bersama SEAPEDIA</span>
             </div>
           </div>

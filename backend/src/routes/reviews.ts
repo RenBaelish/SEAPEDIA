@@ -26,7 +26,8 @@ reviewRouter.get('/', async (c) => {
       user: {
         id: users.id,
         fullName: users.fullName,
-        username: users.username
+        username: users.username,
+        profilePicture: users.profilePicture
       }
     })
     .from(reviews)
@@ -107,13 +108,26 @@ reviewRouter.get('/app', async (c) => {
 });
 
 reviewRouter.post('/app', zValidator('json', appReviewSchema), async (c) => {
+  const authHeader = c.req.header('Authorization');
+  let userId = null;
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const payload = await verify(token, c.env.JWT_SECRET, "HS256");
+      userId = payload.id as string;
+    } catch (err) {
+      // ignore invalid token for guest reviews
+    }
+  }
+
   const db = drizzle(c.env.DB);
   const data = c.req.valid('json');
-
   const reviewId = crypto.randomUUID();
 
   await db.insert(reviews).values({
     id: reviewId,
+    userId: userId,
     guestName: data.guestName,
     rating: data.rating,
     comment: data.comment

@@ -8,6 +8,7 @@ import { ProductCardSkeleton } from "../../../components/ui/Skeleton";
 import { AppReviewForm } from "../components/AppReviewForm";
 import { Avatar } from "../../../components/ui/Avatar";
 import { PromoSlider } from "../components/PromoSlider";
+import { useAlert } from "../../../contexts/AlertContext";
 
 interface AppReview {
   id: string;
@@ -46,6 +47,7 @@ const TOPUP_ITEMS = [
 ];
 
 export default function HomePage() {
+  const { showAlert } = useAlert();
   const [products, setProducts] = useState<ProductSummary[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [reviews, setReviews] = useState<AppReview[]>([]);
@@ -103,6 +105,20 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
             {categories.slice(0, 8).map((cat, i) => {
+              if (i === 7) {
+                return (
+                  <Link
+                    key="lainnya"
+                    to="/search"
+                    className="flex flex-col items-center gap-2 p-3 border-2 border-gray-200 bg-white hover:border-nb-black hover:bg-nb-yellow transition-all group text-center"
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center">
+                      <img src="/icon/kategori-icon.png" alt="Lainnya" className="w-8 h-8 object-contain opacity-80" />
+                    </div>
+                    <span className="text-xs font-bold text-gray-700 group-hover:text-nb-black leading-tight text-center">Lainnya</span>
+                  </Link>
+                );
+              }
               const icon = getCategoryIcon(cat.name);
               return (
                 <Link
@@ -140,10 +156,14 @@ export default function HomePage() {
             {TOPUP_ITEMS.map((item, i) => (
               <button
                 key={i}
-                className="flex items-center gap-3 p-3 border-2 border-gray-700 bg-gray-800 hover:border-nb-yellow hover:bg-gray-700 transition-all text-left"
+                disabled
+                className="flex items-center gap-3 p-3 border-2 border-gray-700 bg-gray-800 opacity-80 cursor-not-allowed text-left relative overflow-hidden"
               >
-                <img src={item.icon} alt={item.label} className="w-7 h-7 object-contain" />
-                <span className="text-sm font-bold text-white">{item.label}</span>
+                <img src={item.icon} alt={item.label} className="w-7 h-7 object-contain opacity-50" />
+                <span className="text-sm font-bold text-gray-400">{item.label}</span>
+                <div className="absolute top-1 right-1 bg-nb-yellow text-nb-black text-[9px] font-black px-1 border border-nb-black">
+                  Tahap Dev
+                </div>
               </button>
             ))}
           </div>
@@ -159,6 +179,7 @@ export default function HomePage() {
         ].map((b, i) => (
           <div
             key={i}
+            onClick={() => showAlert("info", "Event Belum Tersedia", "Mohon maaf, event promo ini belum tersedia saat ini.")}
             className={`${b.bg} border-3 border-nb-black shadow-[3px_3px_0px_#0A0A0A] p-4 flex items-center gap-3 cursor-pointer hover:-translate-x-px hover:-translate-y-px hover:shadow-[4px_4px_0px_#0A0A0A] transition-all`}
             style={{ borderWidth: '3px' }}
           >
