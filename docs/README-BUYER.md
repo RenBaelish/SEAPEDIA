@@ -110,3 +110,8 @@ Seller wallet credited (minus 5% platform fee)
 | TERKIRIM          | Delivered, waiting for buyer to confirm |
 | PESANAN_SELESAI   | Buyer confirmed receipt, finalized      |
 | DIKEMBALIKAN      | Refunded due to overdue or cancellation |
+
+
+## Enhanced Features
+- **Dynamic Promo Validation**: Apply store-specific discount codes directly in your cart. Valid promos seamlessly carry over to checkout.
+- **Product Reviews**: After your order is completed (`PESANAN_SELESAI`), you can leave ratings and reviews for the products you purchased. Your reviews directly impact the seller's dynamic reputation.

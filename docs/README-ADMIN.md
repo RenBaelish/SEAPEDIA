@@ -83,3 +83,8 @@ POST /admin/overdue/simulate
 | REGULAR         | 72 hours  |
 
 SLA starts from order createdAt. If the order is still in SEDANG_DIKEMAS or MENUNGGU_PENGIRIM after the SLA, it is eligible for refund on next simulation run.
+
+
+## Enhanced Features
+- **Global Promo Management**: Monitor and manage discount codes, checking quotas and validity.
+- **Financial Analytics**: Revenue is strictly tracked via the 5% seller commission fee model implemented securely at the database level.

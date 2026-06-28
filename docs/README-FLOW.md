@@ -72,3 +72,15 @@ Log in using the **Admin** account (`admin@seapedia.id`). On the main dashboard 
 
 ---
 By following the flow above, you can prove the solid end-to-end integration between all components/levels in the SEAPEDIA ecosystem. Happy testing!
+
+
+## 6. Dynamic Reviews & Ratings Flow
+1. **Completion**: When an order status becomes `PESANAN_SELESAI`, the backend automatically updates the `sold` count of the products and the `totalSales` count of the store.
+2. **Reviewing**: Buyers navigate to their order history and leave a 1-5 star rating and comment on the products they purchased.
+3. **Aggregation**: Upon review submission, the system dynamically recalculates the average `rating` for the product and the aggregate `storeRating` for the seller.
+4. **Display**: The Product Detail Page immediately reflects the updated dynamic metrics.
+
+## 7. Promos Validation Flow
+1. **Cart Validation**: Promos entered in the cart are strictly validated against live backend endpoints to check for quota, expiration, and store validity.
+2. **Checkout Propagation**: Successfully applied promos are automatically propagated to the Checkout page.
+3. **Double Verification**: The backend re-verifies the promo during the final order creation to prevent race conditions or quota exhaustion.

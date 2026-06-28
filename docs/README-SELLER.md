@@ -86,3 +86,8 @@ When a buyer confirms receipt:
 - Store name must be globally unique
 - One seller account can have only one store
 - Products cannot be purchased from a suspended store
+
+
+## Enhanced Features
+- **Dynamic Store Metrics**: Your store's `Total Sales` and `Rating` are automatically aggregated based on actual completed orders and buyer reviews. No manual updating is required.
+- **Automated Sales Tracking**: Each product's `sold` count dynamically increases the moment an order reaches `PESANAN_SELESAI`.
