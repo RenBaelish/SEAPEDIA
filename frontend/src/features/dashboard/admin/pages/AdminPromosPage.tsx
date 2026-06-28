@@ -12,13 +12,13 @@ export default function AdminPromosPage() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [formData, setFormData] = useState({
     code: "",
-    discountAmount: 0,
+    discountAmount: "" as string | number,
     type: "DISCOUNT",
-    quota: 100
+    quota: 100 as string | number
   });
   const [submitting, setSubmitting] = useState(false);
   const [editingPromo, setEditingPromo] = useState<any>(null);
-  const [editFormData, setEditFormData] = useState({ discountAmount: 0, quota: 0 });
+  const [editFormData, setEditFormData] = useState({ discountAmount: "" as string | number, quota: "" as string | number });
   const [editSubmitting, setEditSubmitting] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
   const { showConfirm } = useConfirm();
@@ -36,7 +36,10 @@ export default function AdminPromosPage() {
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const value = e.target.type === 'number' ? parseInt(e.target.value) || 0 : e.target.value;
+    let value: string | number = e.target.value;
+    if (e.target.type === 'number') {
+      value = e.target.value === '' ? '' : parseInt(e.target.value);
+    }
     setFormData({ ...formData, [e.target.name]: value });
   };
 
@@ -277,7 +280,7 @@ export default function AdminPromosPage() {
               <input 
                 type="number"
                 value={editFormData.discountAmount} 
-                onChange={(e) => setEditFormData({ ...editFormData, discountAmount: Number(e.target.value) })} 
+                onChange={(e) => setEditFormData({ ...editFormData, discountAmount: e.target.value === '' ? '' : Number(e.target.value) })} 
                 required 
                 min="1000"
                 className="nb-input w-full"
@@ -288,7 +291,7 @@ export default function AdminPromosPage() {
               <input 
                 type="number"
                 value={editFormData.quota} 
-                onChange={(e) => setEditFormData({ ...editFormData, quota: Number(e.target.value) })} 
+                onChange={(e) => setEditFormData({ ...editFormData, quota: e.target.value === '' ? '' : Number(e.target.value) })} 
                 required 
                 min="1"
                 className="nb-input w-full"

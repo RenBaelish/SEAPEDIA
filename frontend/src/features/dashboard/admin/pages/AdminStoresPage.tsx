@@ -69,7 +69,13 @@ export default function AdminStoresPage() {
                       <td className="px-5 py-4 border-r-2 border-nb-black">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 shrink-0">
-                            <Avatar src={store.logoUrl} name={store.name} size="md" />
+                            {store.logoUrl ? (
+                              <img src={store.logoUrl} alt={store.name} className="w-full h-full object-cover border-2 border-nb-black" />
+                            ) : (
+                              <div className="w-full h-full bg-nb-yellow flex items-center justify-center text-lg font-black text-nb-black border-2 border-nb-black">
+                                {store.name.charAt(0)}
+                              </div>
+                            )}
                           </div>
                           <div>
                             <p className="font-extrabold text-nb-black">{store.name}</p>
@@ -145,7 +151,13 @@ export default function AdminStoresPage() {
           <div className="space-y-6">
             <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-100">
               <div className="w-16 h-16 shrink-0">
-                <Avatar src={selectedStore.logoUrl} name={selectedStore.name} size="lg" />
+                {selectedStore.logoUrl ? (
+                  <img src={selectedStore.logoUrl} alt={selectedStore.name} className="w-full h-full object-cover border-2 border-nb-black" />
+                ) : (
+                  <div className="w-full h-full bg-nb-yellow flex items-center justify-center text-2xl font-black text-nb-black border-2 border-nb-black">
+                    {selectedStore.name.charAt(0)}
+                  </div>
+                )}
               </div>
               <div>
                 <h3 className="font-extrabold text-lg text-nb-black leading-tight">{selectedStore.name}</h3>
