@@ -48,11 +48,14 @@ export enum VoucherType {
 
 export enum WalletTxType {
   TOPUP = "TOPUP",
+  TOP_UP = "TOP_UP",
   PURCHASE = "PURCHASE",
   REFUND = "REFUND",
   WITHDRAWAL = "WITHDRAWAL",
   COMMISSION = "COMMISSION",
   DELIVERY_EARNING = "DELIVERY_EARNING",
+  INCOME = "INCOME",
+  PAYMENT = "PAYMENT",
 }
 
 export enum AddressType {

@@ -27,7 +27,7 @@ reviewRouter.get('/', async (c) => {
         id: users.id,
         fullName: users.fullName,
         username: users.username,
-        profilePicture: users.profilePicture
+        profilePictureUrl: users.profilePictureUrl
       }
     })
     .from(reviews)
@@ -127,7 +127,7 @@ reviewRouter.post('/app', zValidator('json', appReviewSchema), async (c) => {
 
   await db.insert(reviews).values({
     id: reviewId,
-    userId: userId,
+    userId: userId as string,
     guestName: data.guestName,
     rating: data.rating,
     comment: data.comment

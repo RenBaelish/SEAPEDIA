@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { drizzle } from 'drizzle-orm/d1';
 import { orders, orderItems, carts, cartItems, products, wallets, walletMutations, promos, stores, addresses, deliveryJobs } from '../db/schema';
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc, and, or, sql } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
