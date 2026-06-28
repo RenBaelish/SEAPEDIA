@@ -16,7 +16,7 @@ export default function CartPage() {
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [promoCode, setPromoCode] = useState("");
-  const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountAmountState, setDiscountAmountState] = useState(0);
   const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
   const [promoInput, setPromoInput] = useState("");
 
@@ -93,14 +93,17 @@ export default function CartPage() {
     }
   };
 
-  const handleApplyPromo = (e: React.FormEvent) => {
+  const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (promoInput.toUpperCase() === "SEAPEDIA10") {
-      setPromoCode("SEAPEDIA10");
-      setDiscountPercent(10);
+    if (!promoInput.trim()) return;
+    try {
+      const res = await api.post("/orders/checkout/validate-voucher", { code: promoInput.toUpperCase() });
+      setPromoCode(promoInput.toUpperCase());
+      setDiscountAmountState(res.data.data.discount);
       setIsPromoModalOpen(false);
-    } else {
-      showConfirm({ title: "Promo Tidak Valid", message: "Kode promo yang Anda masukkan tidak valid. Coba 'SEAPEDIA10'.", confirmText: "Tutup", hideCancel: true });
+      showConfirm({ title: "Promo Berhasil", message: "Promo berhasil dipasang!", confirmText: "Ok", hideCancel: true });
+    } catch (err: any) {
+      showConfirm({ title: "Promo Tidak Valid", message: err.response?.data?.message || "Kode promo tidak valid.", confirmText: "Tutup", hideCancel: true });
     }
   };
 
@@ -156,8 +159,8 @@ export default function CartPage() {
 
   const selectedCartItems = cart.items.filter(item => selectedItems.includes(item.id));
   const subtotal = selectedCartItems.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
-  const discountAmount = Math.floor(subtotal * (discountPercent / 100));
-  const total = subtotal - discountAmount;
+  const actualDiscount = Math.min(discountAmountState, subtotal);
+  const total = subtotal - actualDiscount;
 
   return (
     <div className="bg-[#F7F5F0] min-h-screen pt-6 pb-16">
@@ -344,10 +347,10 @@ export default function CartPage() {
                   <span className="text-gray-600">Total ({selectedCartItems.length} barang)</span>
                   <span className="font-semibold text-nb-black">{formatCurrency(subtotal)}</span>
                 </div>
-                {discountAmount > 0 && (
+                {actualDiscount > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-nb-green font-bold">Diskon ({discountPercent}%)</span>
-                    <span className="font-bold text-nb-green">-{formatCurrency(discountAmount)}</span>
+                    <span className="text-nb-green font-bold">Diskon / Voucher</span>
+                    <span className="font-bold text-nb-green">-{formatCurrency(actualDiscount)}</span>
                   </div>
                 )}
               </div>
