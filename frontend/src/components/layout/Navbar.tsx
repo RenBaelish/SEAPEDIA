@@ -291,7 +291,7 @@ export function Navbar() {
 
                 {}
                 <button
-                  onClick={() => showAlert("info", "Fitur Belum Tersedia", "Mohon maaf, fitur ini sedang dalam tahap pengembangan.")}
+                  onClick={() => showAlert({ title: "Fitur Belum Tersedia", message: "Mohon maaf, fitur ini sedang dalam tahap pengembangan." })}
                   className="hidden md:flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                   style={{ borderWidth: '3px' }}
                   aria-label="Notifikasi"

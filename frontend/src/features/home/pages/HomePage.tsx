@@ -179,7 +179,7 @@ export default function HomePage() {
         ].map((b, i) => (
           <div
             key={i}
-            onClick={() => showAlert("info", "Event Belum Tersedia", "Mohon maaf, event promo ini belum tersedia saat ini.")}
+            onClick={() => showAlert({ title: "Event Belum Tersedia", message: "Mohon maaf, event promo ini belum tersedia saat ini." })}
             className={`${b.bg} border-3 border-nb-black shadow-[3px_3px_0px_#0A0A0A] p-4 flex items-center gap-3 cursor-pointer hover:-translate-x-px hover:-translate-y-px hover:shadow-[4px_4px_0px_#0A0A0A] transition-all`}
             style={{ borderWidth: '3px' }}
           >

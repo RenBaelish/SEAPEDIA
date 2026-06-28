@@ -31,6 +31,10 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
+            onError={(e) => {
+              e.currentTarget.src = "https://placehold.co/400x400/F7F5F0/0A0A0A?text=No+Image";
+              e.currentTarget.onerror = null;
+            }}
           />
           {}
           {discountPercent > 0 && (

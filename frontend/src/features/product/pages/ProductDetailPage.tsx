@@ -155,6 +155,10 @@ export default function ProductDetailPage() {
                   src={allImages[selectedImg]}
                   alt={product.name}
                   className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://placehold.co/800x800/f3f4f6/9ca3af?text=No+Image";
+                    e.currentTarget.onerror = null;
+                  }}
                 />
                 {discountPercent > 0 && (
                   <div className="absolute top-0 left-0 bg-nb-red text-white text-xs font-extrabold px-2 py-1 border-r-2 border-b-2 border-nb-black">
@@ -187,7 +191,15 @@ export default function ProductDetailPage() {
                         selectedImg === i ? "border-nb-black shadow-[2px_2px_0px_#0A0A0A]" : "border-gray-200 hover:border-gray-400"
                       }`}
                     >
-                      <img src={img} alt="" className="w-full h-full object-cover" />
+                      <img 
+                        src={img} 
+                        alt="" 
+                        className="w-full h-full object-cover" 
+                        onError={(e) => {
+                          e.currentTarget.src = "https://placehold.co/800x800/f3f4f6/9ca3af?text=No+Image";
+                          e.currentTarget.onerror = null;
+                        }}
+                      />
                     </button>
                   ))}
                 </div>

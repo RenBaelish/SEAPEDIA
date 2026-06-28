@@ -26,7 +26,8 @@ SEAPEDIA fulfills the complete marketplace ecosystem from basic product listing 
 | **Level 6** | Service Level Agreement (SLA) | Automated order cancellations if deadlines are missed (2 hours for payment, 24 hours for seller processing, 72 hours for driver delivery). |
 | **Level 7** | Admin Analytics & Roles | Comprehensive admin dashboard with financial metrics. Support for multiple roles per account (e.g., a user can be both a Buyer and a Seller) with a seamless Role Switcher. |
 
-For detailed documentation per role, please read the following:
+For detailed documentation per role and a comprehensive step-by-step testing guide for judges, please read the following:
+- [Application End-to-End Flow (Mandatory for Judges)](docs/README-FLOW.md)
 - [Admin Documentation](docs/README-ADMIN.md)
 - [Buyer Documentation](docs/README-BUYER.md)
 - [Seller Documentation](docs/README-SELLER.md)
