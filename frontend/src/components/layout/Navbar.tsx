@@ -6,7 +6,7 @@ import {
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from "../../store/auth.store";
 import { useCartStore } from "../../store/cart.store";
-import { useAlert } from "../../../contexts/AlertContext";
+import { useAlert } from "../../contexts/AlertContext";
 import { Avatar } from "../ui/Avatar";
 import { RoleType } from '@/types';
 import { api } from "../../lib/api";
