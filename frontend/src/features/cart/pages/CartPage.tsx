@@ -101,7 +101,7 @@ export default function CartPage() {
       setPromoCode(promoInput.toUpperCase());
       setDiscountAmountState(res.data.data.discount);
       setIsPromoModalOpen(false);
-      showConfirm({ title: "Promo Berhasil", message: "Promo berhasil dipasang!", confirmText: "Ok", hideCancel: true });
+      navigate("/checkout", { state: { promoCode: promoInput.toUpperCase() } });
     } catch (err: any) {
       showConfirm({ title: "Promo Tidak Valid", message: err.response?.data?.message || "Kode promo tidak valid.", confirmText: "Tutup", hideCancel: true });
     }
