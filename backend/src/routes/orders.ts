@@ -244,6 +244,7 @@ orderRouter.get('/:id', async (c) => {
 
   const items = await db.select({
     id: orderItems.id,
+    productId: orderItems.productId,
     quantity: orderItems.quantity,
     price: orderItems.priceAtPurchase,
     productName: products.name
