@@ -76,7 +76,10 @@ orderRouter.post('/checkout', async (c) => {
     });
   }
 
-  let deliveryFee = 15000;
+  let deliveryFee = 10000;
+  if (body.shippingType === 'INSTANT') deliveryFee = 50000;
+  else if (body.shippingType === 'NEXT_DAY') deliveryFee = 20000;
+  else if (body.shippingType === 'REGULAR') deliveryFee = 10000;
   let discount = 0;
   let appliedPromo = null;
 
