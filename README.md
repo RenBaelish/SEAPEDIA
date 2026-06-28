@@ -136,7 +136,7 @@ You can log in to `http://localhost:5173/auth/login` using the following seeded 
 - Password: `Budi@Buyer2025`
 - Role: Buyer (2,000,000 IDR Wallet Balance)
 
-**10 Akun Seller yang Tersedia:**
+**10 Available Seller Accounts:**
 - `techmart@seapedia.id` | Pass: `TechMart@2025` (TechMart Indonesia)
 - `glowskin@seapedia.id` | Pass: `GlowSkin@2025` (GlowSkin Official)
 - `urbanstyle@seapedia.id` | Pass: `UrbanStyle@2025` (Urban Style ID)

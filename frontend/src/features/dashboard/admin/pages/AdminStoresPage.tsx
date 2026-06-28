@@ -3,6 +3,7 @@ import { api } from "../../../../lib/api";
 import { Store, Search, ExternalLink, Info, Star, CreditCard, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Modal } from "../../../../components/ui/Modal";
+import { Avatar } from "../../../../components/ui/Avatar";
 
 export default function AdminStoresPage() {
   const [stores, setStores] = useState<any[]>([]);
@@ -67,8 +68,8 @@ export default function AdminStoresPage() {
                     <tr key={store.id} className="hover:bg-[#F7F5F0] transition-colors border-b-2 border-nb-black last:border-b-0">
                       <td className="px-5 py-4 border-r-2 border-nb-black">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 border-2 border-nb-black bg-white overflow-hidden shrink-0">
-                            <img src={store.logoUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'} alt={store.name} className="w-full h-full object-cover" />
+                          <div className="w-12 h-12 shrink-0">
+                            <Avatar src={store.logoUrl} name={store.name} size="md" />
                           </div>
                           <div>
                             <p className="font-extrabold text-nb-black">{store.name}</p>
@@ -143,8 +144,8 @@ export default function AdminStoresPage() {
         {selectedStore && (
           <div className="space-y-6">
             <div className="flex items-center gap-4 pb-4 border-b-2 border-gray-100">
-              <div className="w-16 h-16 border-2 border-nb-black bg-white overflow-hidden shrink-0">
-                <img src={selectedStore.logoUrl || 'https://i.pinimg.com/736x/d9/5f/28/d95f284e3d6f1c4e7ab5a7ecb9308e0d.jpg'} alt={selectedStore.name} className="w-full h-full object-cover" />
+              <div className="w-16 h-16 shrink-0">
+                <Avatar src={selectedStore.logoUrl} name={selectedStore.name} size="lg" />
               </div>
               <div>
                 <h3 className="font-extrabold text-lg text-nb-black leading-tight">{selectedStore.name}</h3>

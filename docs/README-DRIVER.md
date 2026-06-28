@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="../frontend/public/logo-seapedia-for-readme.png" alt="SEAPEDIA Logo" width="180" />
+  <img src="../frontend/public/logo-seapedia-for-readme.png" alt="SEAPEDIA Logo" width="220" />
 </div>
 
 <h1 align="center">SEAPEDIA - Driver Flow Documentation</h1>
