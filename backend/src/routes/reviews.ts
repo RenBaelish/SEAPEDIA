@@ -117,7 +117,7 @@ reviewRouter.post('/app', zValidator('json', appReviewSchema), async (c) => {
       const payload = await verify(token, c.env.JWT_SECRET, "HS256");
       userId = payload.id as string;
     } catch (err) {
-      // ignore invalid token for guest reviews
+      
     }
   }
 

@@ -46,7 +46,7 @@ export function Navbar() {
   const [hoveredCategory, setHoveredCategory] = useState(CATEGORIES[0]);
   const [storeInfo, setStoreInfo] = useState<any>(null);
 
-  // Search Auto-Suggest State
+
   const [searchSuggestions, setSearchSuggestions] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 

@@ -18,13 +18,12 @@ export default function NotificationPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch orders to simulate dynamic notifications
+    
     api.get('/orders')
       .then(res => {
         const orders = res.data.data;
         const generatedNotifs: Notification[] = [];
-        
-        // Static Promos
+
         generatedNotifs.push({
           id: 'promo-1',
           type: 'PROMO',
@@ -34,7 +33,6 @@ export default function NotificationPage() {
           read: false
         });
 
-        // Dynamic Orders
         orders.forEach((order: any) => {
           let title = '';
           let message = '';
@@ -51,7 +49,7 @@ export default function NotificationPage() {
             title = 'Pesanan Selesai';
             message = `Pesanan #${order.id.slice(0, 8).toUpperCase()} telah selesai. Jangan lupa berikan ulasan!`;
           } else {
-            return; // Skip others
+            return; 
           }
 
           generatedNotifs.push({
@@ -69,7 +67,7 @@ export default function NotificationPage() {
         setNotifications(generatedNotifs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
       })
       .catch(() => {
-        // Fallback promos if not logged in or error
+        
         setNotifications([
           {
             id: 'promo-1',
@@ -157,7 +155,6 @@ export default function NotificationPage() {
   );
 }
 
-// Inline Bell icon since it's missing in import block
 function BellIcon(props: any) {
   return (
     <svg
