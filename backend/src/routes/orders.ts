@@ -35,7 +35,9 @@ orderRouter.post('/checkout/validate-voucher', async (c) => {
   const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
   if (!cart || !cart.storeId) return c.json({ message: 'Keranjang kosong' }, 400);
 
-  const promo = await db.select().from(promos).where(and(eq(promos.code, code), eq(promos.storeId, cart.storeId))).get();
+  const promo = await db.select().from(promos)
+    .where(and(eq(promos.code, code), or(eq(promos.storeId, cart.storeId), sql`${promos.storeId} IS NULL`)))
+    .get();
   
   if (!promo) return c.json({ message: 'Voucher tidak ditemukan atau tidak berlaku untuk toko ini' }, 404);
   if (promo.quota <= 0) return c.json({ message: 'Kuota voucher sudah habis' }, 400);
@@ -47,7 +49,7 @@ orderRouter.post('/checkout', async (c) => {
   const db = drizzle(c.env.DB);
   const user = c.get('user') as any;
   const body = await c.req.json().catch(() => ({}));
-  const promoCode = body.promoCode;
+  const promoCode = body.voucherCode || body.promoCode;
 
   const cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
   if (!cart || !cart.storeId) return c.json({ message: 'Cart is empty' }, 400);
@@ -62,7 +64,7 @@ orderRouter.post('/checkout', async (c) => {
   for (const item of items) {
     const product = await db.select().from(products).where(eq(products.id, item.productId)).get();
     if (!product || product.stock < item.quantity) {
-      return c.json({ message: `Product ${product?.name || 'unknown'} is out of stock` }, 400);
+      return c.json({ message: `Stok produk ${product?.name} tidak mencukupi` }, 400);
     }
     subtotal += product.price * item.quantity;
     productUpdates.push({ id: product.id, newStock: product.stock - item.quantity });
@@ -79,7 +81,9 @@ orderRouter.post('/checkout', async (c) => {
   let appliedPromo = null;
 
   if (promoCode) {
-    appliedPromo = await db.select().from(promos).where(and(eq(promos.code, promoCode), eq(promos.storeId, cart.storeId!))).get();
+    appliedPromo = await db.select().from(promos)
+      .where(and(eq(promos.code, promoCode), or(eq(promos.storeId, cart.storeId!), sql`${promos.storeId} IS NULL`)))
+      .get();
     if (appliedPromo && appliedPromo.quota > 0) {
       if (appliedPromo.type === 'SHIPPING') {
         discount = Math.min(deliveryFee, appliedPromo.discountAmount);
