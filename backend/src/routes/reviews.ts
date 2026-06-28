@@ -162,7 +162,7 @@ reviewRouter.post('/product', zValidator('json', z.object({
 
   const order = await db.select().from(orders).where(and(eq(orders.id, data.orderId), eq(orders.buyerId, userId))).get();
   if (!order) return c.json({ message: 'Pesanan tidak ditemukan' }, 404);
-  if (order.status !== 'SELESAI') return c.json({ message: 'Hanya pesanan selesai yang dapat diulas' }, 400);
+  if (order.status !== 'PESANAN_SELESAI') return c.json({ message: 'Hanya pesanan selesai yang dapat diulas' }, 400);
 
   const item = await db.select().from(orderItems).where(and(eq(orderItems.orderId, data.orderId), eq(orderItems.productId, data.productId))).get();
   if (!item) return c.json({ message: 'Produk tidak ditemukan dalam pesanan ini' }, 404);
