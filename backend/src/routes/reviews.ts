@@ -134,6 +134,7 @@ reviewRouter.post('/app', zValidator('json', appReviewSchema), async (c) => {
   });
 
   return c.json({ message: 'App review added successfully' }, 201);
+});
 
 reviewRouter.post('/product', zValidator('json', z.object({
   rating: z.number().min(1).max(5),
