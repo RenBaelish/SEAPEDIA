@@ -59,8 +59,23 @@ export default function CheckoutPage() {
 
   const location = useLocation();
   useEffect(() => {
+    const applyInitialPromo = async (code: string) => {
+      setVoucherLoading(true);
+      try {
+        const res = await api.post("/orders/checkout/validate-voucher", { code });
+        setDiscount(res.data.data.discount);
+        setAppliedVoucher(code);
+        setVoucherMsg({ text: "Voucher berhasil digunakan!", type: "success" });
+      } catch (err: any) {
+        setVoucherMsg({ text: err.response?.data?.message || "Voucher tidak valid", type: "error" });
+      } finally {
+        setVoucherLoading(false);
+      }
+    };
+
     if (location.state?.promoCode && !appliedVoucher && !loading) {
       setVoucherCode(location.state.promoCode);
+      applyInitialPromo(location.state.promoCode);
     }
   }, [location.state, loading]);
 
@@ -93,8 +108,7 @@ export default function CheckoutPage() {
 
   const subtotal = cart.items.reduce((sum, item) => sum + (Number(item.product.price) * item.quantity), 0);
   const shippingFee = SHIPPING_OPTIONS.find(s => s.id === selectedShipping)?.price || 0;
-  const ppn = subtotal * 0.12;
-  const total = Math.max(0, subtotal + shippingFee + ppn - discount);
+  const total = Math.max(0, subtotal + shippingFee - discount);
   const walletBalance = Number(wallet?.balance || 0);
   const isInsufficient = walletBalance < total;
 
@@ -290,10 +304,7 @@ export default function CheckoutPage() {
                   <span>Total Ongkos Kirim</span>
                   <span className="text-nb-black">{formatCurrency(shippingFee)}</span>
                 </div>
-                <div className="flex justify-between text-gray-700 font-semibold">
-                  <span>PPN 12%</span>
-                  <span className="text-nb-black">{formatCurrency(ppn)}</span>
-                </div>
+
                 {discount > 0 && (
                   <div className="flex justify-between text-nb-red font-extrabold">
                     <span>Diskon Voucher</span>
