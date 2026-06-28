@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
-import { reviews, users } from '../db/schema';
+import { reviews, users, orders, orderItems, products, stores } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
