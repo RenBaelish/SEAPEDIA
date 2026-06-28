@@ -195,7 +195,7 @@ export default function AccountPage() {
           <div className="flex flex-col md:flex-row gap-10">
             <div className="flex flex-col items-center gap-4 shrink-0 md:w-1/3">
               <div className="w-28 h-28 border-4 border-nb-black overflow-hidden bg-nb-yellow flex items-center justify-center text-nb-black font-black text-5xl shadow-[4px_4px_0px_#0A0A0A]">
-                {user?.profilePictureUrl && user.profilePictureUrl !== "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg" ? (
+                {user?.profilePictureUrl ? (
                   <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   user?.fullName?.charAt(0)?.toUpperCase() ?? "?"

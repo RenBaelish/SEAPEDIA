@@ -40,7 +40,7 @@ export default function AccountShell() {
             {}
             <div className="bg-white border-4 border-nb-black shadow-[4px_4px_0px_#0A0A0A] p-4 flex flex-col items-center text-center">
               <div className="w-16 h-16 border-3 border-nb-black overflow-hidden bg-nb-yellow flex items-center justify-center text-nb-black font-black text-3xl mb-3 shadow-[2px_2px_0px_#0A0A0A]" style={{ borderWidth: '3px' }}>
-                {user?.profilePictureUrl && user.profilePictureUrl !== "https://i.pinimg.com/736x/22/87/85/2287856db3ec37b4d0d3fd0ffd99930a.jpg" ? (
+                {user?.profilePictureUrl ? (
                   <img src={user.profilePictureUrl} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   user?.fullName?.charAt(0)?.toUpperCase() ?? "?"

@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
   Search, ShoppingCart, User, Package, LogOut, Settings,
-  Bell, Wallet, ChevronDown, ChevronRight, Store
+  Bell, Wallet, ChevronDown, ChevronRight, Store, X, UserCog, Car
 } from "lucide-react";
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from "../../store/auth.store";
 import { useCartStore } from "../../store/cart.store";
+import { useAlert } from "../../../contexts/AlertContext";
 import { Avatar } from "../ui/Avatar";
 import { RoleType } from '@/types';
 import { api } from "../../lib/api";
@@ -38,6 +39,7 @@ const CATEGORIES = [
 export function Navbar() {
   const { user, isAuthenticated, clearAuth } = useAuthStore();
   const { cart } = useCartStore();
+  const { showAlert } = useAlert();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -288,14 +290,14 @@ export function Navbar() {
                 )}
 
                 {}
-                <Link
-                  to="/notifications"
+                <button
+                  onClick={() => showAlert("info", "Fitur Belum Tersedia", "Mohon maaf, fitur ini sedang dalam tahap pengembangan.")}
                   className="hidden md:flex items-center justify-center w-11 h-11 border-3 border-nb-black bg-white hover:bg-nb-yellow transition-colors"
                   style={{ borderWidth: '3px' }}
                   aria-label="Notifikasi"
                 >
                   <Bell size={20} strokeWidth={2.5} />
-                </Link>
+                </button>
 
                 {}
                 <div className="relative hidden md:block" ref={accountRef}>

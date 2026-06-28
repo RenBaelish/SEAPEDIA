@@ -86,6 +86,11 @@ cartRouter.post('/items', zValidator('json', addItemSchema), async (c) => {
   if (!product) return c.json({ message: 'Product not found' }, 404);
   if (product.stock < data.quantity) return c.json({ message: 'Insufficient stock' }, 400);
 
+  const userStore = await db.select().from(stores).where(eq(stores.ownerId, user.id as string)).get();
+  if (userStore && userStore.id === product.storeId) {
+    return c.json({ message: 'Anda tidak dapat membeli produk dari toko Anda sendiri.' }, 400);
+  }
+
   let cart = await db.select().from(carts).where(eq(carts.userId, user.id as string)).get();
   if (!cart) {
     const cartId = crypto.randomUUID();

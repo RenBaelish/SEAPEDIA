@@ -25,7 +25,7 @@ const OrderListPage = lazy(() => import("../features/order/pages/OrderListPage")
 const OrderDetailPage = lazy(() => import("../features/order/pages/OrderDetailPage"));
 const WalletPage = lazy(() => import("../features/wallet/pages/WalletPage"));
 const AccountPage = lazy(() => import("../features/user/pages/AccountPage"));
-const NotificationPage = lazy(() => import("../features/notifications/pages/NotificationPage"));
+
 
 const SellerDashboardPage = lazy(() => import("../features/dashboard/seller/pages/SellerDashboardPage"));
 const SellerProductsPage = lazy(() => import("../features/dashboard/seller/pages/SellerProductsPage"));
@@ -101,7 +101,7 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: "notifications", element: <S><NotificationPage /></S> },
+
           {
             element: <AccountShell />,
             children: [
