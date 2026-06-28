@@ -29,8 +29,10 @@ export const userRoles = sqliteTable('user_roles', {
 
 export const reviews = sqliteTable('reviews', {
   id: text('id').primaryKey(),
-  userId: text('user_id').references(() => users.id),
+  userId: text('user_id').notNull().references(() => users.id),
   guestName: text('guest_name'),
+  productId: text('product_id').notNull().default(''),
+  orderId: text('order_id').notNull().default(''),
   rating: integer('rating').notNull(),
   comment: text('comment').notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' })
