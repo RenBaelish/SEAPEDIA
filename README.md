@@ -33,6 +33,13 @@ For detailed documentation per role and a comprehensive step-by-step testing gui
 - [Seller Documentation](docs/README-SELLER.md)
 - [Driver Documentation](docs/README-DRIVER.md)
 
+
+## 1.1 Latest Fixes & Improvements
+- **Dynamic Seed Data & Ratings**: The platform's product reviews, ratings, and sales counts are now fully dynamic and accurately aggregated from thousands of completed orders.
+- **Advanced Promo Propagation**: Promo codes applied in the cart are now securely verified and seamlessly propagated to checkout.
+- **Docker Compose Fixes**: Resolved internal DNS resolution issues (`backend:8787`) to ensure local development environments work flawlessly on host browsers.
+- **Codebase Clean-up**: Comprehensive removal of scratch files, deprecated console logs, and unused testing endpoints.
+
 ## 2. Technology Stack
 
 - **Frontend:** React 18, Vite, React Router, Zustand (State Management), TailwindCSS / Vanilla CSS, Lucide Icons.
