@@ -225,7 +225,9 @@ productRouter.get('/seller/mine', async (c) => {
       storeId: products.storeId,
       storeName: stores.name,
       storeSlug: stores.slug,
-      storeLogoUrl: stores.logoUrl
+      storeLogoUrl: stores.logoUrl,
+      storeRating: stores.rating,
+      storeTotalSales: stores.totalSales
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
@@ -266,7 +268,9 @@ productRouter.get('/', async (c) => {
       storeId: products.storeId,
       storeName: stores.name,
       storeSlug: stores.slug,
-      storeLogoUrl: stores.logoUrl
+      storeLogoUrl: stores.logoUrl,
+      storeRating: stores.rating,
+      storeTotalSales: stores.totalSales
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
@@ -341,7 +345,9 @@ productRouter.get('/:id', async (c) => {
       storeId: products.storeId,
       storeName: stores.name,
       storeSlug: stores.slug,
-      storeLogoUrl: stores.logoUrl
+      storeLogoUrl: stores.logoUrl,
+      storeRating: stores.rating,
+      storeTotalSales: stores.totalSales
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))
@@ -369,7 +375,9 @@ productRouter.get('/:id', async (c) => {
         storeId: products.storeId,
         storeName: stores.name,
         storeSlug: stores.slug,
-        storeLogoUrl: stores.logoUrl
+        storeLogoUrl: stores.logoUrl,
+        storeRating: stores.rating,
+        storeTotalSales: stores.totalSales
       })
       .from(products)
       .innerJoin(stores, eq(products.storeId, stores.id))
@@ -410,7 +418,9 @@ productRouter.get('/store/:storeId', async (c) => {
       storeId: products.storeId,
       storeName: stores.name,
       storeSlug: stores.slug,
-      storeLogoUrl: stores.logoUrl
+      storeLogoUrl: stores.logoUrl,
+      storeRating: stores.rating,
+      storeTotalSales: stores.totalSales
     })
     .from(products)
     .innerJoin(stores, eq(products.storeId, stores.id))

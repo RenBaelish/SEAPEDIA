@@ -309,9 +309,18 @@ export default function ProductDetailPage() {
                       {product.storeName}
                     </Link>
                   </div>
-                  <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <MapPin size={11} />
-                    <span>Jakarta, Indonesia</span>
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Star size={11} className="fill-nb-yellow text-nb-yellow" />
+                      <span className="font-bold text-nb-black">{(product.storeRating || 0).toFixed(1)}</span>
+                    </div>
+                    <span>•</span>
+                    <span className="font-bold text-nb-black">{formatSold(product.storeTotalSales || 0)} Terjual</span>
+                    <span>•</span>
+                    <div className="flex items-center gap-1">
+                      <MapPin size={11} />
+                      <span>Jakarta</span>
+                    </div>
                   </div>
                 </div>
                 <Link to={`/store/${product.storeSlug}`} className="flex-shrink-0 px-4 py-2 border-2 border-nb-black bg-white text-xs font-bold hover:bg-nb-yellow transition-colors">

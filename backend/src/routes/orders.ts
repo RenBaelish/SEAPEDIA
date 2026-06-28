@@ -329,6 +329,21 @@ orderRouter.put('/:id/status', async (c) => {
         .innerJoin(products, eq(orderItems.productId, products.id))
         .where(eq(orderItems.orderId, orderId))
         .all();
+
+      const itemsForSales = await db.select({ productId: orderItems.productId, quantity: orderItems.quantity })
+        .from(orderItems)
+        .where(eq(orderItems.orderId, orderId))
+        .all();
+      let totalItemsSold = 0;
+      for (const item of itemsForSales) {
+        totalItemsSold += item.quantity;
+        const product = await db.select().from(products).where(eq(products.id, item.productId)).get();
+        if (product) {
+          await db.update(products).set({ sold: product.sold + item.quantity }).where(eq(products.id, product.id));
+        }
+      }
+      await db.update(stores).set({ totalSales: store.totalSales + totalItemsSold }).where(eq(stores.id, store.id));
+
       const productNames = items.map(i => i.productName).join(', ');
 
       await db.insert(walletMutations).values({

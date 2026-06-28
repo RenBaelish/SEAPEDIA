@@ -148,6 +148,8 @@ export interface ProductSummary {
 }
 
 export interface ProductDetail extends ProductSummary {
+  storeRating?: number;
+  storeTotalSales?: number;
   description: string;
   weight: number;
   sku?: string;

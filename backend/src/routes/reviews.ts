@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { drizzle } from 'drizzle-orm/d1';
 import { reviews, users } from '../db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { verify } from 'hono/jwt';
 import type { Env } from '../types';
 
@@ -157,8 +157,7 @@ reviewRouter.post('/product', zValidator('json', z.object({
   const data = c.req.valid('json');
   const userId = payload.id as string;
 
-  const { orders, orderItems, products, stores } = await import('../db/schema');
-  const { eq, and } = await import('drizzle-orm');
+  
 
   const order = await db.select().from(orders).where(and(eq(orders.id, data.orderId), eq(orders.buyerId, userId))).get();
   if (!order) return c.json({ message: 'Pesanan tidak ditemukan' }, 404);
@@ -201,7 +200,7 @@ reviewRouter.post('/product', zValidator('json', z.object({
 reviewRouter.get('/product/:productId', async (c) => {
   const db = drizzle(c.env.DB);
   const productId = c.req.param('productId');
-  const { eq, desc } = await import('drizzle-orm');
+  
   
   const productReviews = await db.select({
     id: reviews.id,
