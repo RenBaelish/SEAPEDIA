@@ -44,7 +44,13 @@ SEAPEDIA implements robust security measures across both the frontend and backen
 - **Cross-Site Scripting (XSS) Prevention:** React automatically sanitizes and escapes all text rendered in the DOM. User-generated content (like public application reviews) cannot execute malicious `<script>` tags.
 - **Input Validation:** Zod is used on the backend to rigorously validate all incoming request bodies (email formats, password strength, positive stock numbers, valid UUIDs) before touching the database.
 
-## 4. CI/CD (Continuous Integration / Continuous Deployment)
+## 4. Rate Limiting (API Protection)
+
+To prevent abuse, brute-force attacks, and DDoS, the API implements Rate Limiting:
+- **Global Rate Limiting:** Enforced via Cloudflare Workers (or Cloudflare WAF) to restrict the number of requests a single IP can make within a time window.
+- **Endpoint Specific:** Sensitive endpoints such as `/auth/login` and `/auth/register` have stricter rate limits to prevent credential stuffing.
+
+## 5. CI/CD (Continuous Integration / Continuous Deployment)
 
 - **Frontend:** Vercel (or Cloudflare Pages) automatically triggers a new build pipeline whenever a commit is pushed to the `main` branch. It executes `npm run build` and deploys the new assets immutably.
 - **Backend:** Can be automated using GitHub Actions. A workflow can be configured to run `pnpm run deploy` upon push, securely injecting the `JWT_SECRET` using GitHub Secrets into the Cloudflare Worker environment.
@@ -67,10 +73,12 @@ erDiagram
   
     PRODUCTS ||--o{ CART_ITEMS : "added to"
     PRODUCTS ||--o{ ORDER_ITEMS : "included in"
+    PRODUCTS ||--o{ REVIEWS : "receives"
   
     ORDERS ||--o{ ORDER_ITEMS : "contains"
     ORDERS ||--o{ ORDER_STATUS_HISTORY : "tracks"
     ORDERS ||--o{ DELIVERIES : "requires"
+    ORDERS ||--o{ REVIEWS : "linked to"
   
     USERS ||--o{ DELIVERIES : "takes (as Driver)"
   
@@ -88,3 +96,4 @@ erDiagram
 6. **Deliveries:** Routing and job records for Drivers assigned to specific Orders.
 7. **Wallets & Wallet Transactions:** Tracks financial balances (Top Ups, Payments, Earnings, Commissions).
 8. **Vouchers & Promos:** Discount configurations managed by Admins.
+9. **Reviews:** Product reviews submitted by Buyers for completed orders.

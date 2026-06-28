@@ -4,13 +4,17 @@
 
 <h1 align="center">SEAPEDIA - End-to-End Flow Guide</h1>
 
+---
+
+## Overview
+
 This document is specifically prepared for the judges to test the SEAPEDIA system flow thoroughly. This application has implemented the full capabilities of an e-commerce ecosystem according to the Task Level specifications (Levels 1 to 7).
 
----
 
 ## Preparation
 - Ensure you have accessed the main web application.
 - You can log in using the demo accounts provided in the main `README.md`.
+- **Alternatively, you can register your own account!** If you create a new account, please note that your Wallet balance will be empty. To test the checkout flow, you must top up your wallet via the **Wallet Menu** in your profile before checking out.
 - The system uses a **Single Account Multi-Role** concept (Role Switcher - Level 7). This means one email address can have dual roles (e.g., as both a Buyer and a Seller).
 
 ---
@@ -20,7 +24,7 @@ This document is specifically prepared for the judges to test the SEAPEDIA syste
 Below is the main transaction scenario from start to finish to prove that all application level specifications have been met.
 
 ### 1. Buyer Selects and Orders Products (Level 1, Level 4)
-1. Log in using the **Buyer** account (`budi.santoso@gmail.com`).
+1. Log in using the **Buyer** account (or the newly registered account).
 2. Go to the **Home** or **Search** page and find a product from a specific store (e.g., "TechMart Indonesia").
 3. Click on the product, then press the **Add to Cart** button.
 4. Open the **Cart** page via the icon in the top right corner.
@@ -54,7 +58,7 @@ Below is the main transaction scenario from start to finish to prove that all ap
    - The product funds are automatically credited to the **Seller's Wallet** after deducting the platform commission (5%).
    - The shipping fee is credited to the **Driver's Wallet** after deducting the platform admin fee (10%).
    - This distribution can be verified in real-time on their respective Dashboards (Seller & Driver Wallet).
-5. *Review (Level 5)*: After the order is completed, the user can leave a rating (1-5 stars) along with a comment for the product. This rating will affect the aggregate rating (average stars) on the product details page going forward.
+5. *Review (Level 5)*: After the order is completed, click the yellow **Beri Ulasan** button next to each product in the order details. You can leave a rating (1-5 stars) and a comment. The review will then appear in the "Ulasan Pembeli" section of the Product Detail Page.
 
 ---
 
