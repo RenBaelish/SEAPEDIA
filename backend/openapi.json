@@ -1636,6 +1636,90 @@
           }
         }
       }
+    },
+    "/reviews/product": {
+      "post": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Submit a product review",
+        "description": "Allows a buyer to submit a rating and comment for a product they purchased. Order must be completed.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "productId": {
+                    "type": "string"
+                  },
+                  "orderId": {
+                    "type": "string"
+                  },
+                  "rating": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 5
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "productId",
+                  "orderId",
+                  "rating",
+                  "comment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Review created successfully"
+          },
+          "400": {
+            "description": "Invalid input or order not completed"
+          }
+        }
+      }
+    },
+    "/reviews/product/{id}": {
+      "get": {
+        "tags": [
+          "Reviews"
+        ],
+        "summary": "Get reviews for a product",
+        "description": "Fetch all reviews for a specific product ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of product reviews"
+          }
+        }
+      }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Reviews",
+      "description": "Product review operations"
+    }
+  ]
 }
