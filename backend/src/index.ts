@@ -15,7 +15,6 @@ import { categoryRouter } from './routes/categories'
 import { swaggerUI } from '@hono/swagger-ui'
 import openapiSpec from '../openapi.json'
 import seedHandler from './seed'
-
 const app = new Hono()
 
 app.use('*', cors({
