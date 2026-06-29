@@ -93,7 +93,8 @@ reviewRouter.get('/app', async (c) => {
     })
     .from(reviews)
     .leftJoin(users, eq(reviews.userId, users.id))
-    .orderBy(desc(reviews.createdAt));
+    .orderBy(desc(reviews.createdAt))
+    .limit(10);
 
   const formattedReviews = appReviews.map(r => ({
     id: r.id,

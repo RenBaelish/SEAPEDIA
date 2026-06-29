@@ -286,7 +286,7 @@ export default function HomePage() {
                   <p className="text-xs text-gray-400">Jadilah yang pertama memberikan ulasan!</p>
                 </div>
               ) : (
-                reviews.map((review) => (
+                reviews.slice(0, 5).map((review) => (
                   <div
                     key={review.id}
                     className="flex gap-4 p-4 border-2 border-gray-200 bg-gray-50 hover:border-nb-black transition-colors"
